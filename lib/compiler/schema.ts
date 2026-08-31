@@ -76,6 +76,13 @@ export function assertCompiledKnowledgeDataset(value: unknown): asserts value is
       const evidence = record(value, `dataset.relations[${index}].evidence[${evidenceIndex}]`);
       text(evidence.articleId, `dataset.relations[${index}].evidence[${evidenceIndex}].articleId`);
       text(evidence.quote, `dataset.relations[${index}].evidence[${evidenceIndex}].quote`);
+      if (evidence.startOffset !== undefined || evidence.endOffset !== undefined) {
+        expect(Number.isInteger(evidence.startOffset) && Number(evidence.startOffset) >= 0, `dataset.relations[${index}].evidence[${evidenceIndex}].startOffset must be a non-negative integer`);
+        expect(Number.isInteger(evidence.endOffset) && Number(evidence.endOffset) > Number(evidence.startOffset), `dataset.relations[${index}].evidence[${evidenceIndex}].endOffset must follow startOffset`);
+      }
+      if (evidence.supportScore !== undefined) {
+        confidence(evidence.supportScore, `dataset.relations[${index}].evidence[${evidenceIndex}].supportScore`);
+      }
     });
     if (relation.reasoning !== undefined) text(relation.reasoning, `dataset.relations[${index}].reasoning`);
   });

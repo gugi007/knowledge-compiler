@@ -208,7 +208,6 @@
       "summary": "根据查询与键的匹配程度，对值进行动态加权聚合的信息路由机制。",
       "domain": "注意力机制",
       "level": "foundation",
-      "parentId": "concept-transformer",
       "aliases": [
         "Self-Attention",
         "注意力",
@@ -221,12 +220,11 @@
         "a05",
         "a07",
         "a08",
-        "a11",
-        "a12",
         "a15",
         "a18"
       ],
-      "confidence": 0.9
+      "confidence": 0.89,
+      "parentId": "concept-transformer"
     },
     {
       "id": "concept-context-retrieval",
@@ -235,7 +233,6 @@
       "summary": "从外部知识中筛选相关片段，在有限上下文预算内提升信息密度。",
       "domain": "长上下文",
       "level": "intermediate",
-      "parentId": "concept-long-context",
       "aliases": [
         "Context Retrieval",
         "检索"
@@ -243,7 +240,8 @@
       "evidenceArticleIds": [
         "a17"
       ],
-      "confidence": 0.86
+      "confidence": 0.86,
+      "parentId": "concept-long-context"
     },
     {
       "id": "concept-context-window",
@@ -252,7 +250,6 @@
       "summary": "单次推理可接收与生成的 token 总预算。",
       "domain": "长上下文",
       "level": "foundation",
-      "parentId": "concept-long-context",
       "aliases": [
         "Context Window"
       ],
@@ -261,7 +258,8 @@
         "a13",
         "a17"
       ],
-      "confidence": 0.86
+      "confidence": 0.86,
+      "parentId": "concept-long-context"
     },
     {
       "id": "concept-continuous-batching",
@@ -270,7 +268,6 @@
       "summary": "请求完成后立即补入新请求，让 GPU 批次持续工作的调度策略。",
       "domain": "推理系统",
       "level": "intermediate",
-      "parentId": "concept-inference-serving",
       "aliases": [
         "Continuous Batching"
       ],
@@ -278,7 +275,8 @@
         "a10",
         "a12"
       ],
-      "confidence": 0.91
+      "confidence": 0.91,
+      "parentId": "concept-inference-serving"
     },
     {
       "id": "concept-flash-attention",
@@ -287,15 +285,13 @@
       "summary": "通过分块和 IO 感知计算减少显存读写的精确注意力算法。",
       "domain": "注意力机制",
       "level": "advanced",
-      "parentId": "concept-attention",
-      "aliases": [
-        "Flash Attention"
-      ],
+      "aliases": [],
       "evidenceArticleIds": [
         "a08",
         "a15"
       ],
-      "confidence": 0.91
+      "confidence": 0.91,
+      "parentId": "concept-attention"
     },
     {
       "id": "concept-inference-serving",
@@ -304,7 +300,6 @@
       "summary": "围绕吞吐、延迟、显存和公平性组织模型推理的服务系统。",
       "domain": "推理系统",
       "level": "foundation",
-      "parentId": "concept-large-language-model",
       "aliases": [
         "Inference Serving"
       ],
@@ -316,7 +311,8 @@
         "a16",
         "a18"
       ],
-      "confidence": 0.88
+      "confidence": 0.88,
+      "parentId": "concept-large-language-model"
     },
     {
       "id": "concept-kv-cache",
@@ -325,7 +321,6 @@
       "summary": "在自回归生成中复用历史 token 的 Key 与 Value，避免重复计算。",
       "domain": "推理系统",
       "level": "intermediate",
-      "parentId": "concept-inference-serving",
       "aliases": [
         "键值缓存"
       ],
@@ -336,7 +331,8 @@
         "a12",
         "a15"
       ],
-      "confidence": 0.9
+      "confidence": 0.9,
+      "parentId": "concept-inference-serving"
     },
     {
       "id": "concept-large-language-model",
@@ -351,8 +347,6 @@
       ],
       "evidenceArticleIds": [
         "a01",
-        "a12",
-        "a16",
         "a18"
       ],
       "confidence": 0.91
@@ -364,7 +358,6 @@
       "summary": "让模型在更长序列中可靠利用信息的能力。",
       "domain": "长上下文",
       "level": "intermediate",
-      "parentId": "concept-large-language-model",
       "aliases": [
         "Long Context"
       ],
@@ -374,7 +367,8 @@
         "a15",
         "a17"
       ],
-      "confidence": 0.93
+      "confidence": 0.93,
+      "parentId": "concept-large-language-model"
     },
     {
       "id": "concept-paged-attention",
@@ -383,15 +377,13 @@
       "summary": "借鉴虚拟内存分页管理 KV Cache、减少显存碎片的方法。",
       "domain": "推理系统",
       "level": "advanced",
-      "parentId": "concept-kv-cache",
-      "aliases": [
-        "Paged Attention"
-      ],
+      "aliases": [],
       "evidenceArticleIds": [
         "a11",
         "a12"
       ],
-      "confidence": 0.91
+      "confidence": 0.91,
+      "parentId": "concept-kv-cache"
     },
     {
       "id": "concept-position-encoding",
@@ -400,7 +392,6 @@
       "summary": "向注意力机制注入 token 顺序和相对距离信息的方法。",
       "domain": "注意力机制",
       "level": "foundation",
-      "parentId": "concept-transformer",
       "aliases": [
         "Positional Encoding"
       ],
@@ -409,7 +400,8 @@
         "a05",
         "a14"
       ],
-      "confidence": 0.86
+      "confidence": 0.86,
+      "parentId": "concept-transformer"
     },
     {
       "id": "concept-quantization",
@@ -418,14 +410,14 @@
       "summary": "用更低精度表示权重或激活，以降低显存占用并提升推理吞吐。",
       "domain": "推理系统",
       "level": "intermediate",
-      "parentId": "concept-inference-serving",
       "aliases": [
         "Quantization"
       ],
       "evidenceArticleIds": [
         "a16"
       ],
-      "confidence": 0.96
+      "confidence": 0.96,
+      "parentId": "concept-inference-serving"
     },
     {
       "id": "concept-rope",
@@ -434,7 +426,6 @@
       "summary": "通过旋转变换让注意力分数携带相对位置信息的位置编码方法。",
       "domain": "注意力机制",
       "level": "intermediate",
-      "parentId": "concept-position-encoding",
       "aliases": [
         "Rotary Position Embedding",
         "旋转位置编码"
@@ -443,7 +434,8 @@
         "a05",
         "a14"
       ],
-      "confidence": 0.96
+      "confidence": 0.96,
+      "parentId": "concept-position-encoding"
     },
     {
       "id": "concept-transformer",
@@ -452,7 +444,6 @@
       "summary": "以自注意力和前馈网络为核心的可并行序列建模架构。",
       "domain": "模型基础",
       "level": "foundation",
-      "parentId": "concept-large-language-model",
       "aliases": [
         "Transformer 架构"
       ],
@@ -463,7 +454,8 @@
         "a04",
         "a18"
       ],
-      "confidence": 0.88
+      "confidence": 0.88,
+      "parentId": "concept-large-language-model"
     },
     {
       "id": "concept-vllm",
@@ -472,7 +464,6 @@
       "summary": "以 PagedAttention 和连续批处理为核心的高吞吐推理引擎。",
       "domain": "推理系统",
       "level": "advanced",
-      "parentId": "concept-inference-serving",
       "aliases": [
         "vLLM 引擎"
       ],
@@ -480,12 +471,13 @@
         "a12",
         "a16"
       ],
-      "confidence": 0.91
+      "confidence": 0.91,
+      "parentId": "concept-inference-serving"
     }
   ],
   "relations": [
     {
-      "id": "article-concept:a01:large-language-model",
+      "id": "article-concept:a01:concept-large-language-model",
       "kind": "article-concept",
       "sourceId": "a01",
       "targetId": "concept-large-language-model",
@@ -493,12 +485,15 @@
       "evidence": [
         {
           "articleId": "a01",
-          "quote": "大语言模型通过更大规模的数据与计算学习语言分布，但规模本身并不能解释全部能力。"
+          "quote": "大语言模型通过更大规模的数据与计算学习语言分布，但规模本身并不能解释全部能力。",
+          "startOffset": 0,
+          "endOffset": 39,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a01:transformer",
+      "id": "article-concept:a01:concept-transformer",
       "kind": "article-concept",
       "sourceId": "a01",
       "targetId": "concept-transformer",
@@ -506,12 +501,15 @@
       "evidence": [
         {
           "articleId": "a01",
-          "quote": "理解 LLM 的训练目标，是继续理解 Transformer 如何承载这些能力的前置知识。"
+          "quote": "理解 LLM 的训练目标，是继续理解 Transformer 如何承载这些能力的前置知识。",
+          "startOffset": 39,
+          "endOffset": 84,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a02:attention",
+      "id": "article-concept:a02:concept-attention",
       "kind": "article-concept",
       "sourceId": "a02",
       "targetId": "concept-attention",
@@ -519,12 +517,15 @@
       "evidence": [
         {
           "articleId": "a02",
-          "quote": "Transformer 用 Attention 在任意 token 之间建立直接连接，并让训练可以高度并行。"
+          "quote": "Transformer 用 Attention 在任意 token 之间建立直接连接，并让训练可以高度并行。",
+          "startOffset": 0,
+          "endOffset": 54,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a02:transformer",
+      "id": "article-concept:a02:concept-transformer",
       "kind": "article-concept",
       "sourceId": "a02",
       "targetId": "concept-transformer",
@@ -532,12 +533,15 @@
       "evidence": [
         {
           "articleId": "a02",
-          "quote": "Transformer 用 Attention 在任意 token 之间建立直接连接，并让训练可以高度并行。"
+          "quote": "Transformer 用 Attention 在任意 token 之间建立直接连接，并让训练可以高度并行。",
+          "startOffset": 0,
+          "endOffset": 54,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a03:attention",
+      "id": "article-concept:a03:concept-attention",
       "kind": "article-concept",
       "sourceId": "a03",
       "targetId": "concept-attention",
@@ -545,12 +549,15 @@
       "evidence": [
         {
           "articleId": "a03",
-          "quote": "Attention 根据查询与键的匹配程度，对值进行动态加权聚合。"
+          "quote": "Attention 根据查询与键的匹配程度，对值进行动态加权聚合。",
+          "startOffset": 0,
+          "endOffset": 33,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a03:transformer",
+      "id": "article-concept:a03:concept-transformer",
       "kind": "article-concept",
       "sourceId": "a03",
       "targetId": "concept-transformer",
@@ -558,12 +565,15 @@
       "evidence": [
         {
           "articleId": "a03",
-          "quote": "它是 Transformer 中负责信息路由的核心单元，也是理解后续推理优化的基础。"
+          "quote": "它是 Transformer 中负责信息路由的核心单元，也是理解后续推理优化的基础。",
+          "startOffset": 33,
+          "endOffset": 75,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a04:attention",
+      "id": "article-concept:a04:concept-attention",
       "kind": "article-concept",
       "sourceId": "a04",
       "targetId": "concept-attention",
@@ -571,12 +581,15 @@
       "evidence": [
         {
           "articleId": "a04",
-          "quote": "Transformer 的 Attention 本身无法区分 token 的先后，因此需要位置编码补足顺序信息。"
+          "quote": "Transformer 的 Attention 本身无法区分 token 的先后，因此需要位置编码补足顺序信息。",
+          "startOffset": 0,
+          "endOffset": 56,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a04:position-encoding",
+      "id": "article-concept:a04:concept-position-encoding",
       "kind": "article-concept",
       "sourceId": "a04",
       "targetId": "concept-position-encoding",
@@ -584,12 +597,15 @@
       "evidence": [
         {
           "articleId": "a04",
-          "quote": "Transformer 的 Attention 本身无法区分 token 的先后，因此需要位置编码补足顺序信息。"
+          "quote": "Transformer 的 Attention 本身无法区分 token 的先后，因此需要位置编码补足顺序信息。",
+          "startOffset": 0,
+          "endOffset": 56,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a04:transformer",
+      "id": "article-concept:a04:concept-transformer",
       "kind": "article-concept",
       "sourceId": "a04",
       "targetId": "concept-transformer",
@@ -597,12 +613,15 @@
       "evidence": [
         {
           "articleId": "a04",
-          "quote": "Transformer 的 Attention 本身无法区分 token 的先后，因此需要位置编码补足顺序信息。"
+          "quote": "Transformer 的 Attention 本身无法区分 token 的先后，因此需要位置编码补足顺序信息。",
+          "startOffset": 0,
+          "endOffset": 56,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a05:attention",
+      "id": "article-concept:a05:concept-attention",
       "kind": "article-concept",
       "sourceId": "a05",
       "targetId": "concept-attention",
@@ -610,12 +629,15 @@
       "evidence": [
         {
           "articleId": "a05",
-          "quote": "RoPE 是位置编码的一种扩展：它对查询和键应用成对旋转，让 Attention 分数自然携带相对距离。"
+          "quote": "RoPE 是位置编码的一种扩展：它对查询和键应用成对旋转，让 Attention 分数自然携带相对距离。",
+          "startOffset": 0,
+          "endOffset": 52,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a05:position-encoding",
+      "id": "article-concept:a05:concept-position-encoding",
       "kind": "article-concept",
       "sourceId": "a05",
       "targetId": "concept-position-encoding",
@@ -623,12 +645,15 @@
       "evidence": [
         {
           "articleId": "a05",
-          "quote": "RoPE 是位置编码的一种扩展：它对查询和键应用成对旋转，让 Attention 分数自然携带相对距离。"
+          "quote": "RoPE 是位置编码的一种扩展：它对查询和键应用成对旋转，让 Attention 分数自然携带相对距离。",
+          "startOffset": 0,
+          "endOffset": 52,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a05:rope",
+      "id": "article-concept:a05:concept-rope",
       "kind": "article-concept",
       "sourceId": "a05",
       "targetId": "concept-rope",
@@ -636,12 +661,15 @@
       "evidence": [
         {
           "articleId": "a05",
-          "quote": "RoPE 是位置编码的一种扩展：它对查询和键应用成对旋转，让 Attention 分数自然携带相对距离。"
+          "quote": "RoPE 是位置编码的一种扩展：它对查询和键应用成对旋转，让 Attention 分数自然携带相对距离。",
+          "startOffset": 0,
+          "endOffset": 52,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a06:inference-serving",
+      "id": "article-concept:a06:concept-inference-serving",
       "kind": "article-concept",
       "sourceId": "a06",
       "targetId": "concept-inference-serving",
@@ -649,12 +677,15 @@
       "evidence": [
         {
           "articleId": "a06",
-          "quote": "推理服务中的自回归解码必须逐 token 执行，生成阶段常常受显存带宽而非算力限制。"
+          "quote": "推理服务中的自回归解码必须逐 token 执行，生成阶段常常受显存带宽而非算力限制。",
+          "startOffset": 0,
+          "endOffset": 42,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a06:kv-cache",
+      "id": "article-concept:a06:concept-kv-cache",
       "kind": "article-concept",
       "sourceId": "a06",
       "targetId": "concept-kv-cache",
@@ -662,12 +693,15 @@
       "evidence": [
         {
           "articleId": "a06",
-          "quote": "KV Cache 可以避免重复计算历史 token，但缓存读写也会随着序列和并发增长。"
+          "quote": "KV Cache 可以避免重复计算历史 token，但缓存读写也会随着序列和并发增长。",
+          "startOffset": 42,
+          "endOffset": 85,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a07:attention",
+      "id": "article-concept:a07:concept-attention",
       "kind": "article-concept",
       "sourceId": "a07",
       "targetId": "concept-attention",
@@ -675,12 +709,15 @@
       "evidence": [
         {
           "articleId": "a07",
-          "quote": "KV Cache 保存 Attention 已经计算过的 Key 与 Value，让下一步生成只处理新增 token。"
+          "quote": "KV Cache 保存 Attention 已经计算过的 Key 与 Value，让下一步生成只处理新增 token。",
+          "startOffset": 0,
+          "endOffset": 59,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a07:context-window",
+      "id": "article-concept:a07:concept-context-window",
       "kind": "article-concept",
       "sourceId": "a07",
       "targetId": "concept-context-window",
@@ -688,12 +725,15 @@
       "evidence": [
         {
           "articleId": "a07",
-          "quote": "它把重复计算换成持续增长的显存占用，因此并发与上下文窗口都会抬高成本。"
+          "quote": "它把重复计算换成持续增长的显存占用，因此并发与上下文窗口都会抬高成本。",
+          "startOffset": 59,
+          "endOffset": 94,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a07:kv-cache",
+      "id": "article-concept:a07:concept-kv-cache",
       "kind": "article-concept",
       "sourceId": "a07",
       "targetId": "concept-kv-cache",
@@ -701,25 +741,31 @@
       "evidence": [
         {
           "articleId": "a07",
-          "quote": "KV Cache 保存 Attention 已经计算过的 Key 与 Value，让下一步生成只处理新增 token。"
+          "quote": "KV Cache 保存 Attention 已经计算过的 Key 与 Value，让下一步生成只处理新增 token。",
+          "startOffset": 0,
+          "endOffset": 59,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a08:attention",
+      "id": "article-concept:a08:concept-attention",
       "kind": "article-concept",
       "sourceId": "a08",
       "targetId": "concept-attention",
-      "confidence": 0.96,
+      "confidence": 0.86,
       "evidence": [
         {
           "articleId": "a08",
-          "quote": "FlashAttention 优化的仍是精确 Attention，而不是近似注意力。"
+          "quote": "FlashAttention 优化的仍是精确 Attention，而不是近似注意力。",
+          "startOffset": 0,
+          "endOffset": 42,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a08:flash-attention",
+      "id": "article-concept:a08:concept-flash-attention",
       "kind": "article-concept",
       "sourceId": "a08",
       "targetId": "concept-flash-attention",
@@ -727,12 +773,15 @@
       "evidence": [
         {
           "articleId": "a08",
-          "quote": "FlashAttention 优化的仍是精确 Attention，而不是近似注意力。"
+          "quote": "FlashAttention 优化的仍是精确 Attention，而不是近似注意力。",
+          "startOffset": 0,
+          "endOffset": 42,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a09:inference-serving",
+      "id": "article-concept:a09:concept-inference-serving",
       "kind": "article-concept",
       "sourceId": "a09",
       "targetId": "concept-inference-serving",
@@ -740,12 +789,15 @@
       "evidence": [
         {
           "articleId": "a09",
-          "quote": "推理服务需要同时观察吞吐、首 token 延迟和逐 token 延迟。"
+          "quote": "推理服务需要同时观察吞吐、首 token 延迟和逐 token 延迟。",
+          "startOffset": 0,
+          "endOffset": 35,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a10:continuous-batching",
+      "id": "article-concept:a10:concept-continuous-batching",
       "kind": "article-concept",
       "sourceId": "a10",
       "targetId": "concept-continuous-batching",
@@ -753,12 +805,15 @@
       "evidence": [
         {
           "articleId": "a10",
-          "quote": "连续批处理允许推理服务在旧请求结束后立刻补入新请求，而不必等待整批完成。"
+          "quote": "连续批处理允许推理服务在旧请求结束后立刻补入新请求，而不必等待整批完成。",
+          "startOffset": 0,
+          "endOffset": 36,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a10:inference-serving",
+      "id": "article-concept:a10:concept-inference-serving",
       "kind": "article-concept",
       "sourceId": "a10",
       "targetId": "concept-inference-serving",
@@ -766,25 +821,15 @@
       "evidence": [
         {
           "articleId": "a10",
-          "quote": "连续批处理允许推理服务在旧请求结束后立刻补入新请求，而不必等待整批完成。"
+          "quote": "连续批处理允许推理服务在旧请求结束后立刻补入新请求，而不必等待整批完成。",
+          "startOffset": 0,
+          "endOffset": 36,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a11:attention",
-      "kind": "article-concept",
-      "sourceId": "a11",
-      "targetId": "concept-attention",
-      "confidence": 0.96,
-      "evidence": [
-        {
-          "articleId": "a11",
-          "quote": "PagedAttention 借鉴虚拟内存分页，把连续增长的 KV Cache 拆成固定大小的块。"
-        }
-      ]
-    },
-    {
-      "id": "article-concept:a11:kv-cache",
+      "id": "article-concept:a11:concept-kv-cache",
       "kind": "article-concept",
       "sourceId": "a11",
       "targetId": "concept-kv-cache",
@@ -792,12 +837,15 @@
       "evidence": [
         {
           "articleId": "a11",
-          "quote": "PagedAttention 借鉴虚拟内存分页，把连续增长的 KV Cache 拆成固定大小的块。"
+          "quote": "PagedAttention 借鉴虚拟内存分页，把连续增长的 KV Cache 拆成固定大小的块。",
+          "startOffset": 0,
+          "endOffset": 49,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a11:paged-attention",
+      "id": "article-concept:a11:concept-paged-attention",
       "kind": "article-concept",
       "sourceId": "a11",
       "targetId": "concept-paged-attention",
@@ -805,25 +853,15 @@
       "evidence": [
         {
           "articleId": "a11",
-          "quote": "PagedAttention 借鉴虚拟内存分页，把连续增长的 KV Cache 拆成固定大小的块。"
+          "quote": "PagedAttention 借鉴虚拟内存分页，把连续增长的 KV Cache 拆成固定大小的块。",
+          "startOffset": 0,
+          "endOffset": 49,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a12:attention",
-      "kind": "article-concept",
-      "sourceId": "a12",
-      "targetId": "concept-attention",
-      "confidence": 0.86,
-      "evidence": [
-        {
-          "articleId": "a12",
-          "quote": "vLLM 是推理服务的一种工程实现，它把 Continuous Batching、KV Cache 与 PagedAttention 串成完整执行链。"
-        }
-      ]
-    },
-    {
-      "id": "article-concept:a12:continuous-batching",
+      "id": "article-concept:a12:concept-continuous-batching",
       "kind": "article-concept",
       "sourceId": "a12",
       "targetId": "concept-continuous-batching",
@@ -831,12 +869,15 @@
       "evidence": [
         {
           "articleId": "a12",
-          "quote": "vLLM 是推理服务的一种工程实现，它把 Continuous Batching、KV Cache 与 PagedAttention 串成完整执行链。"
+          "quote": "vLLM 是推理服务的一种工程实现，它把 Continuous Batching、KV Cache 与 PagedAttention 串成完整执行链。",
+          "startOffset": 0,
+          "endOffset": 75,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a12:inference-serving",
+      "id": "article-concept:a12:concept-inference-serving",
       "kind": "article-concept",
       "sourceId": "a12",
       "targetId": "concept-inference-serving",
@@ -844,12 +885,15 @@
       "evidence": [
         {
           "articleId": "a12",
-          "quote": "vLLM 是推理服务的一种工程实现，它把 Continuous Batching、KV Cache 与 PagedAttention 串成完整执行链。"
+          "quote": "vLLM 是推理服务的一种工程实现，它把 Continuous Batching、KV Cache 与 PagedAttention 串成完整执行链。",
+          "startOffset": 0,
+          "endOffset": 75,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a12:kv-cache",
+      "id": "article-concept:a12:concept-kv-cache",
       "kind": "article-concept",
       "sourceId": "a12",
       "targetId": "concept-kv-cache",
@@ -857,25 +901,15 @@
       "evidence": [
         {
           "articleId": "a12",
-          "quote": "vLLM 是推理服务的一种工程实现，它把 Continuous Batching、KV Cache 与 PagedAttention 串成完整执行链。"
+          "quote": "vLLM 是推理服务的一种工程实现，它把 Continuous Batching、KV Cache 与 PagedAttention 串成完整执行链。",
+          "startOffset": 0,
+          "endOffset": 75,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a12:large-language-model",
-      "kind": "article-concept",
-      "sourceId": "a12",
-      "targetId": "concept-large-language-model",
-      "confidence": 0.96,
-      "evidence": [
-        {
-          "articleId": "a12",
-          "quote": "vLLM 是推理服务的一种工程实现，它把 Continuous Batching、KV Cache 与 PagedAttention 串成完整执行链。"
-        }
-      ]
-    },
-    {
-      "id": "article-concept:a12:paged-attention",
+      "id": "article-concept:a12:concept-paged-attention",
       "kind": "article-concept",
       "sourceId": "a12",
       "targetId": "concept-paged-attention",
@@ -883,12 +917,15 @@
       "evidence": [
         {
           "articleId": "a12",
-          "quote": "vLLM 是推理服务的一种工程实现，它把 Continuous Batching、KV Cache 与 PagedAttention 串成完整执行链。"
+          "quote": "vLLM 是推理服务的一种工程实现，它把 Continuous Batching、KV Cache 与 PagedAttention 串成完整执行链。",
+          "startOffset": 0,
+          "endOffset": 75,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a12:vllm",
+      "id": "article-concept:a12:concept-vllm",
       "kind": "article-concept",
       "sourceId": "a12",
       "targetId": "concept-vllm",
@@ -896,12 +933,15 @@
       "evidence": [
         {
           "articleId": "a12",
-          "quote": "vLLM 是推理服务的一种工程实现，它把 Continuous Batching、KV Cache 与 PagedAttention 串成完整执行链。"
+          "quote": "vLLM 是推理服务的一种工程实现，它把 Continuous Batching、KV Cache 与 PagedAttention 串成完整执行链。",
+          "startOffset": 0,
+          "endOffset": 75,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a13:context-window",
+      "id": "article-concept:a13:concept-context-window",
       "kind": "article-concept",
       "sourceId": "a13",
       "targetId": "concept-context-window",
@@ -909,12 +949,15 @@
       "evidence": [
         {
           "articleId": "a13",
-          "quote": "上下文窗口定义单次推理可接收与生成的 token 预算，是讨论长上下文的长度边界。"
+          "quote": "上下文窗口定义单次推理可接收与生成的 token 预算，是讨论长上下文的长度边界。",
+          "startOffset": 0,
+          "endOffset": 41,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a13:long-context",
+      "id": "article-concept:a13:concept-long-context",
       "kind": "article-concept",
       "sourceId": "a13",
       "targetId": "concept-long-context",
@@ -922,12 +965,15 @@
       "evidence": [
         {
           "articleId": "a13",
-          "quote": "上下文窗口定义单次推理可接收与生成的 token 预算，是讨论长上下文的长度边界。"
+          "quote": "上下文窗口定义单次推理可接收与生成的 token 预算，是讨论长上下文的长度边界。",
+          "startOffset": 0,
+          "endOffset": 41,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a14:long-context",
+      "id": "article-concept:a14:concept-long-context",
       "kind": "article-concept",
       "sourceId": "a14",
       "targetId": "concept-long-context",
@@ -935,12 +981,15 @@
       "evidence": [
         {
           "articleId": "a14",
-          "quote": "位置插值和频率缩放可以把 RoPE 扩展到训练长度之外，因此与长上下文能力直接相关。"
+          "quote": "位置插值和频率缩放可以把 RoPE 扩展到训练长度之外，因此与长上下文能力直接相关。",
+          "startOffset": 30,
+          "endOffset": 72,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a14:position-encoding",
+      "id": "article-concept:a14:concept-position-encoding",
       "kind": "article-concept",
       "sourceId": "a14",
       "targetId": "concept-position-encoding",
@@ -948,12 +997,15 @@
       "evidence": [
         {
           "articleId": "a14",
-          "quote": "RoPE 作为位置编码方案，其频率分布决定模型如何感知距离。"
+          "quote": "RoPE 作为位置编码方案，其频率分布决定模型如何感知距离。",
+          "startOffset": 0,
+          "endOffset": 30,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a14:rope",
+      "id": "article-concept:a14:concept-rope",
       "kind": "article-concept",
       "sourceId": "a14",
       "targetId": "concept-rope",
@@ -961,12 +1013,15 @@
       "evidence": [
         {
           "articleId": "a14",
-          "quote": "RoPE 作为位置编码方案，其频率分布决定模型如何感知距离。"
+          "quote": "RoPE 作为位置编码方案，其频率分布决定模型如何感知距离。",
+          "startOffset": 0,
+          "endOffset": 30,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a15:attention",
+      "id": "article-concept:a15:concept-attention",
       "kind": "article-concept",
       "sourceId": "a15",
       "targetId": "concept-attention",
@@ -974,12 +1029,15 @@
       "evidence": [
         {
           "articleId": "a15",
-          "quote": "FlashAttention 主要降低预填充阶段的 Attention IO，而缓存压缩关注解码阶段，两者解决不同瓶颈。"
+          "quote": "FlashAttention 主要降低预填充阶段的 Attention IO，而 KV Cache 压缩关注解码阶段，两者解决不同瓶颈。",
+          "startOffset": 33,
+          "endOffset": 101,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a15:flash-attention",
+      "id": "article-concept:a15:concept-flash-attention",
       "kind": "article-concept",
       "sourceId": "a15",
       "targetId": "concept-flash-attention",
@@ -987,12 +1045,15 @@
       "evidence": [
         {
           "articleId": "a15",
-          "quote": "FlashAttention 主要降低预填充阶段的 Attention IO，而缓存压缩关注解码阶段，两者解决不同瓶颈。"
+          "quote": "FlashAttention 主要降低预填充阶段的 Attention IO，而 KV Cache 压缩关注解码阶段，两者解决不同瓶颈。",
+          "startOffset": 33,
+          "endOffset": 101,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a15:kv-cache",
+      "id": "article-concept:a15:concept-kv-cache",
       "kind": "article-concept",
       "sourceId": "a15",
       "targetId": "concept-kv-cache",
@@ -1000,12 +1061,15 @@
       "evidence": [
         {
           "articleId": "a15",
-          "quote": "长上下文会线性放大 KV Cache，让单卡可承载的并发请求减少。"
+          "quote": "长上下文会线性放大 KV Cache，让单卡可承载的并发请求减少。",
+          "startOffset": 0,
+          "endOffset": 33,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a15:long-context",
+      "id": "article-concept:a15:concept-long-context",
       "kind": "article-concept",
       "sourceId": "a15",
       "targetId": "concept-long-context",
@@ -1013,12 +1077,15 @@
       "evidence": [
         {
           "articleId": "a15",
-          "quote": "长上下文会线性放大 KV Cache，让单卡可承载的并发请求减少。"
+          "quote": "长上下文会线性放大 KV Cache，让单卡可承载的并发请求减少。",
+          "startOffset": 0,
+          "endOffset": 33,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a16:inference-serving",
+      "id": "article-concept:a16:concept-inference-serving",
       "kind": "article-concept",
       "sourceId": "a16",
       "targetId": "concept-inference-serving",
@@ -1026,25 +1093,15 @@
       "evidence": [
         {
           "articleId": "a16",
-          "quote": "量化用更低精度表示权重或激活，会直接改变推理服务的显存与带宽瓶颈。"
+          "quote": "量化用更低精度表示权重或激活，会直接改变推理服务的显存与带宽瓶颈。",
+          "startOffset": 0,
+          "endOffset": 33,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a16:large-language-model",
-      "kind": "article-concept",
-      "sourceId": "a16",
-      "targetId": "concept-large-language-model",
-      "confidence": 0.86,
-      "evidence": [
-        {
-          "articleId": "a16",
-          "quote": "vLLM 可以加载量化模型降低服务成本，但实际收益还取决于硬件内核支持。"
-        }
-      ]
-    },
-    {
-      "id": "article-concept:a16:quantization",
+      "id": "article-concept:a16:concept-quantization",
       "kind": "article-concept",
       "sourceId": "a16",
       "targetId": "concept-quantization",
@@ -1052,12 +1109,15 @@
       "evidence": [
         {
           "articleId": "a16",
-          "quote": "量化用更低精度表示权重或激活，会直接改变推理服务的显存与带宽瓶颈。"
+          "quote": "量化用更低精度表示权重或激活，会直接改变推理服务的显存与带宽瓶颈。",
+          "startOffset": 0,
+          "endOffset": 33,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a16:vllm",
+      "id": "article-concept:a16:concept-vllm",
       "kind": "article-concept",
       "sourceId": "a16",
       "targetId": "concept-vllm",
@@ -1065,12 +1125,15 @@
       "evidence": [
         {
           "articleId": "a16",
-          "quote": "vLLM 可以加载量化模型降低服务成本，但实际收益还取决于硬件内核支持。"
+          "quote": "vLLM 可以加载量化模型降低服务成本，但实际收益还取决于硬件内核支持。",
+          "startOffset": 33,
+          "endOffset": 69,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a17:context-retrieval",
+      "id": "article-concept:a17:concept-context-retrieval",
       "kind": "article-concept",
       "sourceId": "a17",
       "targetId": "concept-context-retrieval",
@@ -1078,12 +1141,15 @@
       "evidence": [
         {
           "articleId": "a17",
-          "quote": "上下文检索从外部知识中筛选相关片段，与长上下文共同提升模型可用的信息量。"
+          "quote": "上下文检索从外部知识中筛选相关片段，与长上下文共同提升模型可用的信息量。",
+          "startOffset": 0,
+          "endOffset": 36,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a17:context-window",
+      "id": "article-concept:a17:concept-context-window",
       "kind": "article-concept",
       "sourceId": "a17",
       "targetId": "concept-context-window",
@@ -1091,12 +1157,15 @@
       "evidence": [
         {
           "articleId": "a17",
-          "quote": "检索在固定上下文窗口内提高信息密度，相当于扩展了可访问知识范围。"
+          "quote": "检索在固定上下文窗口内提高信息密度，相当于扩展了可访问知识范围。",
+          "startOffset": 36,
+          "endOffset": 68,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a17:long-context",
+      "id": "article-concept:a17:concept-long-context",
       "kind": "article-concept",
       "sourceId": "a17",
       "targetId": "concept-long-context",
@@ -1104,12 +1173,15 @@
       "evidence": [
         {
           "articleId": "a17",
-          "quote": "上下文检索从外部知识中筛选相关片段，与长上下文共同提升模型可用的信息量。"
+          "quote": "上下文检索从外部知识中筛选相关片段，与长上下文共同提升模型可用的信息量。",
+          "startOffset": 0,
+          "endOffset": 36,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a18:attention",
+      "id": "article-concept:a18:concept-attention",
       "kind": "article-concept",
       "sourceId": "a18",
       "targetId": "concept-attention",
@@ -1117,12 +1189,15 @@
       "evidence": [
         {
           "articleId": "a18",
-          "quote": "理解 LLM 可以从大语言模型的目标开始，再进入 Transformer 与 Attention 的结构。"
+          "quote": "理解 LLM 可以从大语言模型的目标开始，再进入 Transformer 与 Attention 的结构。",
+          "startOffset": 0,
+          "endOffset": 53,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a18:inference-serving",
+      "id": "article-concept:a18:concept-inference-serving",
       "kind": "article-concept",
       "sourceId": "a18",
       "targetId": "concept-inference-serving",
@@ -1130,12 +1205,15 @@
       "evidence": [
         {
           "articleId": "a18",
-          "quote": "掌握模型计算后，再学习推理服务如何处理延迟、吞吐和显存。"
+          "quote": "掌握模型计算后，再学习推理服务如何处理延迟、吞吐和显存。",
+          "startOffset": 53,
+          "endOffset": 81,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a18:large-language-model",
+      "id": "article-concept:a18:concept-large-language-model",
       "kind": "article-concept",
       "sourceId": "a18",
       "targetId": "concept-large-language-model",
@@ -1143,12 +1221,15 @@
       "evidence": [
         {
           "articleId": "a18",
-          "quote": "理解 LLM 可以从大语言模型的目标开始，再进入 Transformer 与 Attention 的结构。"
+          "quote": "理解 LLM 可以从大语言模型的目标开始，再进入 Transformer 与 Attention 的结构。",
+          "startOffset": 0,
+          "endOffset": 53,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "article-concept:a18:transformer",
+      "id": "article-concept:a18:concept-transformer",
       "kind": "article-concept",
       "sourceId": "a18",
       "targetId": "concept-transformer",
@@ -1156,12 +1237,15 @@
       "evidence": [
         {
           "articleId": "a18",
-          "quote": "理解 LLM 可以从大语言模型的目标开始，再进入 Transformer 与 Attention 的结构。"
+          "quote": "理解 LLM 可以从大语言模型的目标开始，再进入 Transformer 与 Attention 的结构。",
+          "startOffset": 0,
+          "endOffset": 53,
+          "supportScore": 0.9
         }
       ]
     },
     {
-      "id": "concept-relation:extends:context-retrieval:context-window",
+      "id": "concept-relation:extends:concept-context-retrieval:concept-context-window",
       "kind": "extends",
       "sourceId": "concept-context-retrieval",
       "targetId": "concept-context-window",
@@ -1169,13 +1253,16 @@
       "evidence": [
         {
           "articleId": "a17",
-          "quote": "上下文检索从外部知识中筛选相关片段，与长上下文共同提升模型可用的信息量。"
+          "quote": "检索在固定上下文窗口内提高信息密度，相当于扩展了可访问知识范围。",
+          "startOffset": 36,
+          "endOffset": 68,
+          "supportScore": 0.82
         }
       ],
       "reasoning": "检索在固定窗口内扩展了可访问知识范围。"
     },
     {
-      "id": "concept-relation:extends:paged-attention:kv-cache",
+      "id": "concept-relation:extends:concept-paged-attention:concept-kv-cache",
       "kind": "extends",
       "sourceId": "concept-paged-attention",
       "targetId": "concept-kv-cache",
@@ -1183,17 +1270,23 @@
       "evidence": [
         {
           "articleId": "a11",
-          "quote": "PagedAttention 借鉴虚拟内存分页，把连续增长的 KV Cache 拆成固定大小的块。"
+          "quote": "PagedAttention 借鉴虚拟内存分页，把连续增长的 KV Cache 拆成固定大小的块。",
+          "startOffset": 0,
+          "endOffset": 49,
+          "supportScore": 0.95
         },
         {
           "articleId": "a12",
-          "quote": "vLLM 是推理服务的一种工程实现，它把 Continuous Batching、KV Cache 与 PagedAttention 串成完整执行链。"
+          "quote": "vLLM 是推理服务的一种工程实现，它把 Continuous Batching、KV Cache 与 PagedAttention 串成完整执行链。",
+          "startOffset": 0,
+          "endOffset": 75,
+          "supportScore": 0.95
         }
       ],
       "reasoning": "PagedAttention 扩展了 KV Cache 的内存管理方式。"
     },
     {
-      "id": "concept-relation:extends:rope:position-encoding",
+      "id": "concept-relation:extends:concept-rope:concept-position-encoding",
       "kind": "extends",
       "sourceId": "concept-rope",
       "targetId": "concept-position-encoding",
@@ -1201,17 +1294,23 @@
       "evidence": [
         {
           "articleId": "a05",
-          "quote": "RoPE 是位置编码的一种扩展：它对查询和键应用成对旋转，让 Attention 分数自然携带相对距离。"
+          "quote": "RoPE 是位置编码的一种扩展：它对查询和键应用成对旋转，让 Attention 分数自然携带相对距离。",
+          "startOffset": 0,
+          "endOffset": 52,
+          "supportScore": 0.96
         },
         {
           "articleId": "a14",
-          "quote": "RoPE 作为位置编码方案，其频率分布决定模型如何感知距离。"
+          "quote": "RoPE 作为位置编码方案，其频率分布决定模型如何感知距离。",
+          "startOffset": 0,
+          "endOffset": 30,
+          "supportScore": 0.96
         }
       ],
       "reasoning": "RoPE 是位置编码的一种具体扩展。"
     },
     {
-      "id": "concept-relation:extends:vllm:inference-serving",
+      "id": "concept-relation:extends:concept-vllm:concept-inference-serving",
       "kind": "extends",
       "sourceId": "concept-vllm",
       "targetId": "concept-inference-serving",
@@ -1219,17 +1318,16 @@
       "evidence": [
         {
           "articleId": "a12",
-          "quote": "vLLM 是推理服务的一种工程实现，它把 Continuous Batching、KV Cache 与 PagedAttention 串成完整执行链。"
-        },
-        {
-          "articleId": "a16",
-          "quote": "量化用更低精度表示权重或激活，会直接改变推理服务的显存与带宽瓶颈。"
+          "quote": "vLLM 是推理服务的一种工程实现，它把 Continuous Batching、KV Cache 与 PagedAttention 串成完整执行链。",
+          "startOffset": 0,
+          "endOffset": 75,
+          "supportScore": 0.93
         }
       ],
       "reasoning": "vLLM 是推理服务的工程实现。"
     },
     {
-      "id": "concept-relation:prerequisite:attention:flash-attention",
+      "id": "concept-relation:prerequisite:concept-attention:concept-flash-attention",
       "kind": "prerequisite",
       "sourceId": "concept-attention",
       "targetId": "concept-flash-attention",
@@ -1237,17 +1335,23 @@
       "evidence": [
         {
           "articleId": "a08",
-          "quote": "FlashAttention 优化的仍是精确 Attention，而不是近似注意力。"
+          "quote": "FlashAttention 优化的仍是精确 Attention，而不是近似注意力。",
+          "startOffset": 0,
+          "endOffset": 42,
+          "supportScore": 0.97
         },
         {
           "articleId": "a15",
-          "quote": "FlashAttention 主要降低预填充阶段的 Attention IO，而缓存压缩关注解码阶段，两者解决不同瓶颈。"
+          "quote": "FlashAttention 主要降低预填充阶段的 Attention IO，而 KV Cache 压缩关注解码阶段，两者解决不同瓶颈。",
+          "startOffset": 33,
+          "endOffset": 101,
+          "supportScore": 0.97
         }
       ],
       "reasoning": "FlashAttention 优化的是 Attention 的精确计算。"
     },
     {
-      "id": "concept-relation:prerequisite:attention:kv-cache",
+      "id": "concept-relation:prerequisite:concept-attention:concept-kv-cache",
       "kind": "prerequisite",
       "sourceId": "concept-attention",
       "targetId": "concept-kv-cache",
@@ -1255,25 +1359,23 @@
       "evidence": [
         {
           "articleId": "a07",
-          "quote": "KV Cache 保存 Attention 已经计算过的 Key 与 Value，让下一步生成只处理新增 token。"
-        },
-        {
-          "articleId": "a11",
-          "quote": "PagedAttention 借鉴虚拟内存分页，把连续增长的 KV Cache 拆成固定大小的块。"
-        },
-        {
-          "articleId": "a12",
-          "quote": "vLLM 是推理服务的一种工程实现，它把 Continuous Batching、KV Cache 与 PagedAttention 串成完整执行链。"
+          "quote": "KV Cache 保存 Attention 已经计算过的 Key 与 Value，让下一步生成只处理新增 token。",
+          "startOffset": 0,
+          "endOffset": 59,
+          "supportScore": 0.86
         },
         {
           "articleId": "a15",
-          "quote": "长上下文会线性放大 KV Cache，让单卡可承载的并发请求减少。"
+          "quote": "FlashAttention 主要降低预填充阶段的 Attention IO，而 KV Cache 压缩关注解码阶段，两者解决不同瓶颈。",
+          "startOffset": 33,
+          "endOffset": 101,
+          "supportScore": 0.86
         }
       ],
       "reasoning": "KV Cache 缓存 Attention 的键和值。"
     },
     {
-      "id": "concept-relation:prerequisite:context-window:long-context",
+      "id": "concept-relation:prerequisite:concept-context-window:concept-long-context",
       "kind": "prerequisite",
       "sourceId": "concept-context-window",
       "targetId": "concept-long-context",
@@ -1281,17 +1383,16 @@
       "evidence": [
         {
           "articleId": "a13",
-          "quote": "上下文窗口定义单次推理可接收与生成的 token 预算，是讨论长上下文的长度边界。"
-        },
-        {
-          "articleId": "a17",
-          "quote": "上下文检索从外部知识中筛选相关片段，与长上下文共同提升模型可用的信息量。"
+          "quote": "上下文窗口定义单次推理可接收与生成的 token 预算，是讨论长上下文的长度边界。",
+          "startOffset": 0,
+          "endOffset": 41,
+          "supportScore": 0.9
         }
       ],
       "reasoning": "上下文窗口定义长上下文的长度边界。"
     },
     {
-      "id": "concept-relation:prerequisite:continuous-batching:vllm",
+      "id": "concept-relation:prerequisite:concept-continuous-batching:concept-vllm",
       "kind": "prerequisite",
       "sourceId": "concept-continuous-batching",
       "targetId": "concept-vllm",
@@ -1299,13 +1400,16 @@
       "evidence": [
         {
           "articleId": "a12",
-          "quote": "vLLM 是推理服务的一种工程实现，它把 Continuous Batching、KV Cache 与 PagedAttention 串成完整执行链。"
+          "quote": "vLLM 是推理服务的一种工程实现，它把 Continuous Batching、KV Cache 与 PagedAttention 串成完整执行链。",
+          "startOffset": 0,
+          "endOffset": 75,
+          "supportScore": 0.9
         }
       ],
       "reasoning": "连续批处理是 vLLM 的核心调度能力。"
     },
     {
-      "id": "concept-relation:prerequisite:inference-serving:continuous-batching",
+      "id": "concept-relation:prerequisite:concept-inference-serving:concept-continuous-batching",
       "kind": "prerequisite",
       "sourceId": "concept-inference-serving",
       "targetId": "concept-continuous-batching",
@@ -1313,17 +1417,23 @@
       "evidence": [
         {
           "articleId": "a10",
-          "quote": "连续批处理允许推理服务在旧请求结束后立刻补入新请求，而不必等待整批完成。"
+          "quote": "连续批处理允许推理服务在旧请求结束后立刻补入新请求，而不必等待整批完成。",
+          "startOffset": 0,
+          "endOffset": 36,
+          "supportScore": 0.84
         },
         {
           "articleId": "a12",
-          "quote": "vLLM 是推理服务的一种工程实现，它把 Continuous Batching、KV Cache 与 PagedAttention 串成完整执行链。"
+          "quote": "vLLM 是推理服务的一种工程实现，它把 Continuous Batching、KV Cache 与 PagedAttention 串成完整执行链。",
+          "startOffset": 0,
+          "endOffset": 75,
+          "supportScore": 0.84
         }
       ],
       "reasoning": "连续批处理解决推理服务的吞吐调度问题。"
     },
     {
-      "id": "concept-relation:prerequisite:kv-cache:paged-attention",
+      "id": "concept-relation:prerequisite:concept-kv-cache:concept-paged-attention",
       "kind": "prerequisite",
       "sourceId": "concept-kv-cache",
       "targetId": "concept-paged-attention",
@@ -1331,17 +1441,23 @@
       "evidence": [
         {
           "articleId": "a11",
-          "quote": "PagedAttention 借鉴虚拟内存分页，把连续增长的 KV Cache 拆成固定大小的块。"
+          "quote": "PagedAttention 借鉴虚拟内存分页，把连续增长的 KV Cache 拆成固定大小的块。",
+          "startOffset": 0,
+          "endOffset": 49,
+          "supportScore": 0.96
         },
         {
           "articleId": "a12",
-          "quote": "vLLM 是推理服务的一种工程实现，它把 Continuous Batching、KV Cache 与 PagedAttention 串成完整执行链。"
+          "quote": "vLLM 是推理服务的一种工程实现，它把 Continuous Batching、KV Cache 与 PagedAttention 串成完整执行链。",
+          "startOffset": 0,
+          "endOffset": 75,
+          "supportScore": 0.96
         }
       ],
       "reasoning": "PagedAttention 以分页方式管理 KV Cache。"
     },
     {
-      "id": "concept-relation:prerequisite:kv-cache:vllm",
+      "id": "concept-relation:prerequisite:concept-kv-cache:concept-vllm",
       "kind": "prerequisite",
       "sourceId": "concept-kv-cache",
       "targetId": "concept-vllm",
@@ -1349,13 +1465,16 @@
       "evidence": [
         {
           "articleId": "a12",
-          "quote": "vLLM 是推理服务的一种工程实现，它把 Continuous Batching、KV Cache 与 PagedAttention 串成完整执行链。"
+          "quote": "vLLM 是推理服务的一种工程实现，它把 Continuous Batching、KV Cache 与 PagedAttention 串成完整执行链。",
+          "startOffset": 0,
+          "endOffset": 75,
+          "supportScore": 0.9
         }
       ],
       "reasoning": "vLLM 的内存管理建立在 KV Cache 之上。"
     },
     {
-      "id": "concept-relation:prerequisite:large-language-model:transformer",
+      "id": "concept-relation:prerequisite:concept-large-language-model:concept-transformer",
       "kind": "prerequisite",
       "sourceId": "concept-large-language-model",
       "targetId": "concept-transformer",
@@ -1363,17 +1482,23 @@
       "evidence": [
         {
           "articleId": "a01",
-          "quote": "大语言模型通过更大规模的数据与计算学习语言分布，但规模本身并不能解释全部能力。"
+          "quote": "理解 LLM 的训练目标，是继续理解 Transformer 如何承载这些能力的前置知识。",
+          "startOffset": 39,
+          "endOffset": 84,
+          "supportScore": 0.88
         },
         {
           "articleId": "a18",
-          "quote": "理解 LLM 可以从大语言模型的目标开始，再进入 Transformer 与 Attention 的结构。"
+          "quote": "理解 LLM 可以从大语言模型的目标开始，再进入 Transformer 与 Attention 的结构。",
+          "startOffset": 0,
+          "endOffset": 53,
+          "supportScore": 0.88
         }
       ],
       "reasoning": "理解语言模型目标有助于定位 Transformer 的作用。"
     },
     {
-      "id": "concept-relation:prerequisite:transformer:attention",
+      "id": "concept-relation:prerequisite:concept-transformer:concept-attention",
       "kind": "prerequisite",
       "sourceId": "concept-transformer",
       "targetId": "concept-attention",
@@ -1381,25 +1506,30 @@
       "evidence": [
         {
           "articleId": "a02",
-          "quote": "Transformer 用 Attention 在任意 token 之间建立直接连接，并让训练可以高度并行。"
-        },
-        {
-          "articleId": "a03",
-          "quote": "Attention 根据查询与键的匹配程度，对值进行动态加权聚合。"
+          "quote": "Transformer 用 Attention 在任意 token 之间建立直接连接，并让训练可以高度并行。",
+          "startOffset": 0,
+          "endOffset": 54,
+          "supportScore": 0.94
         },
         {
           "articleId": "a04",
-          "quote": "Transformer 的 Attention 本身无法区分 token 的先后，因此需要位置编码补足顺序信息。"
+          "quote": "Transformer 的 Attention 本身无法区分 token 的先后，因此需要位置编码补足顺序信息。",
+          "startOffset": 0,
+          "endOffset": 56,
+          "supportScore": 0.94
         },
         {
           "articleId": "a18",
-          "quote": "理解 LLM 可以从大语言模型的目标开始，再进入 Transformer 与 Attention 的结构。"
+          "quote": "理解 LLM 可以从大语言模型的目标开始，再进入 Transformer 与 Attention 的结构。",
+          "startOffset": 0,
+          "endOffset": 53,
+          "supportScore": 0.94
         }
       ],
       "reasoning": "Attention 是 Transformer 的核心计算单元。"
     },
     {
-      "id": "concept-relation:prerequisite:transformer:position-encoding",
+      "id": "concept-relation:prerequisite:concept-transformer:concept-position-encoding",
       "kind": "prerequisite",
       "sourceId": "concept-transformer",
       "targetId": "concept-position-encoding",
@@ -1407,13 +1537,16 @@
       "evidence": [
         {
           "articleId": "a04",
-          "quote": "Transformer 的 Attention 本身无法区分 token 的先后，因此需要位置编码补足顺序信息。"
+          "quote": "Transformer 的 Attention 本身无法区分 token 的先后，因此需要位置编码补足顺序信息。",
+          "startOffset": 0,
+          "endOffset": 56,
+          "supportScore": 0.91
         }
       ],
       "reasoning": "位置编码用于补足 Transformer 的顺序信息。"
     },
     {
-      "id": "concept-relation:related:context-retrieval:long-context",
+      "id": "concept-relation:related:concept-context-retrieval:concept-long-context",
       "kind": "related",
       "sourceId": "concept-context-retrieval",
       "targetId": "concept-long-context",
@@ -1421,13 +1554,16 @@
       "evidence": [
         {
           "articleId": "a17",
-          "quote": "上下文检索从外部知识中筛选相关片段，与长上下文共同提升模型可用的信息量。"
+          "quote": "上下文检索从外部知识中筛选相关片段，与长上下文共同提升模型可用的信息量。",
+          "startOffset": 0,
+          "endOffset": 36,
+          "supportScore": 0.91
         }
       ],
       "reasoning": "检索与长上下文共同提升可用信息量。"
     },
     {
-      "id": "concept-relation:related:flash-attention:kv-cache",
+      "id": "concept-relation:related:concept-flash-attention:concept-kv-cache",
       "kind": "related",
       "sourceId": "concept-flash-attention",
       "targetId": "concept-kv-cache",
@@ -1435,13 +1571,16 @@
       "evidence": [
         {
           "articleId": "a15",
-          "quote": "长上下文会线性放大 KV Cache，让单卡可承载的并发请求减少。"
+          "quote": "FlashAttention 主要降低预填充阶段的 Attention IO，而 KV Cache 压缩关注解码阶段，两者解决不同瓶颈。",
+          "startOffset": 33,
+          "endOffset": 101,
+          "supportScore": 0.78
         }
       ],
       "reasoning": "两者分别优化预填充计算和解码缓存。"
     },
     {
-      "id": "concept-relation:related:long-context:kv-cache",
+      "id": "concept-relation:related:concept-long-context:concept-kv-cache",
       "kind": "related",
       "sourceId": "concept-long-context",
       "targetId": "concept-kv-cache",
@@ -1449,13 +1588,16 @@
       "evidence": [
         {
           "articleId": "a15",
-          "quote": "长上下文会线性放大 KV Cache，让单卡可承载的并发请求减少。"
+          "quote": "长上下文会线性放大 KV Cache，让单卡可承载的并发请求减少。",
+          "startOffset": 0,
+          "endOffset": 33,
+          "supportScore": 0.92
         }
       ],
       "reasoning": "上下文长度直接决定 KV Cache 成本。"
     },
     {
-      "id": "concept-relation:related:quantization:inference-serving",
+      "id": "concept-relation:related:concept-quantization:concept-inference-serving",
       "kind": "related",
       "sourceId": "concept-quantization",
       "targetId": "concept-inference-serving",
@@ -1463,13 +1605,16 @@
       "evidence": [
         {
           "articleId": "a16",
-          "quote": "量化用更低精度表示权重或激活，会直接改变推理服务的显存与带宽瓶颈。"
+          "quote": "量化用更低精度表示权重或激活，会直接改变推理服务的显存与带宽瓶颈。",
+          "startOffset": 0,
+          "endOffset": 33,
+          "supportScore": 0.85
         }
       ],
       "reasoning": "量化会改变推理服务的显存与吞吐瓶颈。"
     },
     {
-      "id": "concept-relation:related:quantization:vllm",
+      "id": "concept-relation:related:concept-quantization:concept-vllm",
       "kind": "related",
       "sourceId": "concept-quantization",
       "targetId": "concept-vllm",
@@ -1477,13 +1622,16 @@
       "evidence": [
         {
           "articleId": "a16",
-          "quote": "量化用更低精度表示权重或激活，会直接改变推理服务的显存与带宽瓶颈。"
+          "quote": "vLLM 可以加载量化模型降低服务成本，但实际收益还取决于硬件内核支持。",
+          "startOffset": 33,
+          "endOffset": 69,
+          "supportScore": 0.8
         }
       ],
       "reasoning": "vLLM 可用量化模型降低服务成本。"
     },
     {
-      "id": "concept-relation:related:rope:long-context",
+      "id": "concept-relation:related:concept-rope:concept-long-context",
       "kind": "related",
       "sourceId": "concept-rope",
       "targetId": "concept-long-context",
@@ -1491,7 +1639,10 @@
       "evidence": [
         {
           "articleId": "a14",
-          "quote": "RoPE 作为位置编码方案，其频率分布决定模型如何感知距离。"
+          "quote": "位置插值和频率缩放可以把 RoPE 扩展到训练长度之外，因此与长上下文能力直接相关。",
+          "startOffset": 30,
+          "endOffset": 72,
+          "supportScore": 0.89
         }
       ],
       "reasoning": "RoPE 外推会直接影响长上下文能力。"
@@ -1523,11 +1674,8 @@
         "a05",
         "a07",
         "a08",
-        "a11",
-        "a12",
         "a14",
         "a15",
-        "a16",
         "a18"
       ]
     },

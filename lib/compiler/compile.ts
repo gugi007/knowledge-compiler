@@ -6,7 +6,10 @@ import type {
 } from "@/data/models";
 import { extractConcepts } from "./extract-concepts.ts";
 import { generateReadingPaths } from "./generate-reading-paths.ts";
-import { inferRelations } from "./infer-relations.ts";
+import {
+  inferArticleConceptRelations,
+  inferRelations,
+} from "./infer-relations.ts";
 import { normalizeConcepts } from "./normalize-concepts.ts";
 import type { ExtractionProvider } from "./provider.ts";
 
@@ -33,8 +36,22 @@ export async function compileKnowledge({
   provider: ExtractionProvider;
 }): Promise<CompiledKnowledgeDataset> {
   const extractions = await extractConcepts(articles, provider);
-  const concepts = normalizeConcepts(extractions);
-  const relations = inferRelations(concepts, extractions);
+  const resolution = await normalizeConcepts(extractions, provider);
+  const articleConceptRelations = inferArticleConceptRelations(resolution, extractions);
+  const corpusRelations = provider.synthesizeCorpus
+    ? await provider.synthesizeCorpus({
+        articles,
+        concepts: resolution.concepts,
+        articleConceptRelations,
+        localRelationHints: extractions.flatMap(({ relations }) => relations),
+      })
+    : [];
+  const relations = inferRelations(
+    resolution,
+    extractions,
+    articleConceptRelations,
+    corpusRelations,
+  );
   const compiledArticles = articles.map(compileArticle);
 
   return {
@@ -42,8 +59,8 @@ export async function compileKnowledge({
     compiler: { mode: provider.mode, provider: provider.name },
     creator: { ...creator, articleIds: compiledArticles.map(({ id }) => id) },
     articles: compiledArticles,
-    concepts,
+    concepts: resolution.concepts,
     relations,
-    readingPaths: generateReadingPaths(concepts, compiledArticles, relations),
+    readingPaths: generateReadingPaths(resolution.concepts, compiledArticles, relations),
   };
 }

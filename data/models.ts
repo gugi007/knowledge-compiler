@@ -48,6 +48,9 @@ export interface Concept {
 export interface Evidence {
   articleId: string;
   quote: string;
+  startOffset?: number;
+  endOffset?: number;
+  supportScore?: number;
 }
 
 export interface Relation {

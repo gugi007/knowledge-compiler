@@ -117,7 +117,7 @@
     "slug": "long-context-kv-cost",
     "publishedAt": "2024-06-22",
     "sourceUrl": "https://example.com/context-lab/long-context-kv-cost",
-    "content": "长上下文会线性放大 KV Cache，让单卡可承载的并发请求减少。FlashAttention 主要降低预填充阶段的 Attention IO，而缓存压缩关注解码阶段，两者解决不同瓶颈。本文计算序列长度增长对容量、吞吐和延迟的联动影响。"
+    "content": "长上下文会线性放大 KV Cache，让单卡可承载的并发请求减少。FlashAttention 主要降低预填充阶段的 Attention IO，而 KV Cache 压缩关注解码阶段，两者解决不同瓶颈。本文计算序列长度增长对容量、吞吐和延迟的联动影响。"
   },
   {
     "id": "a16",

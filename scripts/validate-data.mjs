@@ -5,6 +5,7 @@ import {
   assertCompiledKnowledgeDataset,
   assertRawArticle,
 } from "../lib/compiler/schema.ts";
+import { normalizeConcepts } from "../lib/compiler/normalize-concepts.ts";
 
 const demoDirectory = resolve("data/demo");
 const data = JSON.parse(await readFile(resolve(demoDirectory, "compiled.json"), "utf8"));
@@ -24,6 +25,15 @@ const rawById = new Map(rawArticles.map((article) => [article.id, article]));
 const articleIds = new Set(data.articles.map(({ id }) => id));
 const conceptIds = new Set(data.concepts.map(({ id }) => id));
 const entityIds = new Set([...articleIds, ...conceptIds]);
+const conceptById = new Map(data.concepts.map((concept) => [concept.id, concept]));
+
+function mentionsConcept(quote, concept) {
+  return [concept.name, ...concept.aliases].some((term) => {
+    if (/\p{Script=Han}/u.test(term)) return quote.includes(term);
+    const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+");
+    return new RegExp(`(?<![\\p{L}\\p{N}])${escaped}(?![\\p{L}\\p{N}])`, "iu").test(quote);
+  });
+}
 
 assert.equal(rawById.size, rawArticles.length, "raw article IDs must be unique");
 assert.equal(articleIds.size, data.articles.length, "compiled article IDs must be unique");
@@ -62,6 +72,28 @@ for (const relation of data.relations) {
       article.content.includes(evidence.quote) || article.title.includes(evidence.quote),
       `relation evidence quote is not present in ${evidence.articleId}: ${relation.id}`,
     );
+    if (evidence.startOffset !== undefined || evidence.endOffset !== undefined) {
+      assert.equal(
+        article.content.slice(evidence.startOffset, evidence.endOffset),
+        evidence.quote,
+        `relation evidence offsets do not match quote: ${relation.id}`,
+      );
+    }
+  }
+  const sourceConcept = conceptById.get(relation.sourceId);
+  const targetConcept = conceptById.get(relation.targetId);
+  if (relation.kind === "article-concept") {
+    assert(
+      relation.evidence.some(({ quote }) => mentionsConcept(quote, targetConcept)),
+      `article-concept evidence does not mention its concept: ${relation.id}`,
+    );
+  } else {
+    assert(
+      relation.evidence.some(({ quote }) =>
+        mentionsConcept(quote, sourceConcept) && mentionsConcept(quote, targetConcept),
+      ),
+      `concept relation evidence must mention both endpoints: ${relation.id}`,
+    );
   }
 }
 
@@ -87,6 +119,34 @@ for (const path of data.readingPaths) {
   path.conceptIds.forEach((id) => assert(conceptIds.has(id), `reading path references missing concept: ${id}`));
   path.articleIds.forEach((id) => assert(articleIds.has(id), `reading path references missing article: ${id}`));
 }
+
+const conceptCandidate = (name, slug, aliases, articleId) => ({
+  name,
+  slug,
+  aliases,
+  summary: `${name} fixture`,
+  domain: "fixture",
+  level: "foundation",
+  confidence: 0.9,
+  evidence: { articleId, quote: name },
+});
+const aliasResolution = await normalizeConcepts([
+  { articleId: "fixture-a", concepts: [conceptCandidate("KV Cache", "kv-cache", ["键值缓存"], "fixture-a")], relations: [] },
+  { articleId: "fixture-b", concepts: [conceptCandidate("键值缓存", "key-value-cache", ["KV CACHE"], "fixture-b")], relations: [] },
+], {});
+assert.equal(aliasResolution.concepts.length, 1, "deterministic alias resolution must merge equivalent concepts");
+
+const providerResolution = await normalizeConcepts([
+  { articleId: "fixture-c", concepts: [conceptCandidate("Serving Layer", "serving-layer", [], "fixture-c")], relations: [] },
+  { articleId: "fixture-d", concepts: [conceptCandidate("Inference Gateway", "inference-gateway", [], "fixture-d")], relations: [] },
+], {
+  resolveConcepts: async ({ groups }) => [{
+    groupIds: groups.map(({ id }) => id),
+    canonicalName: "Model Serving",
+    canonicalSlug: "model-serving",
+  }],
+});
+assert.equal(providerResolution.concepts[0]?.id, "concept-model-serving", "provider-assisted resolution must control canonical identity");
 
 console.log(
   `Dataset valid: ${data.articles.length} articles, ${data.concepts.length} concepts, ${data.relations.length} relations.`,

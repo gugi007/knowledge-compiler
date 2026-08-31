@@ -1,8 +1,11 @@
-import type { RawArticle, RelationKind } from "@/data/models";
+import type { Evidence, RawArticle, RelationKind } from "@/data/models";
 import type {
   ArticleExtraction,
+  ConceptResolutionDecision,
+  CorpusSynthesisInput,
   ExtractedConceptCandidate,
   ExtractionProvider,
+  SynthesizedConceptRelation,
 } from "./provider.ts";
 
 interface MockConcept {
@@ -22,6 +25,7 @@ interface MockRelationRule {
   targetSlug: string;
   confidence: number;
   reasoning: string;
+  corpusOnly?: boolean;
 }
 
 // ponytail: curated lexicon keeps the offline demo deterministic; replace this provider for open-world extraction.
@@ -59,28 +63,75 @@ const relationRules: MockRelationRule[] = [
   { kind: "extends", sourceSlug: "vllm", targetSlug: "inference-serving", confidence: 0.93, reasoning: "vLLM 是推理服务的工程实现。" },
   { kind: "related", sourceSlug: "flash-attention", targetSlug: "kv-cache", confidence: 0.78, reasoning: "两者分别优化预填充计算和解码缓存。" },
   { kind: "prerequisite", sourceSlug: "context-window", targetSlug: "long-context", confidence: 0.9, reasoning: "上下文窗口定义长上下文的长度边界。" },
-  { kind: "related", sourceSlug: "long-context", targetSlug: "kv-cache", confidence: 0.92, reasoning: "上下文长度直接决定 KV Cache 成本。" },
+  { kind: "related", sourceSlug: "long-context", targetSlug: "kv-cache", confidence: 0.92, reasoning: "上下文长度直接决定 KV Cache 成本。", corpusOnly: true },
   { kind: "related", sourceSlug: "quantization", targetSlug: "inference-serving", confidence: 0.85, reasoning: "量化会改变推理服务的显存与吞吐瓶颈。" },
   { kind: "related", sourceSlug: "context-retrieval", targetSlug: "long-context", confidence: 0.91, reasoning: "检索与长上下文共同提升可用信息量。" },
   { kind: "related", sourceSlug: "quantization", targetSlug: "vllm", confidence: 0.8, reasoning: "vLLM 可用量化模型降低服务成本。" },
   { kind: "extends", sourceSlug: "context-retrieval", targetSlug: "context-window", confidence: 0.82, reasoning: "检索在固定窗口内扩展了可访问知识范围。" },
 ];
 
-function evidenceQuote(article: RawArticle, terms: string[]) {
-  const sentence = article.content
-    .split(/(?<=[。！？.!?])/u)
-    .find((part) => terms.some((term) => part.toLocaleLowerCase().includes(term.toLocaleLowerCase())));
-  return (sentence ?? article.title).trim();
+function sentenceEvidence(
+  article: RawArticle,
+  supports: (sentence: string) => boolean,
+  supportScore: number,
+): Evidence | undefined {
+  for (const match of article.content.matchAll(/[^。！？.!?]+[。！？.!?]?/gu)) {
+    const quote = match[0].trim();
+    if (!supports(quote)) continue;
+    const startOffset = match.index + match[0].indexOf(quote);
+    return {
+      articleId: article.id,
+      quote,
+      startOffset,
+      endOffset: startOffset + quote.length,
+      supportScore,
+    };
+  }
+}
+
+function includesAny(value: string, terms: string[]) {
+  return terms.some((term) => {
+    if (/\p{Script=Han}/u.test(term)) return value.includes(term);
+    const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+");
+    return new RegExp(`(?<![\\p{L}\\p{N}])${escaped}(?![\\p{L}\\p{N}])`, "iu").test(value);
+  });
+}
+
+function conceptEvidence(article: RawArticle, concept: MockConcept) {
+  return sentenceEvidence(article, (sentence) => includesAny(sentence, concept.terms), 0.9) ?? {
+    articleId: article.id,
+    quote: article.title,
+    supportScore: 0.7,
+  };
+}
+
+function relationEvidence(
+  article: RawArticle,
+  source: MockConcept,
+  target: MockConcept,
+  supportScore: number,
+) {
+  const sourceTerms = [source.name, ...source.aliases, ...source.terms];
+  const targetTerms = [target.name, ...target.aliases, ...target.terms];
+  return sentenceEvidence(
+    article,
+    (sentence) => includesAny(sentence, sourceTerms) && includesAny(sentence, targetTerms),
+    supportScore,
+  );
 }
 
 export class DeterministicMockProvider implements ExtractionProvider {
   readonly name = "deterministic-mock";
   readonly mode = "mock";
 
+  async resolveConcepts(): Promise<ConceptResolutionDecision[]> {
+    return [];
+  }
+
   async extract(article: RawArticle): Promise<ArticleExtraction> {
-    const haystack = `${article.title}\n${article.content}`.toLocaleLowerCase();
+    const haystack = `${article.title}\n${article.content}`;
     const found = concepts.filter((concept) =>
-      concept.terms.some((term) => haystack.includes(term.toLocaleLowerCase())),
+      includesAny(haystack, concept.terms),
     );
     const foundSlugs = new Set(found.map(({ slug }) => slug));
 
@@ -88,21 +139,48 @@ export class DeterministicMockProvider implements ExtractionProvider {
       articleId: article.id,
       concepts: found.map((concept) => ({
         ...concept,
-        confidence: concept.terms.some((term) => article.title.toLocaleLowerCase().includes(term.toLocaleLowerCase())) ? 0.96 : 0.86,
-        evidence: { articleId: article.id, quote: evidenceQuote(article, concept.terms) },
+        confidence: includesAny(article.title, concept.terms) ? 0.96 : 0.86,
+        evidence: conceptEvidence(article, concept),
       })),
       relations: relationRules
-        .filter(({ sourceSlug, targetSlug }) => foundSlugs.has(sourceSlug) && foundSlugs.has(targetSlug))
-        .map((rule) => ({
-          ...rule,
-          evidence: {
-            articleId: article.id,
-            quote: evidenceQuote(article, [
-              concepts.find(({ slug }) => slug === rule.sourceSlug)!.name,
-              concepts.find(({ slug }) => slug === rule.targetSlug)!.name,
-            ]),
-          },
-        })),
+        .filter(({ corpusOnly, sourceSlug, targetSlug }) =>
+          !corpusOnly && foundSlugs.has(sourceSlug) && foundSlugs.has(targetSlug),
+        )
+        .flatMap((rule) => {
+          const evidence = relationEvidence(
+            article,
+            concepts.find(({ slug }) => slug === rule.sourceSlug)!,
+            concepts.find(({ slug }) => slug === rule.targetSlug)!,
+            rule.confidence,
+          );
+          return evidence ? [{ ...rule, evidence: [evidence] }] : [];
+        }),
     };
+  }
+
+  async synthesizeCorpus({
+    articles,
+    concepts: canonicalConcepts,
+  }: CorpusSynthesisInput): Promise<SynthesizedConceptRelation[]> {
+    const canonicalBySlug = new Map(canonicalConcepts.map((concept) => [concept.slug, concept]));
+    return relationRules.flatMap((rule) => {
+      const source = canonicalBySlug.get(rule.sourceSlug);
+      const target = canonicalBySlug.get(rule.targetSlug);
+      if (!source || !target) return [];
+      const sourceDefinition = concepts.find(({ slug }) => slug === rule.sourceSlug)!;
+      const targetDefinition = concepts.find(({ slug }) => slug === rule.targetSlug)!;
+      const evidence = articles
+        .map((article) => relationEvidence(article, sourceDefinition, targetDefinition, rule.confidence))
+        .filter((item) => item !== undefined);
+      if (!evidence.length) return [];
+      return [{
+        kind: rule.kind,
+        sourceConceptId: source.id,
+        targetConceptId: target.id,
+        confidence: rule.confidence,
+        evidence,
+        reasoning: rule.reasoning,
+      }];
+    });
   }
 }

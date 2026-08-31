@@ -2,7 +2,12 @@
 
 import { useMemo, useState } from "react";
 import rawDataset from "@/data/demo/compiled.json";
-import type { CompiledKnowledgeDataset, Concept, Relation } from "@/data/models";
+import type {
+  Article,
+  CompiledKnowledgeDataset,
+  Concept,
+  Relation,
+} from "@/data/models";
 
 const data = rawDataset as CompiledKnowledgeDataset;
 
@@ -60,9 +65,7 @@ export function KnowledgeGarden() {
     .map((relation) => conceptById.get(relation.sourceId))
     .filter((concept) => concept !== undefined);
   const connectedRelations = conceptRelations.filter(
-    (relation) =>
-      relation.kind !== "prerequisite" &&
-      (relation.sourceId === selected.id || relation.targetId === selected.id),
+    (relation) => relation.sourceId === selected.id || relation.targetId === selected.id,
   );
   const readingPaths = data.readingPaths.filter((path) =>
     path.conceptIds.includes(selected.id),
@@ -81,7 +84,7 @@ export function KnowledgeGarden() {
         </div>
         <div className="hidden items-center gap-2 text-xs font-semibold text-ink/60 sm:flex">
           <span className="status-dot" />
-          Offline demo · JSON
+          {data.compiler.mode === "mock" ? "Demo · deterministic mock" : data.compiler.mode}
         </div>
       </header>
 
@@ -96,9 +99,19 @@ export function KnowledgeGarden() {
               </div>
             </div>
             <p className="mt-4 text-sm leading-6 text-ink/65">{data.creator.bio}</p>
-            <div className="mt-4 grid grid-cols-2 gap-2">
+            <div className="mt-4 grid grid-cols-3 gap-2">
               <Stat value={data.articles.length} label="Articles" />
               <Stat value={data.concepts.length} label="Concepts" />
+              <Stat value={data.relations.length} label="Relations" />
+            </div>
+            <div className="mt-3 rounded-xl border border-ink/10 bg-ink px-3 py-2 text-paper">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-[9px] font-bold tracking-[0.15em] text-paper/45 uppercase">Compiler</span>
+                <span className="rounded-full bg-lime px-2 py-0.5 text-[9px] font-black tracking-wide text-ink uppercase">
+                  {data.compiler.mode === "mock" ? "Demo / deterministic mock" : data.compiler.mode}
+                </span>
+              </div>
+              <p className="mt-1 truncate font-mono text-[11px] text-paper/75">provider: {data.compiler.provider}</p>
             </div>
           </div>
 
@@ -188,16 +201,16 @@ export function KnowledgeGarden() {
                 <p className="eyebrow">Related & extends</p>
                 <h3 className="mt-1 font-display text-xl font-semibold">概念连接</h3>
                 <div className="mt-4 space-y-2">
-                  {connectedRelations.length ? connectedRelations.map((relation) => {
-                    const relatedId = relation.sourceId === selected.id ? relation.targetId : relation.sourceId;
-                    const concept = conceptById.get(relatedId);
-                    return concept ? (
-                      <button className="relation-row" key={relation.id} onClick={() => setSelectedId(concept.id)} type="button">
-                        <span>{concept.name}</span>
-                        <span className="relation-kind">{relationLabels[relation.kind]}</span>
-                      </button>
-                    ) : null;
-                  }) : <p className="text-sm text-ink/45">暂无直接连接。</p>}
+                  {connectedRelations.length ? connectedRelations.map((relation) => (
+                    <RelationDetail
+                      articleById={articleById}
+                      conceptById={conceptById}
+                      key={relation.id}
+                      onSelect={setSelectedId}
+                      relation={relation}
+                      selectedId={selected.id}
+                    />
+                  )) : <p className="text-sm text-ink/45">暂无直接连接。</p>}
                 </div>
               </div>
             </div>
@@ -266,6 +279,55 @@ export function KnowledgeGarden() {
         </aside>
       </section>
     </main>
+  );
+}
+
+function RelationDetail({
+  relation,
+  selectedId,
+  conceptById,
+  articleById,
+  onSelect,
+}: {
+  relation: Relation;
+  selectedId: string;
+  conceptById: Map<string, Concept>;
+  articleById: Map<string, Article>;
+  onSelect: (id: string) => void;
+}) {
+  const source = conceptById.get(relation.sourceId);
+  const target = conceptById.get(relation.targetId);
+  const related = relation.sourceId === selectedId ? target : source;
+  if (!source || !target || !related) return null;
+
+  return (
+    <details className="group rounded-xl border border-ink/10 bg-white/40 open:border-ink/25 open:bg-white/65">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-2 px-3 py-2.5 text-left text-xs font-bold">
+        <span className="min-w-0 truncate">{source.name} <span className="text-ink/25">→</span> {target.name}</span>
+        <span className="relation-kind shrink-0">{relationLabels[relation.kind]}</span>
+      </summary>
+      <div className="border-t border-ink/10 px-3 py-3">
+        <div className="flex items-center justify-between gap-2 text-[10px] font-bold tracking-wide text-ink/45 uppercase">
+          <span>为什么连接？</span>
+          <span>Confidence {Math.round(relation.confidence * 100)}%</span>
+        </div>
+        {relation.reasoning && <p className="mt-2 text-xs leading-5 text-ink/70">{relation.reasoning}</p>}
+        <div className="mt-3 space-y-2">
+          {relation.evidence.map((evidence, index) => (
+            <figure className="rounded-lg bg-ink/5 p-2.5" key={`${evidence.articleId}:${evidence.startOffset ?? index}`}>
+              <figcaption className="mb-1 text-[10px] font-bold text-ink/45">
+                {articleById.get(evidence.articleId)?.title ?? evidence.articleId}
+                {evidence.supportScore !== undefined && ` · support ${Math.round(evidence.supportScore * 100)}%`}
+              </figcaption>
+              <blockquote className="text-xs leading-5 text-ink/70">“{evidence.quote}”</blockquote>
+            </figure>
+          ))}
+        </div>
+        <button className="mt-3 text-xs font-bold text-coral hover:underline" onClick={() => onSelect(related.id)} type="button">
+          查看 {related.name} →
+        </button>
+      </div>
+    </details>
   );
 }
 

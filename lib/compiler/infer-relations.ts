@@ -1,51 +1,104 @@
-import type { Concept, Relation } from "@/data/models";
-import type { ArticleExtraction } from "./provider.ts";
+import type { Evidence, Relation } from "@/data/models";
+import {
+  normalizeCanonicalSlug,
+  type ConceptResolutionResult,
+} from "./normalize-concepts.ts";
+import type {
+  ArticleExtraction,
+  SynthesizedConceptRelation,
+} from "./provider.ts";
 
-export function inferRelations(
-  concepts: Concept[],
+function uniqueEvidence(evidence: Evidence[]) {
+  return [...new Map(evidence.map((item) => [
+    `${item.articleId}:${item.startOffset ?? ""}:${item.endOffset ?? ""}:${item.quote}`,
+    item,
+  ])).values()].sort((a, b) =>
+    a.articleId.localeCompare(b.articleId) || (a.startOffset ?? 0) - (b.startOffset ?? 0),
+  );
+}
+
+export function inferArticleConceptRelations(
+  resolution: ConceptResolutionResult,
   extractions: ArticleExtraction[],
 ): Relation[] {
-  const conceptBySlug = new Map(concepts.map((concept) => [concept.slug, concept]));
-  const relations: Relation[] = [];
+  const grouped = new Map<string, { articleId: string; conceptId: string; confidence: number; evidence: Evidence[] }>();
 
   for (const extraction of extractions) {
     for (const candidate of extraction.concepts) {
-      const concept = conceptBySlug.get(candidate.slug);
-      if (!concept) continue;
-      relations.push({
-        id: `article-concept:${extraction.articleId}:${candidate.slug}`,
-        kind: "article-concept",
-        sourceId: extraction.articleId,
-        targetId: concept.id,
-        confidence: candidate.confidence,
-        evidence: [candidate.evidence],
-      });
+      const conceptId = resolution.conceptIdByCandidateSlug.get(normalizeCanonicalSlug(candidate.slug));
+      if (!conceptId) continue;
+      const key = `${extraction.articleId}:${conceptId}`;
+      const current = grouped.get(key) ?? {
+        articleId: extraction.articleId,
+        conceptId,
+        confidence: 0,
+        evidence: [],
+      };
+      current.confidence = Math.max(current.confidence, candidate.confidence);
+      current.evidence.push(candidate.evidence);
+      grouped.set(key, current);
     }
   }
 
-  const hints = new Map<string, ArticleExtraction["relations"]>();
-  for (const hint of extractions.flatMap(({ relations }) => relations)) {
-    const key = `${hint.kind}:${hint.sourceSlug}:${hint.targetSlug}`;
-    const group = hints.get(key) ?? [];
-    group.push(hint);
-    hints.set(key, group);
-  }
+  return [...grouped.values()].map((group): Relation => ({
+    id: `article-concept:${group.articleId}:${group.conceptId}`,
+    kind: "article-concept",
+    sourceId: group.articleId,
+    targetId: group.conceptId,
+    confidence: group.confidence,
+    evidence: uniqueEvidence(group.evidence),
+  })).sort((a, b) => a.id.localeCompare(b.id));
+}
 
-  for (const [key, group] of hints) {
-    const first = group[0];
-    const source = conceptBySlug.get(first.sourceSlug);
-    const target = conceptBySlug.get(first.targetSlug);
-    if (!source || !target) continue;
-    relations.push({
-      id: `concept-relation:${key}`,
-      kind: first.kind,
-      sourceId: source.id,
-      targetId: target.id,
-      confidence: Math.max(...group.map(({ confidence }) => confidence)),
-      evidence: [...new Map(group.map(({ evidence }) => [evidence.articleId, evidence])).values()],
-      reasoning: first.reasoning,
+export function inferRelations(
+  resolution: ConceptResolutionResult,
+  extractions: ArticleExtraction[],
+  articleConceptRelations: Relation[],
+  corpusRelations: SynthesizedConceptRelation[],
+): Relation[] {
+  const conceptIds = new Set(resolution.concepts.map(({ id }) => id));
+  const grouped = new Map<string, {
+    kind: SynthesizedConceptRelation["kind"];
+    sourceId: string;
+    targetId: string;
+    confidence: number;
+    evidence: Evidence[];
+    reasoning?: string;
+  }>();
+  const add = (relation: SynthesizedConceptRelation) => {
+    if (!conceptIds.has(relation.sourceConceptId) || !conceptIds.has(relation.targetConceptId)) {
+      throw new Error("Concept relation references an unresolved concept");
+    }
+    const key = `${relation.kind}:${relation.sourceConceptId}:${relation.targetConceptId}`;
+    const current = grouped.get(key);
+    grouped.set(key, {
+      kind: relation.kind,
+      sourceId: relation.sourceConceptId,
+      targetId: relation.targetConceptId,
+      confidence: Math.max(current?.confidence ?? 0, relation.confidence),
+      evidence: uniqueEvidence([...(current?.evidence ?? []), ...relation.evidence]),
+      reasoning: relation.reasoning ?? current?.reasoning,
+    });
+  };
+
+  for (const hint of extractions.flatMap(({ relations }) => relations)) {
+    const sourceConceptId = resolution.conceptIdByCandidateSlug.get(normalizeCanonicalSlug(hint.sourceSlug));
+    const targetConceptId = resolution.conceptIdByCandidateSlug.get(normalizeCanonicalSlug(hint.targetSlug));
+    if (!sourceConceptId || !targetConceptId) continue;
+    add({
+      kind: hint.kind,
+      sourceConceptId,
+      targetConceptId,
+      confidence: hint.confidence,
+      evidence: hint.evidence,
+      reasoning: hint.reasoning,
     });
   }
+  corpusRelations.forEach(add);
 
-  return relations.sort((a, b) => a.id.localeCompare(b.id));
+  const conceptRelations: Relation[] = [...grouped.entries()].map(([key, relation]) => ({
+    id: `concept-relation:${key}`,
+    ...relation,
+  }));
+  return [...articleConceptRelations, ...conceptRelations].sort((a, b) => a.id.localeCompare(b.id));
 }
