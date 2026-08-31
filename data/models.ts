@@ -13,6 +13,15 @@ export interface Creator {
   articleIds: string[];
 }
 
+export interface RawArticle {
+  id: string;
+  title: string;
+  slug: string;
+  publishedAt: string;
+  sourceUrl: string;
+  content: string;
+}
+
 export interface Article {
   id: string;
   title: string;
@@ -31,6 +40,14 @@ export interface Concept {
   domain: string;
   level: "foundation" | "intermediate" | "advanced";
   parentId?: string;
+  aliases: string[];
+  evidenceArticleIds: string[];
+  confidence: number;
+}
+
+export interface Evidence {
+  articleId: string;
+  quote: string;
 }
 
 export interface Relation {
@@ -39,6 +56,9 @@ export interface Relation {
   sourceId: string;
   targetId: string;
   note?: string;
+  confidence: number;
+  evidence: Evidence[];
+  reasoning?: string;
 }
 
 export interface ReadingPath {
@@ -50,7 +70,12 @@ export interface ReadingPath {
   articleIds: string[];
 }
 
-export interface DemoDataset {
+export interface CompiledKnowledgeDataset {
+  schemaVersion: "1.0";
+  compiler: {
+    mode: string;
+    provider: string;
+  };
   creator: Creator;
   articles: Article[];
   concepts: Concept[];

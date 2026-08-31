@@ -1,10 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import rawDataset from "@/data/demo.json";
-import type { Concept, DemoDataset, Relation } from "@/data/models";
+import rawDataset from "@/data/demo/compiled.json";
+import type { CompiledKnowledgeDataset, Concept, Relation } from "@/data/models";
 
-const data = rawDataset as DemoDataset;
+const data = rawDataset as CompiledKnowledgeDataset;
 
 const domainColors: Record<string, string> = {
   模型基础: "#7c6cff",
@@ -28,7 +28,9 @@ function formatDate(date: string) {
 }
 
 export function KnowledgeGarden() {
-  const [selectedId, setSelectedId] = useState("c06");
+  const [selectedId, setSelectedId] = useState(
+    data.concepts.find(({ slug }) => slug === "kv-cache")?.id ?? data.concepts[0].id,
+  );
   const selected = data.concepts.find((concept) => concept.id === selectedId) ?? data.concepts[0];
 
   const conceptById = useMemo(
@@ -253,7 +255,7 @@ export function KnowledgeGarden() {
           <section className="before-after">
             <div>
               <span>BEFORE</span>
-              <strong>18 篇散落文章</strong>
+              <strong>{data.articles.length} 篇散落文章</strong>
             </div>
             <span aria-hidden="true" className="text-xl">→</span>
             <div className="text-right">

@@ -1,0 +1,146 @@
+[
+  {
+    "id": "a01",
+    "title": "从语言模型到大语言模型：规模改变了什么",
+    "slug": "from-lm-to-llm",
+    "publishedAt": "2022-03-18",
+    "sourceUrl": "https://example.com/context-lab/from-lm-to-llm",
+    "content": "大语言模型通过更大规模的数据与计算学习语言分布，但规模本身并不能解释全部能力。理解 LLM 的训练目标，是继续理解 Transformer 如何承载这些能力的前置知识。本文从参数、数据和计算三个维度建立模型基础。"
+  },
+  {
+    "id": "a02",
+    "title": "Transformer 为什么能取代循环网络",
+    "slug": "why-transformer",
+    "publishedAt": "2022-05-07",
+    "sourceUrl": "https://example.com/context-lab/why-transformer",
+    "content": "Transformer 用 Attention 在任意 token 之间建立直接连接，并让训练可以高度并行。要理解 Attention 的查询、键和值，先看清 Transformer 的残差结构与前馈网络会更容易。它的优势来自计算路径，而不只是模型参数更多。"
+  },
+  {
+    "id": "a03",
+    "title": "Attention：一次信息路由的完整推导",
+    "slug": "attention-routing",
+    "publishedAt": "2022-06-21",
+    "sourceUrl": "https://example.com/context-lab/attention-routing",
+    "content": "Attention 根据查询与键的匹配程度，对值进行动态加权聚合。它是 Transformer 中负责信息路由的核心单元，也是理解后续推理优化的基础。本文用一个最小矩阵例子解释自注意力的计算与直觉。"
+  },
+  {
+    "id": "a04",
+    "title": "没有顺序的模型如何理解位置",
+    "slug": "position-encoding",
+    "publishedAt": "2022-08-11",
+    "sourceUrl": "https://example.com/context-lab/position-encoding",
+    "content": "Transformer 的 Attention 本身无法区分 token 的先后，因此需要位置编码补足顺序信息。位置编码既可以表达绝对位置，也可以直接刻画相对距离。不同方案会影响模型能否稳定处理训练长度之外的输入。"
+  },
+  {
+    "id": "a05",
+    "title": "RoPE：把相对位置旋转进 Attention",
+    "slug": "rope-explained",
+    "publishedAt": "2022-10-02",
+    "sourceUrl": "https://example.com/context-lab/rope-explained",
+    "content": "RoPE 是位置编码的一种扩展：它对查询和键应用成对旋转，让 Attention 分数自然携带相对距离。旋转位置编码在不同维度使用不同频率，因此既能表示局部顺序也能覆盖较长距离。本文从二维旋转推导到高维实现。"
+  },
+  {
+    "id": "a06",
+    "title": "大模型生成为什么越来越慢",
+    "slug": "autoregressive-bottleneck",
+    "publishedAt": "2023-01-15",
+    "sourceUrl": "https://example.com/context-lab/autoregressive-bottleneck",
+    "content": "推理服务中的自回归解码必须逐 token 执行，生成阶段常常受显存带宽而非算力限制。KV Cache 可以避免重复计算历史 token，但缓存读写也会随着序列和并发增长。理解这个瓶颈后，才能判断优化应该落在计算、访存还是调度。"
+  },
+  {
+    "id": "a07",
+    "title": "KV Cache：用显存换时间的推理账本",
+    "slug": "kv-cache",
+    "publishedAt": "2023-03-09",
+    "sourceUrl": "https://example.com/context-lab/kv-cache",
+    "content": "KV Cache 保存 Attention 已经计算过的 Key 与 Value，让下一步生成只处理新增 token。它把重复计算换成持续增长的显存占用，因此并发与上下文窗口都会抬高成本。本文给出缓存形状和容量的逐层计算。"
+  },
+  {
+    "id": "a08",
+    "title": "FlashAttention 快在哪里",
+    "slug": "flash-attention",
+    "publishedAt": "2023-05-26",
+    "sourceUrl": "https://example.com/context-lab/flash-attention",
+    "content": "FlashAttention 优化的仍是精确 Attention，而不是近似注意力。它通过分块让中间结果留在更快的片上存储，减少高带宽显存往返。理解 GPU 内存层级，比只看理论计算复杂度更能解释真实加速。"
+  },
+  {
+    "id": "a09",
+    "title": "推理服务的三个核心指标",
+    "slug": "serving-metrics",
+    "publishedAt": "2023-07-04",
+    "sourceUrl": "https://example.com/context-lab/serving-metrics",
+    "content": "推理服务需要同时观察吞吐、首 token 延迟和逐 token 延迟。只优化平均延迟可能伤害尾延迟，只追求吞吐又可能让交互请求等待过久。统一指标口径，是讨论任何服务优化之前的基础。"
+  },
+  {
+    "id": "a10",
+    "title": "Continuous Batching：让 GPU 不等人",
+    "slug": "continuous-batching",
+    "publishedAt": "2023-08-19",
+    "sourceUrl": "https://example.com/context-lab/continuous-batching",
+    "content": "连续批处理允许推理服务在旧请求结束后立刻补入新请求，而不必等待整批完成。Continuous Batching 提高 GPU 利用率，也带来调度公平性和缓存管理问题。它是从单次模型调用走向高吞吐服务的关键一步。"
+  },
+  {
+    "id": "a11",
+    "title": "PagedAttention 与显存碎片",
+    "slug": "paged-attention",
+    "publishedAt": "2023-10-12",
+    "sourceUrl": "https://example.com/context-lab/paged-attention",
+    "content": "PagedAttention 借鉴虚拟内存分页，把连续增长的 KV Cache 拆成固定大小的块。它扩展了键值缓存的内存管理方式，减少预留空间和显存碎片。分页也让多个序列安全共享相同前缀的缓存块。"
+  },
+  {
+    "id": "a12",
+    "title": "vLLM 架构导读：从请求到 Token",
+    "slug": "vllm-architecture",
+    "publishedAt": "2023-12-03",
+    "sourceUrl": "https://example.com/context-lab/vllm-architecture",
+    "content": "vLLM 是推理服务的一种工程实现，它把 Continuous Batching、KV Cache 与 PagedAttention 串成完整执行链。调度器决定哪些请求进入本轮，模型执行器完成计算，分页缓存负责显存复用。理解这些模块的边界后，吞吐提升不再是一个黑盒数字。"
+  },
+  {
+    "id": "a13",
+    "title": "长上下文不是把窗口数字变大",
+    "slug": "long-context-is-more",
+    "publishedAt": "2024-02-17",
+    "sourceUrl": "https://example.com/context-lab/long-context-is-more",
+    "content": "上下文窗口定义单次推理可接收与生成的 token 预算，是讨论长上下文的长度边界。窗口数字更大，不代表模型能同等有效地利用每一段信息。评估时还要区分可输入长度、有效利用长度和任务可靠性。"
+  },
+  {
+    "id": "a14",
+    "title": "RoPE 外推：位置插值与频率缩放",
+    "slug": "rope-scaling",
+    "publishedAt": "2024-04-08",
+    "sourceUrl": "https://example.com/context-lab/rope-scaling",
+    "content": "RoPE 作为位置编码方案，其频率分布决定模型如何感知距离。位置插值和频率缩放可以把 RoPE 扩展到训练长度之外，因此与长上下文能力直接相关。外推不是免费午餐，局部分辨率和远距离稳定性之间始终存在取舍。"
+  },
+  {
+    "id": "a15",
+    "title": "长上下文的 KV Cache 成本",
+    "slug": "long-context-kv-cost",
+    "publishedAt": "2024-06-22",
+    "sourceUrl": "https://example.com/context-lab/long-context-kv-cost",
+    "content": "长上下文会线性放大 KV Cache，让单卡可承载的并发请求减少。FlashAttention 主要降低预填充阶段的 Attention IO，而缓存压缩关注解码阶段，两者解决不同瓶颈。本文计算序列长度增长对容量、吞吐和延迟的联动影响。"
+  },
+  {
+    "id": "a16",
+    "title": "量化如何改变推理系统的瓶颈",
+    "slug": "quantization-serving",
+    "publishedAt": "2024-09-01",
+    "sourceUrl": "https://example.com/context-lab/quantization-serving",
+    "content": "量化用更低精度表示权重或激活，会直接改变推理服务的显存与带宽瓶颈。vLLM 可以加载量化模型降低服务成本，但实际收益还取决于硬件内核支持。精度下降、反量化开销和吞吐提升需要放在同一张账表里比较。"
+  },
+  {
+    "id": "a17",
+    "title": "检索与长上下文：不是二选一",
+    "slug": "retrieval-and-long-context",
+    "publishedAt": "2024-11-16",
+    "sourceUrl": "https://example.com/context-lab/retrieval-and-long-context",
+    "content": "上下文检索从外部知识中筛选相关片段，与长上下文共同提升模型可用的信息量。检索在固定上下文窗口内提高信息密度，相当于扩展了可访问知识范围。两者的组合通常比无差别塞入全部资料更稳定。"
+  },
+  {
+    "id": "a18",
+    "title": "搭建一条可解释的大模型阅读路径",
+    "slug": "llm-reading-path",
+    "publishedAt": "2025-01-06",
+    "sourceUrl": "https://example.com/context-lab/llm-reading-path",
+    "content": "理解 LLM 可以从大语言模型的目标开始，再进入 Transformer 与 Attention 的结构。掌握模型计算后，再学习推理服务如何处理延迟、吞吐和显存。阅读路径的价值不是列出更多文章，而是明确知识之间的前置关系。"
+  }
+]

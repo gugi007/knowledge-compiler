@@ -36,11 +36,11 @@ Knowledge Compiler 把创作者多年按时间散落的文章，编译成一个�
 
 ### Concept
 
-可独立解释的知识单元，包含摘要、领域、层级与可选父概念。
+可独立解释的知识单元，包含摘要、领域、层级、别名、置信度、证据文章与可选父概念。
 
 ### Relation
 
-统一表达 article-concept、prerequisite、related、extends 四类连接。sourceId 与 targetId 指向 Article 或 Concept；prerequisite 表示 source 是 target 的前置知识，extends 表示 source 扩展 target。
+统一表达 article-concept、prerequisite、related、extends 四类连接。sourceId 与 targetId 指向 Article 或 Concept；prerequisite 表示 source 是 target 的前置知识，extends 表示 source 扩展 target。每条关系必须带 confidence 和 evidence，可选 reasoning 用于保留推断说明。
 
 ### ReadingPath
 
@@ -48,7 +48,9 @@ Knowledge Compiler 把创作者多年按时间散落的文章，编译成一个�
 
 ## 当前边界
 
-当前版本只读取仓库内 JSON 并离线运行。暂不包含实时抓取、账户系统、浏览器插件、Multi-Agent、GraphRAG、数据库与其他内容平台接入。知乎只是第一阶段的内容语境，不进入核心数据模型。
+当前版本从仓库内的原始文章 JSON 离线编译知识模型。流水线依次完成 ingest、concept extraction、concept normalization、relation inference 与 reading path generation；默认 deterministic mock provider，无 API Key 也能复现完整 Demo。真实 LLM 通过 provider interface 接入，核心业务不绑定模型厂商。
+
+暂不包含实时抓取、账户系统、浏览器插件、Multi-Agent、GraphRAG、数据库与其他内容平台接入。知乎只是第一阶段的内容语境，不进入核心数据模型。
 
 ## 成功标准
 

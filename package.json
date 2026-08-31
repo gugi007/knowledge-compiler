@@ -2,13 +2,15 @@
   "name": "knowledge-compiler",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "validate:data": "node scripts/validate-data.mjs"
+    "validate:data": "node scripts/validate-data.mjs",
+    "compile:demo": "node scripts/compile-demo.ts"
   },
   "dependencies": {
     "next": "latest",
