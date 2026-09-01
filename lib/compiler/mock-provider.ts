@@ -98,11 +98,7 @@ function includesAny(value: string, terms: string[]) {
 }
 
 function conceptEvidence(article: RawArticle, concept: MockConcept) {
-  return sentenceEvidence(article, (sentence) => includesAny(sentence, concept.terms), 0.9) ?? {
-    articleId: article.id,
-    quote: article.title,
-    supportScore: 0.7,
-  };
+  return sentenceEvidence(article, (sentence) => includesAny(sentence, concept.terms), 0.9);
 }
 
 function relationEvidence(
@@ -130,17 +126,19 @@ export class DeterministicMockProvider implements ExtractionProvider {
 
   async extract(article: RawArticle): Promise<ArticleExtraction> {
     const haystack = `${article.title}\n${article.content}`;
-    const found = concepts.filter((concept) =>
-      includesAny(haystack, concept.terms),
-    );
-    const foundSlugs = new Set(found.map(({ slug }) => slug));
+    const found = concepts.flatMap((concept) => {
+      if (!includesAny(haystack, concept.terms)) return [];
+      const evidence = conceptEvidence(article, concept);
+      return evidence ? [{ concept, evidence }] : [];
+    });
+    const foundSlugs = new Set(found.map(({ concept }) => concept.slug));
 
     return {
       articleId: article.id,
-      concepts: found.map((concept) => ({
+      concepts: found.map(({ concept, evidence }) => ({
         ...concept,
         confidence: includesAny(article.title, concept.terms) ? 0.96 : 0.86,
-        evidence: conceptEvidence(article, concept),
+        evidence,
       })),
       relations: relationRules
         .filter(({ corpusOnly, sourceSlug, targetSlug }) =>

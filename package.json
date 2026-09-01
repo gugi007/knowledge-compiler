@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "validate:data": "node scripts/validate-data.mjs",
-    "compile:demo": "node scripts/compile-demo.ts"
+    "compile:demo": "node --env-file-if-exists=.env.local scripts/compile-demo.ts"
   },
   "dependencies": {
     "next": "latest",

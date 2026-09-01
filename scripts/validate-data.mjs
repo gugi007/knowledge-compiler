@@ -6,6 +6,9 @@ import {
   assertRawArticle,
 } from "../lib/compiler/schema.ts";
 import { normalizeConcepts } from "../lib/compiler/normalize-concepts.ts";
+import { inferRelations } from "../lib/compiler/infer-relations.ts";
+import { OpenAICompatibleLLMProvider } from "../lib/compiler/llm-provider.ts";
+import { createCompilerProvider } from "../lib/compiler/create-provider.ts";
 
 const demoDirectory = resolve("data/demo");
 const data = JSON.parse(await readFile(resolve(demoDirectory, "compiled.json"), "utf8"));
@@ -64,12 +67,15 @@ for (const relation of data.relations) {
   } else {
     assert(conceptIds.has(relation.sourceId), `concept relation source is missing: ${relation.id}`);
     assert(conceptIds.has(relation.targetId), `concept relation target is missing: ${relation.id}`);
+    if (relation.kind === "related") {
+      assert(relation.sourceId < relation.targetId, `related relation endpoints are not canonical: ${relation.id}`);
+    }
   }
   for (const evidence of relation.evidence) {
     const article = rawById.get(evidence.articleId);
     assert(article, `relation evidence references missing article: ${evidence.articleId}`);
     assert(
-      article.content.includes(evidence.quote) || article.title.includes(evidence.quote),
+      article.content.includes(evidence.quote),
       `relation evidence quote is not present in ${evidence.articleId}: ${relation.id}`,
     );
     if (evidence.startOffset !== undefined || evidence.endOffset !== undefined) {
@@ -130,23 +136,89 @@ const conceptCandidate = (name, slug, aliases, articleId) => ({
   confidence: 0.9,
   evidence: { articleId, quote: name },
 });
-const aliasResolution = await normalizeConcepts([
+const hardResolution = await normalizeConcepts([
   { articleId: "fixture-a", concepts: [conceptCandidate("KV Cache", "kv-cache", ["键值缓存"], "fixture-a")], relations: [] },
-  { articleId: "fixture-b", concepts: [conceptCandidate("键值缓存", "key-value-cache", ["KV CACHE"], "fixture-b")], relations: [] },
+  { articleId: "fixture-b", concepts: [conceptCandidate("kv cache", "key-value-cache", ["缓存"], "fixture-b")], relations: [] },
 ], {});
-assert.equal(aliasResolution.concepts.length, 1, "deterministic alias resolution must merge equivalent concepts");
+assert.equal(hardResolution.concepts.length, 1, "deterministic resolution must merge identical canonical names");
+
+let aliasCandidates = [];
+const ambiguousAliasExtractions = [
+  { articleId: "fixture-rag", concepts: [conceptCandidate("RAG", "rag", ["检索"], "fixture-rag")], relations: [] },
+  { articleId: "fixture-retrieval", concepts: [conceptCandidate("Context Retrieval", "context-retrieval", ["检索"], "fixture-retrieval")], relations: [] },
+];
+const ambiguousAliasResolution = await normalizeConcepts(ambiguousAliasExtractions, {
+  resolveConcepts: async ({ candidatePairs }) => {
+    aliasCandidates = candidatePairs;
+    return [];
+  },
+});
+assert.equal(ambiguousAliasResolution.concepts.length, 2, "shared generic aliases must not hard-merge concepts");
+assert.equal(aliasCandidates.length, 1, "shared aliases must be offered as provider merge candidates");
 
 const providerResolution = await normalizeConcepts([
-  { articleId: "fixture-c", concepts: [conceptCandidate("Serving Layer", "serving-layer", [], "fixture-c")], relations: [] },
-  { articleId: "fixture-d", concepts: [conceptCandidate("Inference Gateway", "inference-gateway", [], "fixture-d")], relations: [] },
+  { articleId: "fixture-c", concepts: [conceptCandidate("Serving Layer", "serving-layer", ["Model Serving"], "fixture-c")], relations: [] },
+  { articleId: "fixture-d", concepts: [conceptCandidate("Inference Gateway", "inference-gateway", ["Model Serving"], "fixture-d")], relations: [] },
 ], {
-  resolveConcepts: async ({ groups }) => [{
-    groupIds: groups.map(({ id }) => id),
+  resolveConcepts: async ({ candidatePairs }) => [{
+    groupIds: candidatePairs[0].groupIds,
     canonicalName: "Model Serving",
     canonicalSlug: "model-serving",
   }],
 });
 assert.equal(providerResolution.concepts[0]?.id, "concept-model-serving", "provider-assisted resolution must control canonical identity");
+
+const [leftConcept, rightConcept] = data.concepts.slice(0, 2);
+const reverseRelated = inferRelations(
+  { concepts: [leftConcept, rightConcept], conceptIdByCandidateSlug: new Map() },
+  [],
+  [],
+  [
+    { kind: "related", sourceConceptId: leftConcept.id, targetConceptId: rightConcept.id, confidence: 0.8, reasoning: "fixture", evidence: data.relations[0].evidence },
+    { kind: "related", sourceConceptId: rightConcept.id, targetConceptId: leftConcept.id, confidence: 0.9, reasoning: "fixture", evidence: data.relations[0].evidence },
+  ],
+);
+assert.equal(reverseRelated.length, 1, "reverse related relations must canonicalize to one relation");
+assert(reverseRelated[0].sourceId < reverseRelated[0].targetId, "related relation must use canonical endpoint order");
+
+const llmFixtureArticle = {
+  id: "fixture-llm",
+  title: "RAG basics",
+  slug: "rag-basics",
+  publishedAt: "2026-01-01",
+  sourceUrl: "https://example.com/rag-basics",
+  content: "RAG combines retrieval with generation.",
+};
+const llmFixtureOutput = {
+  articleId: llmFixtureArticle.id,
+  concepts: [{
+    name: "RAG",
+    slug: "rag",
+    summary: "Retrieval-augmented generation.",
+    domain: "AI",
+    level: "foundation",
+    aliases: ["Retrieval-Augmented Generation"],
+    confidence: 0.95,
+    evidence: { articleId: llmFixtureArticle.id, quote: llmFixtureArticle.content, supportScore: 0.95 },
+  }],
+  relations: [],
+};
+const llmFixtureProvider = new OpenAICompatibleLLMProvider({
+  baseUrl: "https://llm.example/v1",
+  apiKey: "fixture-key",
+  model: "fixture-model",
+  fetchImpl: async (url, init) => {
+    assert.equal(url, "https://llm.example/v1/chat/completions", "LLM provider must use Chat Completions endpoint");
+    assert.equal(init.headers.authorization, "Bearer fixture-key", "LLM provider must send bearer authentication");
+    return Response.json({ choices: [{ message: { content: JSON.stringify(llmFixtureOutput) } }] });
+  },
+});
+assert.equal((await llmFixtureProvider.extract(llmFixtureArticle)).concepts[0].slug, "rag", "LLM provider must validate and return extraction JSON");
+assert.throws(
+  () => createCompilerProvider({ KNOWLEDGE_COMPILER_PROVIDER: "llm" }),
+  /requires LLM_BASE_URL, LLM_API_KEY, LLM_MODEL/,
+  "LLM mode must report missing configuration clearly",
+);
 
 console.log(
   `Dataset valid: ${data.articles.length} articles, ${data.concepts.length} concepts, ${data.relations.length} relations.`,

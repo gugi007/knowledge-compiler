@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
+import Link from "next/link";
 import rawDataset from "@/data/demo/compiled.json";
 import type {
   Article,
@@ -8,8 +9,16 @@ import type {
   Concept,
   Relation,
 } from "@/data/models";
+import { assertCompiledKnowledgeDataset } from "@/lib/compiler/schema";
 
-const data = rawDataset as CompiledKnowledgeDataset;
+const demoData = rawDataset as CompiledKnowledgeDataset;
+const emptySubscribe = () => () => {};
+const emptySnapshot = () => null;
+
+function compiledDatasetSnapshot() {
+  if (new URLSearchParams(window.location.search).get("source") !== "compiled") return null;
+  return sessionStorage.getItem("knowledge-compiler:dataset");
+}
 
 const domainColors: Record<string, string> = {
   模型基础: "#7c6cff",
@@ -33,18 +42,29 @@ function formatDate(date: string) {
 }
 
 export function KnowledgeGarden() {
+  const savedDataset = useSyncExternalStore(emptySubscribe, compiledDatasetSnapshot, emptySnapshot);
+  const data = useMemo(() => {
+    if (!savedDataset) return demoData;
+    try {
+      const dataset: unknown = JSON.parse(savedDataset);
+      assertCompiledKnowledgeDataset(dataset);
+      return dataset;
+    } catch {
+      return demoData;
+    }
+  }, [savedDataset]);
   const [selectedId, setSelectedId] = useState(
-    data.concepts.find(({ slug }) => slug === "kv-cache")?.id ?? data.concepts[0].id,
+    demoData.concepts.find(({ slug }) => slug === "kv-cache")?.id ?? demoData.concepts[0].id,
   );
   const selected = data.concepts.find((concept) => concept.id === selectedId) ?? data.concepts[0];
 
   const conceptById = useMemo(
     () => new Map(data.concepts.map((concept) => [concept.id, concept])),
-    [],
+    [data.concepts],
   );
   const articleById = useMemo(
     () => new Map(data.articles.map((article) => [article.id, article])),
-    [],
+    [data.articles],
   );
 
   const conceptRelations = data.relations.filter(
@@ -85,6 +105,7 @@ export function KnowledgeGarden() {
         <div className="hidden items-center gap-2 text-xs font-semibold text-ink/60 sm:flex">
           <span className="status-dot" />
           {data.compiler.mode === "mock" ? "Demo · deterministic mock" : data.compiler.mode}
+          <Link className="ml-3 rounded-full border border-ink/15 px-3 py-1.5 hover:bg-ink hover:text-paper" href="/compile">Compile</Link>
         </div>
       </header>
 
@@ -226,7 +247,7 @@ export function KnowledgeGarden() {
               </div>
               <span className="text-[10px] font-bold text-ink/40">点击节点</span>
             </div>
-            <KnowledgeGraph selected={selected} onSelect={setSelectedId} />
+            <KnowledgeGraph data={data} selected={selected} onSelect={setSelectedId} />
             <div className="flex flex-wrap gap-x-4 gap-y-1 border-t border-ink/10 px-5 py-3 text-[10px] font-bold text-ink/45">
               <span><i className="mr-1 inline-block h-px w-4 bg-coral align-middle" /> 前置</span>
               <span><i className="mr-1 inline-block h-px w-4 border-t border-dashed border-ink/50 align-middle" /> 相关 / 延伸</span>
@@ -367,7 +388,15 @@ function RelationCard({
   );
 }
 
-function KnowledgeGraph({ selected, onSelect }: { selected: Concept; onSelect: (id: string) => void }) {
+function KnowledgeGraph({
+  data,
+  selected,
+  onSelect,
+}: {
+  data: CompiledKnowledgeDataset;
+  selected: Concept;
+  onSelect: (id: string) => void;
+}) {
   const nodes = data.concepts;
   const positions = new Map(
     nodes.map((concept, index) => [

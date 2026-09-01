@@ -1580,10 +1580,27 @@
       "reasoning": "两者分别优化预填充计算和解码缓存。"
     },
     {
-      "id": "concept-relation:related:concept-long-context:concept-kv-cache",
+      "id": "concept-relation:related:concept-inference-serving:concept-quantization",
       "kind": "related",
-      "sourceId": "concept-long-context",
-      "targetId": "concept-kv-cache",
+      "sourceId": "concept-inference-serving",
+      "targetId": "concept-quantization",
+      "confidence": 0.85,
+      "evidence": [
+        {
+          "articleId": "a16",
+          "quote": "量化用更低精度表示权重或激活，会直接改变推理服务的显存与带宽瓶颈。",
+          "startOffset": 0,
+          "endOffset": 33,
+          "supportScore": 0.85
+        }
+      ],
+      "reasoning": "量化会改变推理服务的显存与吞吐瓶颈。"
+    },
+    {
+      "id": "concept-relation:related:concept-kv-cache:concept-long-context",
+      "kind": "related",
+      "sourceId": "concept-kv-cache",
+      "targetId": "concept-long-context",
       "confidence": 0.92,
       "evidence": [
         {
@@ -1597,21 +1614,21 @@
       "reasoning": "上下文长度直接决定 KV Cache 成本。"
     },
     {
-      "id": "concept-relation:related:concept-quantization:concept-inference-serving",
+      "id": "concept-relation:related:concept-long-context:concept-rope",
       "kind": "related",
-      "sourceId": "concept-quantization",
-      "targetId": "concept-inference-serving",
-      "confidence": 0.85,
+      "sourceId": "concept-long-context",
+      "targetId": "concept-rope",
+      "confidence": 0.89,
       "evidence": [
         {
-          "articleId": "a16",
-          "quote": "量化用更低精度表示权重或激活，会直接改变推理服务的显存与带宽瓶颈。",
-          "startOffset": 0,
-          "endOffset": 33,
-          "supportScore": 0.85
+          "articleId": "a14",
+          "quote": "位置插值和频率缩放可以把 RoPE 扩展到训练长度之外，因此与长上下文能力直接相关。",
+          "startOffset": 30,
+          "endOffset": 72,
+          "supportScore": 0.89
         }
       ],
-      "reasoning": "量化会改变推理服务的显存与吞吐瓶颈。"
+      "reasoning": "RoPE 外推会直接影响长上下文能力。"
     },
     {
       "id": "concept-relation:related:concept-quantization:concept-vllm",
@@ -1629,23 +1646,6 @@
         }
       ],
       "reasoning": "vLLM 可用量化模型降低服务成本。"
-    },
-    {
-      "id": "concept-relation:related:concept-rope:concept-long-context",
-      "kind": "related",
-      "sourceId": "concept-rope",
-      "targetId": "concept-long-context",
-      "confidence": 0.89,
-      "evidence": [
-        {
-          "articleId": "a14",
-          "quote": "位置插值和频率缩放可以把 RoPE 扩展到训练长度之外，因此与长上下文能力直接相关。",
-          "startOffset": 30,
-          "endOffset": 72,
-          "supportScore": 0.89
-        }
-      ],
-      "reasoning": "RoPE 外推会直接影响长上下文能力。"
     }
   ],
   "readingPaths": [

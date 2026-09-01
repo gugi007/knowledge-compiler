@@ -13,6 +13,13 @@ import {
 import { normalizeConcepts } from "./normalize-concepts.ts";
 import type { ExtractionProvider } from "./provider.ts";
 
+export type CompileStage =
+  | "parsing-articles"
+  | "extracting-concepts"
+  | "resolving-concepts"
+  | "synthesizing-relations"
+  | "building-reading-paths";
+
 function compileArticle(article: RawArticle): Article {
   const firstSentence = article.content.split(/(?<=[。！？.!?])/u)[0]?.trim() || article.title;
   return {
@@ -30,14 +37,21 @@ export async function compileKnowledge({
   creator,
   articles,
   provider,
+  onProgress,
 }: {
   creator: Creator;
   articles: RawArticle[];
   provider: ExtractionProvider;
+  onProgress?: (stage: CompileStage) => void | Promise<void>;
 }): Promise<CompiledKnowledgeDataset> {
+  await onProgress?.("parsing-articles");
+  const compiledArticles = articles.map(compileArticle);
+  await onProgress?.("extracting-concepts");
   const extractions = await extractConcepts(articles, provider);
+  await onProgress?.("resolving-concepts");
   const resolution = await normalizeConcepts(extractions, provider);
   const articleConceptRelations = inferArticleConceptRelations(resolution, extractions);
+  await onProgress?.("synthesizing-relations");
   const corpusRelations = provider.synthesizeCorpus
     ? await provider.synthesizeCorpus({
         articles,
@@ -52,7 +66,7 @@ export async function compileKnowledge({
     articleConceptRelations,
     corpusRelations,
   );
-  const compiledArticles = articles.map(compileArticle);
+  await onProgress?.("building-reading-paths");
 
   return {
     schemaVersion: "1.0",

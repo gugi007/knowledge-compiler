@@ -69,12 +69,16 @@ export function inferRelations(
     if (!conceptIds.has(relation.sourceConceptId) || !conceptIds.has(relation.targetConceptId)) {
       throw new Error("Concept relation references an unresolved concept");
     }
-    const key = `${relation.kind}:${relation.sourceConceptId}:${relation.targetConceptId}`;
+    if (relation.sourceConceptId === relation.targetConceptId) return;
+    const [sourceId, targetId] = relation.kind === "related"
+      ? [relation.sourceConceptId, relation.targetConceptId].sort()
+      : [relation.sourceConceptId, relation.targetConceptId];
+    const key = `${relation.kind}:${sourceId}:${targetId}`;
     const current = grouped.get(key);
     grouped.set(key, {
       kind: relation.kind,
-      sourceId: relation.sourceConceptId,
-      targetId: relation.targetConceptId,
+      sourceId,
+      targetId,
       confidence: Math.max(current?.confidence ?? 0, relation.confidence),
       evidence: uniqueEvidence([...(current?.evidence ?? []), ...relation.evidence]),
       reasoning: relation.reasoning ?? current?.reasoning,
@@ -91,7 +95,7 @@ export function inferRelations(
       targetConceptId,
       confidence: hint.confidence,
       evidence: hint.evidence,
-      reasoning: hint.reasoning,
+      reasoning: hint.reasoning ?? "由单篇文章中的关系证据推断。",
     });
   }
   corpusRelations.forEach(add);

@@ -1,6 +1,7 @@
 import type { Concept } from "@/data/models";
 import type {
   ArticleExtraction,
+  ConceptResolutionCandidatePair,
   ConceptResolutionDecision,
   ConceptResolutionGroup,
   ExtractionProvider,
@@ -47,7 +48,7 @@ function deterministicGroups(extractions: ArticleExtraction[]): ConceptResolutio
   candidates.forEach((candidate, index) => {
     const identities = [
       `slug:${normalizeCanonicalSlug(candidate.slug)}`,
-      ...[candidate.name, ...candidate.aliases].map((name) => `name:${normalizeConceptName(name)}`),
+      `name:${normalizeConceptName(candidate.name)}`,
     ];
     for (const identity of identities) {
       const owner = ownerByIdentity.get(identity);
@@ -76,15 +77,52 @@ function deterministicGroups(extractions: ArticleExtraction[]): ConceptResolutio
     .sort((a, b) => a.id.localeCompare(b.id));
 }
 
+function conceptResolutionCandidates(
+  groups: ConceptResolutionGroup[],
+): ConceptResolutionCandidatePair[] {
+  const identities = groups.map((group) => new Set(
+    [...group.names, ...group.aliases]
+      .map(normalizeConceptName)
+      .filter(Boolean),
+  ));
+  const pairs: ConceptResolutionCandidatePair[] = [];
+
+  for (let left = 0; left < groups.length; left += 1) {
+    for (let right = left + 1; right < groups.length; right += 1) {
+      const sharedIdentities = [...identities[left]]
+        .filter((identity) => identities[right].has(identity))
+        .sort();
+      if (sharedIdentities.length) {
+        pairs.push({
+          groupIds: [groups[left].id, groups[right].id],
+          sharedIdentities,
+        });
+      }
+    }
+  }
+
+  return pairs;
+}
+
 function applyProviderResolution(
   groups: ConceptResolutionGroup[],
   decisions: ConceptResolutionDecision[],
+  candidatePairs: ConceptResolutionCandidatePair[],
 ) {
   const indexById = new Map(groups.map((group, index) => [group.id, index]));
+  const allowedPairs = new Set(candidatePairs.map(({ groupIds }) => [...groupIds].sort().join("\0")));
   const { find, union } = disjointSet(groups.length);
 
   for (const decision of decisions) {
     if (!decision.groupIds.length) throw new Error("Concept resolution decision must include a groupId");
+    for (let left = 0; left < decision.groupIds.length; left += 1) {
+      for (let right = left + 1; right < decision.groupIds.length; right += 1) {
+        const pair = [decision.groupIds[left], decision.groupIds[right]].sort().join("\0");
+        if (!allowedPairs.has(pair)) {
+          throw new Error("Concept resolution may only merge suggested candidate groups");
+        }
+      }
+    }
     const indexes = decision.groupIds.map((id) => {
       const index = indexById.get(id);
       if (index === undefined) throw new Error(`Concept resolution referenced unknown group: ${id}`);
@@ -125,8 +163,11 @@ export async function normalizeConcepts(
   provider: ExtractionProvider,
 ): Promise<ConceptResolutionResult> {
   const groups = deterministicGroups(extractions);
-  const decisions = provider.resolveConcepts ? await provider.resolveConcepts({ groups }) : [];
-  const resolved = applyProviderResolution(groups, decisions);
+  const candidatePairs = conceptResolutionCandidates(groups);
+  const decisions = provider.resolveConcepts
+    ? await provider.resolveConcepts({ groups, candidatePairs })
+    : [];
+  const resolved = applyProviderResolution(groups, decisions, candidatePairs);
   const conceptIdByCandidateSlug = new Map<string, string>();
 
   const drafts = resolved.map(({ groups: memberGroups, override }) => {

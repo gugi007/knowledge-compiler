@@ -49,8 +49,14 @@ export interface ConceptResolutionDecision {
   confidence?: number;
 }
 
+export interface ConceptResolutionCandidatePair {
+  groupIds: [string, string];
+  sharedIdentities: string[];
+}
+
 export interface ConceptResolutionInput {
   groups: ConceptResolutionGroup[];
+  candidatePairs: ConceptResolutionCandidatePair[];
 }
 
 export interface CorpusSynthesisInput {
@@ -66,7 +72,7 @@ export interface SynthesizedConceptRelation {
   targetConceptId: string;
   confidence: number;
   evidence: Evidence[];
-  reasoning?: string;
+  reasoning: string;
 }
 
 export interface ExtractionProvider {
