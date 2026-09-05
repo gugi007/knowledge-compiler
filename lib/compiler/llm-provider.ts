@@ -135,6 +135,17 @@ function arrayResult(value: unknown, key: string, path: string) {
   return result[key];
 }
 
+function realignEvidence(item: { quote: string; startOffset?: number; endOffset?: number }, content: string) {
+  const index = content.indexOf(item.quote);
+  if (index >= 0) {
+    item.startOffset = index;
+    item.endOffset = index + item.quote.length;
+  } else {
+    delete item.startOffset;
+    delete item.endOffset;
+  }
+}
+
 export interface OpenAICompatibleLLMProviderConfig {
   baseUrl: string;
   apiKey: string;
@@ -166,7 +177,14 @@ export class OpenAICompatibleLLMProvider implements ExtractionProvider {
       "Extract only concepts and local relations explicitly supported by this article. Use stable kebab-case English slugs. Every evidence quote must be an exact substring of article.content and must mention its concept; relation evidence must mention both endpoint concepts. Do not infer corpus-wide relationships.",
       extractionSchema,
       { article },
-    );
+    ) as ArticleExtraction;
+    for (const concept of value.concepts) {
+      if (!concept.parentSlug) delete concept.parentSlug;
+      realignEvidence(concept.evidence, article.content);
+    }
+    for (const relation of value.relations) {
+      for (const item of relation.evidence) realignEvidence(item, article.content);
+    }
     assertArticleExtraction(value, article);
     return value;
   }
@@ -197,7 +215,22 @@ export class OpenAICompatibleLLMProvider implements ExtractionProvider {
       "Infer only well-supported cross-article concept relations. prerequisite means source is required before target; extends means source is a specialization or extension of target; related is undirected. Every relation needs concise reasoning and at least one exact article.content quote that mentions both canonical endpoints or their aliases. Omit uncertain relations.",
       synthesisSchema,
       input,
-    ), "relations", "synthesis");
+    ), "relations", "synthesis") as SynthesizedConceptRelation[];
+    const articleContent = new Map(input.articles.map((article) => [article.id, article.content]));
+    for (const relation of relations) {
+      for (const item of relation.evidence) {
+        const content = articleContent.get(item.articleId);
+        if (!content) continue;
+        const index = content.indexOf(item.quote);
+        if (index >= 0) {
+          item.startOffset = index;
+          item.endOffset = index + item.quote.length;
+        } else {
+          delete item.startOffset;
+          delete item.endOffset;
+        }
+      }
+    }
     assertSynthesizedConceptRelations(relations, input);
     return relations;
   }
@@ -213,6 +246,7 @@ export class OpenAICompatibleLLMProvider implements ExtractionProvider {
         model: this.model,
         temperature: 0,
         response_format: { type: "json_object" },
+        enable_thinking: false,
         messages: [
           {
             role: "system",
@@ -224,7 +258,7 @@ export class OpenAICompatibleLLMProvider implements ExtractionProvider {
           },
         ],
       }),
-      signal: AbortSignal.timeout(120_000),
+      signal: AbortSignal.timeout(300_000),
     });
 
     if (!response.ok) {

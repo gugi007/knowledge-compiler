@@ -1,0 +1,751 @@
+{
+  "schemaVersion": "1.0",
+  "compiler": {
+    "mode": "mock",
+    "provider": "deterministic-mock"
+  },
+  "creator": {
+    "id": "creator-sujianlin",
+    "name": "苏剑林",
+    "handle": "@科学空间",
+    "bio": "机器学习研究者，科学空间（Scientific Spaces）博客作者，围绕注意力机制、模型训练与架构设计持续写作多年。",
+    "focus": [
+      "注意力机制",
+      "模型训练",
+      "架构设计"
+    ],
+    "articleIds": [
+      "kexue-4765",
+      "kexue-7921",
+      "kexue-9052",
+      "kexue-10373",
+      "kexue-11320",
+      "kexue-11371",
+      "kexue-11480",
+      "kexue-11605",
+      "kexue-11664",
+      "kexue-11782",
+      "kexue-11804",
+      "kexue-11814",
+      "kexue-11823",
+      "kexue-11833",
+      "kexue-11848",
+      "kexue-11854",
+      "kexue-11875",
+      "kexue-11879"
+    ]
+  },
+  "articles": [
+    {
+      "id": "kexue-4765",
+      "title": "《Attention is All You Need》浅读（简介+代码）",
+      "slug": "kexue-4765",
+      "summary": "2017年中，有两篇类似同时也是笔者非常欣赏的论文，分别是FaceBook的《Convolutional Sequence to Sequence Learning》和Google的《Attention is All You Need》，它们都算是Seq2Seq上的创新，本质上来说，都是抛弃了RNN结构来做Seq2Seq任务。",
+      "publishedAt": "2018-01-06",
+      "readingTimeMinutes": 41,
+      "sourceUrl": "https://kexue.fm/archives/4765"
+    },
+    {
+      "id": "kexue-7921",
+      "title": "Performer：用随机投影将Attention的复杂度线性化",
+      "slug": "kexue-7921",
+      "summary": "Attention机制的$\\mathcal{O}(n^2)$复杂度是一个老大难问题了，改变这一复杂度的思路主要有两种：一是走稀疏化的思路，比如我们以往介绍过的Sparse Attention以及Google前几个月搞出来的Big Bird，等等；二是走线性化的思路，这部分工作我们之前总结在《线性Attention的探索：Attention必须有个Softmax吗？",
+      "publishedAt": "2020-12-01",
+      "readingTimeMinutes": 42,
+      "sourceUrl": "https://kexue.fm/archives/7921"
+    },
+    {
+      "id": "kexue-9052",
+      "title": "GAU-α：尝鲜体验快好省的下一代Attention",
+      "slug": "kexue-9052",
+      "summary": "在《FLASH：可能是近来最有意思的高效Transformer设计》中，我们介绍了GAU（Gated Attention Unit，门控线性单元），在这里笔者愿意称之为“目前最有潜力的下一代Attention设计”，因为它真正达到了“更快（速度）、更好（效果）、更省（显存）”的特点。",
+      "publishedAt": "2022-04-22",
+      "readingTimeMinutes": 10,
+      "sourceUrl": "https://kexue.fm/archives/9052"
+    },
+    {
+      "id": "kexue-10373",
+      "title": "Softmax后传：寻找Top-K的光滑近似",
+      "slug": "kexue-10373",
+      "summary": "Softmax，顾名思义是“soft的max”，是$\\max$算子（准确来说是$\\text{argmax}$）的光滑近似，它通过指数归一化将任意向量$\\boldsymbol{x}\\in\\mathbb{R}^n$转化为分量非负且和为1的新向量，并允许我们通过温度参数来调节它与$\\text{argmax}$（的one hot形式）的近似程度。",
+      "publishedAt": "2024-09-19",
+      "readingTimeMinutes": 43,
+      "sourceUrl": "https://kexue.fm/archives/10373"
+    },
+    {
+      "id": "kexue-11320",
+      "title": "为什么线性注意力要加Short Conv？",
+      "slug": "kexue-11320",
+      "summary": "如果读者有关注模型架构方面的进展，那么就会发现，比较新的线性Attention（参考《线性注意力简史：从模仿、创新到反哺》）模型都给$\\boldsymbol{Q},\\boldsymbol{K},\\boldsymbol{V}$加上了Short Conv，比如下图所示的DeltaNet：\nDeltaNet中的Short Conv\n为什么要加这个Short Conv呢？",
+      "publishedAt": "2025-10-05",
+      "readingTimeMinutes": 18,
+      "sourceUrl": "https://kexue.fm/archives/11320"
+    },
+    {
+      "id": "kexue-11371",
+      "title": "低精度Attention可能存在有偏的舍入误差",
+      "slug": "kexue-11371",
+      "summary": "前段时间笔者在arXiv上刷到了论文《Why Low-Precision Transformer Training Fails: An Analysis on Flash Attention》，里面描述的实验现象跟我们在训练Kimi K2时出现的一些现象很吻合，比如都是第二层Attention开始出现问题。",
+      "publishedAt": "2025-10-27",
+      "readingTimeMinutes": 22,
+      "sourceUrl": "https://kexue.fm/archives/11371"
+    },
+    {
+      "id": "kexue-11480",
+      "title": "让炼丹更科学一些（三）：SGD的终点损失收敛",
+      "slug": "kexue-11480",
+      "summary": "目前我们已经有两篇文章讨论SGD的收敛性质，不过它们都只是损失值的收敛结果，所以它们只保证我们能找到最优的损失值，但不能保证找到最优值的所在位置$\\boldsymbol{\\theta}^*$，这是目前的结论跟实践之间的一个显著gap。",
+      "publishedAt": "2025-12-16",
+      "readingTimeMinutes": 29,
+      "sourceUrl": "https://kexue.fm/archives/11480"
+    },
+    {
+      "id": "kexue-11605",
+      "title": "MuP之上：2. 线性层与最速下降",
+      "slug": "kexue-11605",
+      "summary": "在上一篇文章《MuP之上：1.",
+      "publishedAt": "2026-02-15",
+      "readingTimeMinutes": 32,
+      "sourceUrl": "https://kexue.fm/archives/11605"
+    },
+    {
+      "id": "kexue-11664",
+      "title": "Attention Residuals 回忆录",
+      "slug": "kexue-11664",
+      "summary": "这篇文章介绍我们的一个最新作品Attention Residuals（AttnRes），顾名思义，这是用Attention的思路去改进Residuals。",
+      "publishedAt": "2026-03-19",
+      "readingTimeMinutes": 43,
+      "sourceUrl": "https://kexue.fm/archives/11664"
+    },
+    {
+      "id": "kexue-11782",
+      "title": "MoE环游记：9、门控归一化之争",
+      "slug": "kexue-11782",
+      "summary": "追溯一下MoE历史，我们都能发现，早些年MoE的Router在作为Gate去乘到Expert上时，基本都是用Softmax激活，直到现在它仍是MoE的标准形式之一。",
+      "publishedAt": "2026-06-17",
+      "readingTimeMinutes": 30,
+      "sourceUrl": "https://kexue.fm/archives/11782"
+    },
+    {
+      "id": "kexue-11804",
+      "title": "让炼丹更科学一些（七）：步长调度与权重平均",
+      "slug": "kexue-11804",
+      "summary": "精通炼丹的同学都知道，步长调度，或者说学习率调度（LR Schedule），对模型最终效果来说至关重要。",
+      "publishedAt": "2026-07-06",
+      "readingTimeMinutes": 32,
+      "sourceUrl": "https://kexue.fm/archives/11804"
+    },
+    {
+      "id": "kexue-11814",
+      "title": "LogSumExp和Softmax的泰勒展开",
+      "slug": "kexue-11814",
+      "summary": "最近看到论文《The Key to Going Linear: Analysis-Driven Transformer Linearization》里边直接对Softmax做近似展开来线性化Attention，有点收获，在此记录一下。",
+      "publishedAt": "2026-07-13",
+      "readingTimeMinutes": 26,
+      "sourceUrl": "https://kexue.fm/archives/11814"
+    },
+    {
+      "id": "kexue-11823",
+      "title": "将Softmax Attention线性化为Gated DeltaNet",
+      "slug": "kexue-11823",
+      "summary": "在文章《LogSumExp和Softmax的泰勒展开》中，我们介绍了LogSumExp和Softmax的近似展开，并由此得到了一种线性化Softmax Attention的简单方案。",
+      "publishedAt": "2026-07-21",
+      "readingTimeMinutes": 37,
+      "sourceUrl": "https://kexue.fm/archives/11823"
+    },
+    {
+      "id": "kexue-11833",
+      "title": "解构Scaling Law：优化、架构、数据的三重奏",
+      "slug": "kexue-11833",
+      "summary": "训练一个大型的神经网络，最终效果会受到非常多因素的影响，换个优化器，换个模型架构，或者换一个训练集，结果都可能截然不同。",
+      "publishedAt": "2026-07-29",
+      "readingTimeMinutes": 75,
+      "sourceUrl": "https://kexue.fm/archives/11833"
+    },
+    {
+      "id": "kexue-11848",
+      "title": "简单谈谈K3的MoE和Attention",
+      "slug": "kexue-11848",
+      "summary": "上个月，我们发布了迄今为止最大的开源模型K3。",
+      "publishedAt": "2026-08-04",
+      "readingTimeMinutes": 23,
+      "sourceUrl": "https://kexue.fm/archives/11848"
+    },
+    {
+      "id": "kexue-11854",
+      "title": "除了交叉熵，LM Loss还有什么选择？",
+      "slug": "kexue-11854",
+      "summary": "一直以来，交叉熵（Cross Entropy）都是LLM预训练和微调的标准损失函数。",
+      "publishedAt": "2026-08-09",
+      "readingTimeMinutes": 35,
+      "sourceUrl": "https://kexue.fm/archives/11854"
+    },
+    {
+      "id": "kexue-11875",
+      "title": "动量的新理解：逼近特征层面的梯度下降",
+      "slug": "kexue-11875",
+      "summary": "一个以动量为状态变量的优化器，基本形式如下：\n\\begin{equation}\\begin{aligned}\n\\boldsymbol{M}_t =&\\, \\beta \\boldsymbol{M}_{t-1} + (1 - \\beta) \\boldsymbol{G}_t \\\\[4pt]\n\\boldsymbol{W}_t =&\\, \\phi(\\boldsymbol{W}_{t-1}, \\boldsymbol{M}_t, \\boldsymbol{G}_t, t)\n\\end{aligned}\\end{equation}\n不同的优化器差别主要体现在更新函数$\\phi$上，如SGDM、SignSGD、Muon等，新的探索也基本围绕$\\phi$进行，因为第一个式子的动量太简单，简单到大家不认为它有什么修改空间。",
+      "publishedAt": "2026-08-23",
+      "readingTimeMinutes": 25,
+      "sourceUrl": "https://kexue.fm/archives/11875"
+    },
+    {
+      "id": "kexue-11879",
+      "title": "让炼丹更科学一些（八）：多阶段训练的学习率",
+      "slug": "kexue-11879",
+      "summary": "上篇文章《让炼丹更科学一些（七）：步长调度与权重平均》我们简单介绍了无调度（Schedule-Free）学习率的工作，它试图通过某种权重平均来替代学习率调度，实现常数学习率就可以训出最优模型的效果。",
+      "publishedAt": "2026-08-31",
+      "readingTimeMinutes": 24,
+      "sourceUrl": "https://kexue.fm/archives/11879"
+    }
+  ],
+  "concepts": [
+    {
+      "id": "concept-attention",
+      "name": "Attention",
+      "slug": "attention",
+      "summary": "根据查询与键的匹配程度，对值进行动态加权聚合的信息路由机制。",
+      "domain": "注意力机制",
+      "level": "foundation",
+      "aliases": [
+        "Self-Attention",
+        "注意力",
+        "自注意力"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11320",
+        "kexue-11371",
+        "kexue-11664",
+        "kexue-11814",
+        "kexue-11823",
+        "kexue-11848",
+        "kexue-11854",
+        "kexue-11875",
+        "kexue-4765",
+        "kexue-7921",
+        "kexue-9052"
+      ],
+      "confidence": 0.89,
+      "parentId": "concept-transformer"
+    },
+    {
+      "id": "concept-flash-attention",
+      "name": "FlashAttention",
+      "slug": "flash-attention",
+      "summary": "通过分块和 IO 感知计算减少显存读写的精确注意力算法。",
+      "domain": "注意力机制",
+      "level": "advanced",
+      "aliases": [],
+      "evidenceArticleIds": [
+        "kexue-11371"
+      ],
+      "confidence": 0.86,
+      "parentId": "concept-attention"
+    },
+    {
+      "id": "concept-large-language-model",
+      "name": "大语言模型",
+      "slug": "large-language-model",
+      "summary": "通过大规模语料预训练、能够理解与生成自然语言的概率模型。",
+      "domain": "模型基础",
+      "level": "foundation",
+      "aliases": [
+        "LLM",
+        "Large Language Model"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11605"
+      ],
+      "confidence": 0.86
+    },
+    {
+      "id": "concept-position-encoding",
+      "name": "位置编码",
+      "slug": "position-encoding",
+      "summary": "向注意力机制注入 token 顺序和相对距离信息的方法。",
+      "domain": "注意力机制",
+      "level": "foundation",
+      "aliases": [
+        "Positional Encoding"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11848",
+        "kexue-7921"
+      ],
+      "confidence": 0.86,
+      "parentId": "concept-transformer"
+    },
+    {
+      "id": "concept-quantization",
+      "name": "量化",
+      "slug": "quantization",
+      "summary": "用更低精度表示权重或激活，以降低显存占用并提升推理吞吐。",
+      "domain": "推理系统",
+      "level": "intermediate",
+      "aliases": [
+        "Quantization"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11833"
+      ],
+      "confidence": 0.86
+    },
+    {
+      "id": "concept-rope",
+      "name": "RoPE",
+      "slug": "rope",
+      "summary": "通过旋转变换让注意力分数携带相对位置信息的位置编码方法。",
+      "domain": "注意力机制",
+      "level": "intermediate",
+      "aliases": [
+        "Rotary Position Embedding",
+        "旋转位置编码"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11848"
+      ],
+      "confidence": 0.86,
+      "parentId": "concept-position-encoding"
+    },
+    {
+      "id": "concept-transformer",
+      "name": "Transformer",
+      "slug": "transformer",
+      "summary": "以自注意力和前馈网络为核心的可并行序列建模架构。",
+      "domain": "模型基础",
+      "level": "foundation",
+      "aliases": [
+        "Transformer 架构"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11371",
+        "kexue-11814",
+        "kexue-7921"
+      ],
+      "confidence": 0.86,
+      "parentId": "concept-large-language-model"
+    }
+  ],
+  "relations": [
+    {
+      "id": "article-concept:kexue-11320:concept-attention",
+      "kind": "article-concept",
+      "sourceId": "kexue-11320",
+      "targetId": "concept-attention",
+      "confidence": 0.96,
+      "evidence": [
+        {
+          "articleId": "kexue-11320",
+          "quote": "如果读者有关注模型架构方面的进展，那么就会发现，比较新的线性Attention（参考《线性注意力简史：从模仿、创新到反哺》）模型都给$\\boldsymbol{Q},\\boldsymbol{K},\\boldsymbol{V}$加上了Short Conv，比如下图所示的DeltaNet：\nDeltaNet中的Short Conv\n为什么要加这个Short Conv呢？",
+          "startOffset": 0,
+          "endOffset": 183,
+          "supportScore": 0.9
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11371:concept-attention",
+      "kind": "article-concept",
+      "sourceId": "kexue-11371",
+      "targetId": "concept-attention",
+      "confidence": 0.86,
+      "evidence": [
+        {
+          "articleId": "kexue-11371",
+          "quote": "前段时间笔者在arXiv上刷到了论文《Why Low-Precision Transformer Training Fails: An Analysis on Flash Attention》，里面描述的实验现象跟我们在训练Kimi K2时出现的一些现象很吻合，比如都是第二层Attention开始出现问题。",
+          "startOffset": 0,
+          "endOffset": 154,
+          "supportScore": 0.9
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11371:concept-flash-attention",
+      "kind": "article-concept",
+      "sourceId": "kexue-11371",
+      "targetId": "concept-flash-attention",
+      "confidence": 0.86,
+      "evidence": [
+        {
+          "articleId": "kexue-11371",
+          "quote": "前段时间笔者在arXiv上刷到了论文《Why Low-Precision Transformer Training Fails: An Analysis on Flash Attention》，里面描述的实验现象跟我们在训练Kimi K2时出现的一些现象很吻合，比如都是第二层Attention开始出现问题。",
+          "startOffset": 0,
+          "endOffset": 154,
+          "supportScore": 0.9
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11371:concept-transformer",
+      "kind": "article-concept",
+      "sourceId": "kexue-11371",
+      "targetId": "concept-transformer",
+      "confidence": 0.86,
+      "evidence": [
+        {
+          "articleId": "kexue-11371",
+          "quote": "前段时间笔者在arXiv上刷到了论文《Why Low-Precision Transformer Training Fails: An Analysis on Flash Attention》，里面描述的实验现象跟我们在训练Kimi K2时出现的一些现象很吻合，比如都是第二层Attention开始出现问题。",
+          "startOffset": 0,
+          "endOffset": 154,
+          "supportScore": 0.9
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11605:concept-large-language-model",
+      "kind": "article-concept",
+      "sourceId": "kexue-11605",
+      "targetId": "concept-large-language-model",
+      "confidence": 0.86,
+      "evidence": [
+        {
+          "articleId": "kexue-11605",
+          "quote": "Muon + 谱球面》和《Controlled LLM Training on Spectral Sphere》，这一块我们后面再谈。",
+          "startOffset": 4138,
+          "endOffset": 4205,
+          "supportScore": 0.9
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11664:concept-attention",
+      "kind": "article-concept",
+      "sourceId": "kexue-11664",
+      "targetId": "concept-attention",
+      "confidence": 0.96,
+      "evidence": [
+        {
+          "articleId": "kexue-11664",
+          "quote": "熟悉线性注意力的读者应该很快能理解这个结果，HC其实相当于“旋转90度”的DeltaNet。",
+          "startOffset": 3757,
+          "endOffset": 3803,
+          "supportScore": 0.9
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11814:concept-attention",
+      "kind": "article-concept",
+      "sourceId": "kexue-11814",
+      "targetId": "concept-attention",
+      "confidence": 0.86,
+      "evidence": [
+        {
+          "articleId": "kexue-11814",
+          "quote": "记$\\boldsymbol{x}=(\\boldsymbol{q}\\cdot \\boldsymbol{k}_1,\\cdots,\\boldsymbol{q}\\cdot \\boldsymbol{k}_n)$，那么有一阶近似：\n\\begin{equation}\\softmax(\\boldsymbol{x})_i \\approx \\frac{1}{n} + \\frac{1}{n}\\boldsymbol{q}\\cdot (\\boldsymbol{k}_i - \\overline{\\boldsymbol{k}})\\end{equation}\n这正是开头论文所讨论的方案，它本身也很直观：平均向量$\\overline{\\boldsymbol{k}}$为注意力的相对大小提供了一个基准，相似度比$\\overline{\\boldsymbol{k}}$大的Token，要加大注意力，否则减少。",
+          "startOffset": 5850,
+          "endOffset": 6238,
+          "supportScore": 0.9
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11814:concept-transformer",
+      "kind": "article-concept",
+      "sourceId": "kexue-11814",
+      "targetId": "concept-transformer",
+      "confidence": 0.86,
+      "evidence": [
+        {
+          "articleId": "kexue-11814",
+          "quote": "最近看到论文《The Key to Going Linear: Analysis-Driven Transformer Linearization》里边直接对Softmax做近似展开来线性化Attention，有点收获，在此记录一下。",
+          "startOffset": 0,
+          "endOffset": 117,
+          "supportScore": 0.9
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11823:concept-attention",
+      "kind": "article-concept",
+      "sourceId": "kexue-11823",
+      "targetId": "concept-attention",
+      "confidence": 0.86,
+      "evidence": [
+        {
+          "articleId": "kexue-11823",
+          "quote": "但在那篇文章中，所得的线性注意力仅仅是Vanilla Linear Attention的形式。",
+          "startOffset": 91,
+          "endOffset": 138,
+          "supportScore": 0.9
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11833:concept-quantization",
+      "kind": "article-concept",
+      "sourceId": "kexue-11833",
+      "targetId": "concept-quantization",
+      "confidence": 0.86,
+      "evidence": [
+        {
+          "articleId": "kexue-11833",
+          "quote": "量化模型的最简单变量是总参数量$N$，更细致一点则可以分别考虑宽度$W$和深度$H$。",
+          "startOffset": 16456,
+          "endOffset": 16499,
+          "supportScore": 0.9
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11848:concept-attention",
+      "kind": "article-concept",
+      "sourceId": "kexue-11848",
+      "targetId": "concept-attention",
+      "confidence": 0.86,
+      "evidence": [
+        {
+          "articleId": "kexue-11848",
+          "quote": "在这些东西之中，AttnRes我们之前已经在《Attention Residuals 回忆录》做过详细介绍，而KDA我们也已经分享过详细的技术报告《Kimi Linear: An Expressive, Efficient Attention Architecture》。",
+          "startOffset": 273,
+          "endOffset": 409,
+          "supportScore": 0.9
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11848:concept-position-encoding",
+      "kind": "article-concept",
+      "sourceId": "kexue-11848",
+      "targetId": "concept-position-encoding",
+      "confidence": 0.86,
+      "evidence": [
+        {
+          "articleId": "kexue-11848",
+          "quote": "于是，DSV4直接将Attention换成head_dims=512、K=V的MQA（位置编码是QKVO-RoPE），以保证效果，而这正是MLA的Decoding形式。",
+          "startOffset": 4669,
+          "endOffset": 4753,
+          "supportScore": 0.9
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11848:concept-rope",
+      "kind": "article-concept",
+      "sourceId": "kexue-11848",
+      "targetId": "concept-rope",
+      "confidence": 0.86,
+      "evidence": [
+        {
+          "articleId": "kexue-11848",
+          "quote": "于是，DSV4直接将Attention换成head_dims=512、K=V的MQA（位置编码是QKVO-RoPE），以保证效果，而这正是MLA的Decoding形式。",
+          "startOffset": 4669,
+          "endOffset": 4753,
+          "supportScore": 0.9
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11854:concept-attention",
+      "kind": "article-concept",
+      "sourceId": "kexue-11854",
+      "targetId": "concept-attention",
+      "confidence": 0.86,
+      "evidence": [
+        {
+          "articleId": "kexue-11854",
+          "quote": "根据损失函数的基本要求，固定$\\boldsymbol{p}$后，$L(\\boldsymbol{p}, \\boldsymbol{q})$的最小值是$H(\\boldsymbol{p})\\triangleq L(\\boldsymbol{p}, \\boldsymbol{p})$，于是我们可以写出\n\\begin{equation}L(\\boldsymbol{p}, \\boldsymbol{q})\\geq H(\\boldsymbol{p})\\end{equation}\n现在我们将注意力集中在变量$\\boldsymbol{p}$上，显然$L(\\boldsymbol{p}, \\boldsymbol{q})$关于$\\boldsymbol{p}$是线性的，所以当我们固定$\\boldsymbol{q}$时，左端描述了一个超平面，右端则描述了一个超曲面，它们在$\\boldsymbol{p}=\\boldsymbol{q}$处相交。",
+          "startOffset": 1590,
+          "endOffset": 1998,
+          "supportScore": 0.9
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11875:concept-attention",
+      "kind": "article-concept",
+      "sourceId": "kexue-11875",
+      "targetId": "concept-attention",
+      "confidence": 0.86,
+      "evidence": [
+        {
+          "articleId": "kexue-11875",
+          "quote": "有趣的是，这条路线跟线性注意力从Vanilla到DeltaNet再到MesaNet的演变极其一致，两者看起来有颇多可以相互借鉴的地方。",
+          "startOffset": 6706,
+          "endOffset": 6773,
+          "supportScore": 0.9
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-4765:concept-attention",
+      "kind": "article-concept",
+      "sourceId": "kexue-4765",
+      "targetId": "concept-attention",
+      "confidence": 0.96,
+      "evidence": [
+        {
+          "articleId": "kexue-4765",
+          "quote": "2017年中，有两篇类似同时也是笔者非常欣赏的论文，分别是FaceBook的《Convolutional Sequence to Sequence Learning》和Google的《Attention is All You Need》，它们都算是Seq2Seq上的创新，本质上来说，都是抛弃了RNN结构来做Seq2Seq任务。",
+          "startOffset": 0,
+          "endOffset": 164,
+          "supportScore": 0.9
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-7921:concept-attention",
+      "kind": "article-concept",
+      "sourceId": "kexue-7921",
+      "targetId": "concept-attention",
+      "confidence": 0.86,
+      "evidence": [
+        {
+          "articleId": "kexue-7921",
+          "quote": "本文则介绍一项新的改进工作Performer，出自Google的文章《Rethinking Attention with Performers》，它的目标相当霸气：通过随机投影，在不损失精度的情况下，将Attention的复杂度线性化。",
+          "startOffset": 195,
+          "endOffset": 313,
+          "supportScore": 0.9
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-7921:concept-position-encoding",
+      "kind": "article-concept",
+      "sourceId": "kexue-7921",
+      "targetId": "concept-position-encoding",
+      "confidence": 0.86,
+      "evidence": [
+        {
+          "articleId": "kexue-7921",
+          "quote": "其次，目前看来Performer（包括其他的线性Attention）跟相对位置编码是不兼容的，因为相对位置编码是直接加在Attention矩阵里边的，Performer连Attention矩阵都没有，自然是加不了的。",
+          "startOffset": 11078,
+          "endOffset": 11186,
+          "supportScore": 0.9
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-7921:concept-transformer",
+      "kind": "article-concept",
+      "sourceId": "kexue-7921",
+      "targetId": "concept-transformer",
+      "confidence": 0.86,
+      "evidence": [
+        {
+          "articleId": "kexue-7921",
+          "quote": "从前面的最后一张图来看，Performer并没有比Linear Transformer有大的优势（而且笔者觉得最后一张图的比较可能有问题，Performer效果可能比Linear Transformer要好，但是速度怎么可能还超过了Linear Transformer？",
+          "startOffset": 11417,
+          "endOffset": 11552,
+          "supportScore": 0.9
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-9052:concept-attention",
+      "kind": "article-concept",
+      "sourceId": "kexue-9052",
+      "targetId": "concept-attention",
+      "confidence": 0.86,
+      "evidence": [
+        {
+          "articleId": "kexue-9052",
+          "quote": "在《FLASH：可能是近来最有意思的高效Transformer设计》中，我们介绍了GAU（Gated Attention Unit，门控线性单元），在这里笔者愿意称之为“目前最有潜力的下一代Attention设计”，因为它真正达到了“更快（速度）、更好（效果）、更省（显存）”的特点。",
+          "startOffset": 0,
+          "endOffset": 142,
+          "supportScore": 0.9
+        }
+      ]
+    },
+    {
+      "id": "concept-relation:extends:concept-rope:concept-position-encoding",
+      "kind": "extends",
+      "sourceId": "concept-rope",
+      "targetId": "concept-position-encoding",
+      "confidence": 0.96,
+      "evidence": [
+        {
+          "articleId": "kexue-11848",
+          "quote": "于是，DSV4直接将Attention换成head_dims=512、K=V的MQA（位置编码是QKVO-RoPE），以保证效果，而这正是MLA的Decoding形式。",
+          "startOffset": 4669,
+          "endOffset": 4753,
+          "supportScore": 0.96
+        }
+      ],
+      "reasoning": "RoPE 是位置编码的一种具体扩展。"
+    },
+    {
+      "id": "concept-relation:prerequisite:concept-attention:concept-flash-attention",
+      "kind": "prerequisite",
+      "sourceId": "concept-attention",
+      "targetId": "concept-flash-attention",
+      "confidence": 0.97,
+      "evidence": [
+        {
+          "articleId": "kexue-11371",
+          "quote": "前段时间笔者在arXiv上刷到了论文《Why Low-Precision Transformer Training Fails: An Analysis on Flash Attention》，里面描述的实验现象跟我们在训练Kimi K2时出现的一些现象很吻合，比如都是第二层Attention开始出现问题。",
+          "startOffset": 0,
+          "endOffset": 154,
+          "supportScore": 0.97
+        }
+      ],
+      "reasoning": "FlashAttention 优化的是 Attention 的精确计算。"
+    },
+    {
+      "id": "concept-relation:prerequisite:concept-transformer:concept-attention",
+      "kind": "prerequisite",
+      "sourceId": "concept-transformer",
+      "targetId": "concept-attention",
+      "confidence": 0.94,
+      "evidence": [
+        {
+          "articleId": "kexue-11371",
+          "quote": "前段时间笔者在arXiv上刷到了论文《Why Low-Precision Transformer Training Fails: An Analysis on Flash Attention》，里面描述的实验现象跟我们在训练Kimi K2时出现的一些现象很吻合，比如都是第二层Attention开始出现问题。",
+          "startOffset": 0,
+          "endOffset": 154,
+          "supportScore": 0.94
+        }
+      ],
+      "reasoning": "Attention 是 Transformer 的核心计算单元。"
+    }
+  ],
+  "readingPaths": [
+    {
+      "id": "path-llm-foundations",
+      "title": "理解 LLM 的骨架",
+      "summary": "从模型整体进入 Transformer、Attention 与位置表示。",
+      "level": "beginner",
+      "domains": [
+        "模型基础",
+        "注意力机制"
+      ],
+      "conceptIds": [
+        "concept-large-language-model",
+        "concept-position-encoding",
+        "concept-transformer",
+        "concept-attention",
+        "concept-rope",
+        "concept-flash-attention"
+      ],
+      "articleIds": [
+        "kexue-4765",
+        "kexue-7921",
+        "kexue-9052",
+        "kexue-11320",
+        "kexue-11371",
+        "kexue-11605",
+        "kexue-11664",
+        "kexue-11814",
+        "kexue-11823",
+        "kexue-11848",
+        "kexue-11854",
+        "kexue-11875"
+      ]
+    },
+    {
+      "id": "path-inference-systems",
+      "title": "高吞吐推理工程",
+      "summary": "沿着服务、缓存、调度与优化理解推理系统。",
+      "level": "intermediate",
+      "domains": [
+        "推理系统"
+      ],
+      "conceptIds": [
+        "concept-quantization"
+      ],
+      "articleIds": [
+        "kexue-11833"
+      ]
+    }
+  ]
+}

@@ -3,6 +3,7 @@
 import { useMemo, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import rawDataset from "@/data/demo/compiled.json";
+import rawSujianlinDataset from "@/data/sujianlin/compiled.json";
 import type {
   Article,
   CompiledKnowledgeDataset,
@@ -12,19 +13,24 @@ import type {
 import { assertCompiledKnowledgeDataset } from "@/lib/compiler/schema";
 
 const demoData = rawDataset as CompiledKnowledgeDataset;
+const sujianlinData = rawSujianlinDataset as CompiledKnowledgeDataset;
 const emptySubscribe = () => () => {};
 const emptySnapshot = () => null;
 
+function sourceParamSnapshot() {
+  return new URLSearchParams(window.location.search).get("source");
+}
+
 function compiledDatasetSnapshot() {
-  if (new URLSearchParams(window.location.search).get("source") !== "compiled") return null;
+  if (sourceParamSnapshot() !== "compiled") return null;
   return sessionStorage.getItem("knowledge-compiler:dataset");
 }
 
 const domainColors: Record<string, string> = {
-  模型基础: "#7c6cff",
-  注意力机制: "#ff6b52",
-  推理系统: "#16a085",
-  长上下文: "#d79b20",
+  模型基础: "#0066ff",
+  注意力机制: "#7c6cff",
+  推理系统: "#12a182",
+  长上下文: "#f07b3f",
 };
 
 const relationLabels: Record<Relation["kind"], string> = {
@@ -42,17 +48,19 @@ function formatDate(date: string) {
 }
 
 export function KnowledgeGarden() {
+  const source = useSyncExternalStore(emptySubscribe, sourceParamSnapshot, emptySnapshot);
+  const staticData = source === "sujianlin" ? sujianlinData : demoData;
   const savedDataset = useSyncExternalStore(emptySubscribe, compiledDatasetSnapshot, emptySnapshot);
   const data = useMemo(() => {
-    if (!savedDataset) return demoData;
+    if (!savedDataset) return staticData;
     try {
       const dataset: unknown = JSON.parse(savedDataset);
       assertCompiledKnowledgeDataset(dataset);
       return dataset;
     } catch {
-      return demoData;
+      return staticData;
     }
-  }, [savedDataset]);
+  }, [savedDataset, staticData]);
   const [selectedId, setSelectedId] = useState(
     demoData.concepts.find(({ slug }) => slug === "kv-cache")?.id ?? demoData.concepts[0].id,
   );
@@ -94,7 +102,7 @@ export function KnowledgeGarden() {
 
   return (
     <main className="min-h-screen px-4 py-4 md:px-6 lg:px-8">
-      <header className="mx-auto flex max-w-[1500px] items-center justify-between border-b border-ink/15 pb-4">
+      <header className="glass-bar mx-auto mb-4 flex max-w-[1500px] items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="grid size-10 place-items-center rounded-full bg-ink text-sm font-black text-paper">KC</div>
           <div>
@@ -105,7 +113,7 @@ export function KnowledgeGarden() {
         <div className="hidden items-center gap-2 text-xs font-semibold text-ink/60 sm:flex">
           <span className="status-dot" />
           {data.compiler.mode === "mock" ? "Demo · deterministic mock" : data.compiler.mode}
-          <Link className="ml-3 rounded-full border border-ink/15 px-3 py-1.5 hover:bg-ink hover:text-paper" href="/compile">Compile</Link>
+          <Link className="ml-3 rounded-full bg-coral px-3 py-1.5 text-white hover:bg-[#004bbb]" href="/compile">Compile</Link>
         </div>
       </header>
 
@@ -113,7 +121,7 @@ export function KnowledgeGarden() {
         <aside className="panel overflow-hidden lg:sticky lg:top-4 lg:h-[calc(100vh-2rem)]">
           <div className="border-b border-ink/10 p-5">
             <div className="flex items-start gap-3">
-              <div className="grid size-11 shrink-0 place-items-center rounded-2xl bg-coral font-display text-lg font-bold text-white shadow-[3px_3px_0_#20251f]">林</div>
+              <div className="grid size-11 shrink-0 place-items-center rounded-full bg-coral font-display text-lg font-bold text-white ring-2 ring-coral/20 ring-offset-2">{data.creator.name[0]}</div>
               <div>
                 <h1 className="font-display text-xl font-semibold">{data.creator.name}</h1>
                 <p className="text-xs font-semibold text-ink/45">{data.creator.handle}</p>
@@ -125,14 +133,14 @@ export function KnowledgeGarden() {
               <Stat value={data.concepts.length} label="Concepts" />
               <Stat value={data.relations.length} label="Relations" />
             </div>
-            <div className="mt-3 rounded-xl border border-ink/10 bg-ink px-3 py-2 text-paper">
+            <div className="mt-3 rounded-xl border border-[#c2dbff] bg-lime px-3 py-2">
               <div className="flex items-center justify-between gap-2">
-                <span className="text-[9px] font-bold tracking-[0.15em] text-paper/45 uppercase">Compiler</span>
-                <span className="rounded-full bg-lime px-2 py-0.5 text-[9px] font-black tracking-wide text-ink uppercase">
+                <span className="text-[9px] font-bold tracking-[0.15em] text-coral/70 uppercase">Compiler</span>
+                <span className="rounded-full bg-coral px-2 py-0.5 text-[9px] font-black tracking-wide text-white uppercase">
                   {data.compiler.mode === "mock" ? "Demo / deterministic mock" : data.compiler.mode}
                 </span>
               </div>
-              <p className="mt-1 truncate font-mono text-[11px] text-paper/75">provider: {data.compiler.provider}</p>
+              <p className="mt-1 truncate font-mono text-[11px] text-ink/55">provider: {data.compiler.provider}</p>
             </div>
           </div>
 
@@ -168,9 +176,8 @@ export function KnowledgeGarden() {
         </aside>
 
         <div className="min-w-0 space-y-4">
-          <section className="panel relative overflow-hidden p-6 md:p-8">
-            <div className="absolute top-0 right-0 h-32 w-32 rounded-bl-full bg-lime/70" />
-            <div className="relative">
+          <section className="panel hero-gradient relative overflow-hidden p-6 md:p-8">
+            <div key={selected.id} className="relative hero-in">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="eyebrow">Personal Wiki / {selected.domain}</span>
                 <span className="rounded-full border border-ink/15 px-2 py-0.5 text-[10px] font-bold tracking-wide text-ink/50 uppercase">{selected.level}</span>
@@ -440,9 +447,9 @@ function KnowledgeGraph({
             transform={`translate(${position.x} ${position.y})`}
           >
             <circle
-              fill={active ? domainColors[concept.domain] : "#f7f3e9"}
+              fill={active ? domainColors[concept.domain] : "#ffffff"}
               r={active ? 25 : 19}
-              stroke={active ? "#20251f" : domainColors[concept.domain]}
+              stroke={active ? "#0066ff" : domainColors[concept.domain]}
               strokeWidth={active ? 3 : 2}
             />
             <text className={active ? "graph-label graph-label-active" : "graph-label"} textAnchor="middle" y={active ? 39 : 32}>
