@@ -8,7 +8,7 @@ import {
 } from "../lib/compiler/index.ts";
 import { assertCompiledKnowledgeDataset } from "../lib/compiler/schema.ts";
 
-const demoDirectory = resolve("data/demo");
+const demoDirectory = resolve(process.env.DATA_DIR ?? "data/demo");
 const creator = JSON.parse(await readFile(resolve(demoDirectory, "creator.json"), "utf8")) as Creator;
 const articles = await ingestArticles(resolve(demoDirectory, "articles"));
 const dataset = await compileKnowledge({

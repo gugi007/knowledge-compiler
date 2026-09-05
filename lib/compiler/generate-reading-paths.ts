@@ -20,12 +20,14 @@ function topologicalOrder(concepts: Concept[], relations: Relation[]) {
   const conceptById = new Map(concepts.map((concept) => [concept.id, concept]));
   const ready = concepts.filter(({ id }) => indegree.get(id) === 0);
   const ordered: Concept[] = [];
+  const orderedIds = new Set<string>();
   const sortReady = () => ready.sort((a, b) => levelRank[a.level] - levelRank[b.level] || a.id.localeCompare(b.id));
   sortReady();
 
   while (ready.length) {
     const concept = ready.shift()!;
     ordered.push(concept);
+    orderedIds.add(concept.id);
     for (const targetId of outgoing.get(concept.id) ?? []) {
       indegree.set(targetId, indegree.get(targetId)! - 1);
       if (indegree.get(targetId) === 0) ready.push(conceptById.get(targetId)!);
@@ -33,7 +35,13 @@ function topologicalOrder(concepts: Concept[], relations: Relation[]) {
     sortReady();
   }
 
-  if (ordered.length !== concepts.length) throw new Error("Cannot generate reading paths from cyclic prerequisites");
+  // LLM prerequisites can form cycles. Break them deterministically by level
+  // then id rather than failing, so a cycle never aborts the whole compile.
+  if (ordered.length < concepts.length) {
+    const remaining = concepts.filter(({ id }) => !orderedIds.has(id));
+    remaining.sort((a, b) => levelRank[a.level] - levelRank[b.level] || a.id.localeCompare(b.id));
+    ordered.push(...remaining);
+  }
   return ordered;
 }
 

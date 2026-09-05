@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 @theme {
-  --color-paper: #f2eee4;
-  --color-ink: #20251f;
-  --color-coral: #ff6b52;
-  --color-lime: #dff36a;
-  --font-display: Georgia, "Noto Serif SC", serif;
+  --color-paper: #f6f6f6;
+  --color-ink: #121212;
+  --color-coral: #0066ff;
+  --color-lime: #e6f0ff;
+  --font-display: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
   --font-mono: "SFMono-Regular", Consolas, monospace;
 }
 
@@ -15,12 +15,9 @@
 
 body {
   margin: 0;
-  color: #20251f;
-  background:
-    radial-gradient(circle at 8% 8%, rgb(255 107 82 / 8%), transparent 22rem),
-    radial-gradient(circle at 88% 18%, rgb(223 243 106 / 18%), transparent 24rem),
-    #f2eee4;
-  font-family: Arial, "Noto Sans SC", sans-serif;
+  color: #121212;
+  background: #f6f6f6;
+  font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
 }
 
 button,
@@ -29,16 +26,15 @@ a {
 }
 
 button:focus-visible {
-  outline: 2px solid #ff6b52;
+  outline: 2px solid #0066ff;
   outline-offset: 2px;
 }
 
 .panel {
-  border: 1px solid rgb(32 37 31 / 14%);
-  border-radius: 20px;
-  background: rgb(250 248 241 / 84%);
-  box-shadow: 0 12px 32px rgb(32 37 31 / 5%);
-  backdrop-filter: blur(10px);
+  border: 1px solid #e4e6eb;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgb(18 18 18 / 4%);
 }
 
 .eyebrow {
@@ -46,7 +42,7 @@ button:focus-visible {
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.14em;
-  color: rgb(32 37 31 / 42%);
+  color: #8590a6;
   text-transform: uppercase;
 }
 
@@ -54,8 +50,8 @@ button:focus-visible {
   width: 8px;
   height: 8px;
   border-radius: 999px;
-  background: #16a085;
-  box-shadow: 0 0 0 4px rgb(22 160 133 / 12%);
+  background: #12a182;
+  box-shadow: 0 0 0 4px rgb(18 161 130 / 12%);
 }
 
 .concept-link {
@@ -64,9 +60,9 @@ button:focus-visible {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  border-radius: 10px;
+  border-radius: 8px;
   padding: 8px 10px;
-  color: rgb(32 37 31 / 64%);
+  color: rgb(18 18 18 / 64%);
   font-size: 13px;
   font-weight: 650;
   text-align: left;
@@ -74,31 +70,30 @@ button:focus-visible {
 }
 
 .concept-link:hover {
-  color: #20251f;
-  background: rgb(32 37 31 / 5%);
+  color: #0066ff;
+  background: #f2f5f9;
 }
 
 .concept-link-active {
-  color: #f7f3e9;
-  background: #20251f !important;
-  box-shadow: 3px 3px 0 #dff36a;
+  color: #ffffff;
+  background: #0066ff !important;
 }
 
 .tag {
-  border: 1px solid rgb(32 37 31 / 14%);
+  border: 1px solid #e4e6eb;
   border-radius: 999px;
-  background: rgb(255 255 255 / 38%);
+  background: #f6f6f6;
   padding: 7px 11px;
-  color: rgb(32 37 31 / 60%);
+  color: #646970;
 }
 
 .concept-pill {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  border: 1px solid rgb(32 37 31 / 13%);
+  border: 1px solid #e4e6eb;
   border-radius: 999px;
-  background: #fffdf8;
+  background: #ffffff;
   padding: 7px 10px;
   font-size: 12px;
   font-weight: 700;
@@ -107,8 +102,8 @@ button:focus-visible {
 
 .concept-pill:hover,
 .relation-row:hover {
-  border-color: rgb(32 37 31 / 35%);
-  transform: translateY(-1px);
+  border-color: #0066ff;
+  color: #0066ff;
 }
 
 .relation-row {
@@ -117,9 +112,9 @@ button:focus-visible {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  border: 1px solid rgb(32 37 31 / 10%);
-  border-radius: 12px;
-  background: rgb(255 255 255 / 42%);
+  border: 1px solid #e4e6eb;
+  border-radius: 10px;
+  background: #ffffff;
   padding: 10px 11px;
   font-size: 13px;
   font-weight: 700;
@@ -129,17 +124,17 @@ button:focus-visible {
 
 .relation-kind {
   border-radius: 999px;
-  background: rgb(32 37 31 / 7%);
+  background: #f2f3f5;
   padding: 3px 7px;
-  color: rgb(32 37 31 / 45%);
+  color: #8590a6;
   font-size: 9px;
   letter-spacing: 0.08em;
 }
 
 .reading-path {
-  border: 1px solid rgb(32 37 31 / 12%);
-  border-radius: 15px;
-  background: rgb(255 255 255 / 42%);
+  border: 1px solid #e4e6eb;
+  border-radius: 10px;
+  background: #ffffff;
   padding: 14px;
 }
 
@@ -149,26 +144,25 @@ button:focus-visible {
   height: 24px;
   flex: none;
   place-items: center;
-  border: 1px solid rgb(32 37 31 / 20%);
+  border: 1px solid #d3d5d9;
   border-radius: 999px;
-  background: #f7f3e9;
+  background: #ffffff;
   font: 700 10px "SFMono-Regular", Consolas, monospace;
 }
 
 .path-step-active {
-  border-color: #20251f;
-  color: #f7f3e9;
-  background: #ff6b52;
-  box-shadow: 2px 2px 0 #20251f;
+  border-color: #0066ff;
+  color: #ffffff;
+  background: #0066ff;
 }
 
 .graph-edge-prerequisite {
-  stroke: rgb(255 107 82 / 62%);
+  stroke: rgb(0 102 255 / 55%);
   stroke-width: 1.7;
 }
 
 .graph-edge-related {
-  stroke: rgb(32 37 31 / 23%);
+  stroke: rgb(18 18 18 / 18%);
   stroke-width: 1.4;
   stroke-dasharray: 4 4;
 }
@@ -188,15 +182,15 @@ button:focus-visible {
 }
 
 .graph-label {
-  fill: rgb(32 37 31 / 68%);
-  font-family: Arial, "Noto Sans SC", sans-serif;
+  fill: rgb(18 18 18 / 68%);
+  font-family: "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
   font-size: 9px;
   font-weight: 700;
   pointer-events: none;
 }
 
 .graph-label-active {
-  fill: #20251f;
+  fill: #0066ff;
   font-size: 10px;
   font-weight: 800;
 }
@@ -206,11 +200,10 @@ button:focus-visible {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  border-radius: 18px;
+  border-radius: 12px;
   padding: 16px;
-  color: #f7f3e9;
-  background: #20251f;
-  box-shadow: 4px 4px 0 #ff6b52;
+  color: #ffffff;
+  background: linear-gradient(120deg, #0066ff, #004bbb);
 }
 
 .before-after div {
@@ -221,16 +214,16 @@ button:focus-visible {
 .before-after span {
   font: 800 9px "SFMono-Regular", Consolas, monospace;
   letter-spacing: 0.12em;
-  color: rgb(247 243 233 / 48%);
+  color: rgb(255 255 255 / 62%);
 }
 
 .before-after strong {
-  font-family: Georgia, "Noto Serif SC", serif;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
   font-size: 14px;
 }
 
 .scrollbar {
-  scrollbar-color: rgb(32 37 31 / 20%) transparent;
+  scrollbar-color: rgb(18 18 18 / 20%) transparent;
   scrollbar-width: thin;
 }
 
@@ -251,5 +244,84 @@ button:focus-visible {
   *::after {
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* ===== 精修层：质感提升 ===== */
+
+.panel {
+  transition: box-shadow 220ms ease, transform 220ms ease;
+}
+.panel:hover {
+  box-shadow: 0 2px 6px rgb(18 18 18 / 4%), 0 16px 36px rgb(18 18 18 / 8%);
+}
+
+.glass-bar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgb(255 255 255 / 78%);
+  backdrop-filter: saturate(180%) blur(14px);
+  -webkit-backdrop-filter: saturate(180%) blur(14px);
+  border-bottom: 1px solid rgb(18 18 18 / 6%);
+}
+
+.hero-gradient {
+  background:
+    radial-gradient(120% 120% at 100% 0%, rgb(0 102 255 / 8%), transparent 55%),
+    radial-gradient(90% 120% at 0% 100%, rgb(124 108 255 / 7%), transparent 60%),
+    #ffffff;
+}
+
+.tag {
+  transition: 150ms ease;
+}
+.tag:hover {
+  border-color: #0066ff;
+  color: #0066ff;
+  background: #e6f0ff;
+}
+
+.concept-link-active {
+  box-shadow: inset 3px 0 0 0 rgb(255 255 255 / 50%);
+}
+
+.graph-node circle {
+  filter: drop-shadow(0 2px 5px rgb(18 18 18 / 14%));
+}
+
+.scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.scrollbar::-webkit-scrollbar-thumb {
+  background: rgb(18 18 18 / 15%);
+  border-radius: 2px;
+}
+
+.font-display {
+  letter-spacing: -0.012em;
+}
+
+@keyframes hero-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-in {
+  animation: hero-in 360ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-in {
+    animation: none;
+  }
+  .panel:hover {
+    box-shadow: 0 1px 3px rgb(18 18 18 / 4%);
   }
 }

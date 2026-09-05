@@ -1,0 +1,4460 @@
+{
+  "schemaVersion": "1.0",
+  "compiler": {
+    "mode": "llm",
+    "provider": "openai-compatible:qwen3.8-flash"
+  },
+  "creator": {
+    "id": "creator-sujianlin",
+    "name": "苏剑林",
+    "handle": "@科学空间",
+    "bio": "机器学习研究者，科学空间（Scientific Spaces）博客作者，围绕注意力机制、模型训练与架构设计持续写作多年。",
+    "focus": [
+      "注意力机制",
+      "模型训练",
+      "架构设计"
+    ],
+    "articleIds": [
+      "kexue-4765",
+      "kexue-7921",
+      "kexue-9052",
+      "kexue-10373",
+      "kexue-11320",
+      "kexue-11371",
+      "kexue-11480",
+      "kexue-11605",
+      "kexue-11664",
+      "kexue-11782",
+      "kexue-11804",
+      "kexue-11814",
+      "kexue-11823",
+      "kexue-11833",
+      "kexue-11848",
+      "kexue-11854",
+      "kexue-11875",
+      "kexue-11879"
+    ]
+  },
+  "articles": [
+    {
+      "id": "kexue-4765",
+      "title": "《Attention is All You Need》浅读（简介+代码）",
+      "slug": "kexue-4765",
+      "summary": "2017年中，有两篇类似同时也是笔者非常欣赏的论文，分别是FaceBook的《Convolutional Sequence to Sequence Learning》和Google的《Attention is All You Need》，它们都算是Seq2Seq上的创新，本质上来说，都是抛弃了RNN结构来做Seq2Seq任务。",
+      "publishedAt": "2018-01-06",
+      "readingTimeMinutes": 41,
+      "sourceUrl": "https://kexue.fm/archives/4765"
+    },
+    {
+      "id": "kexue-7921",
+      "title": "Performer：用随机投影将Attention的复杂度线性化",
+      "slug": "kexue-7921",
+      "summary": "Attention机制的$\\mathcal{O}(n^2)$复杂度是一个老大难问题了，改变这一复杂度的思路主要有两种：一是走稀疏化的思路，比如我们以往介绍过的Sparse Attention以及Google前几个月搞出来的Big Bird，等等；二是走线性化的思路，这部分工作我们之前总结在《线性Attention的探索：Attention必须有个Softmax吗？",
+      "publishedAt": "2020-12-01",
+      "readingTimeMinutes": 42,
+      "sourceUrl": "https://kexue.fm/archives/7921"
+    },
+    {
+      "id": "kexue-9052",
+      "title": "GAU-α：尝鲜体验快好省的下一代Attention",
+      "slug": "kexue-9052",
+      "summary": "在《FLASH：可能是近来最有意思的高效Transformer设计》中，我们介绍了GAU（Gated Attention Unit，门控线性单元），在这里笔者愿意称之为“目前最有潜力的下一代Attention设计”，因为它真正达到了“更快（速度）、更好（效果）、更省（显存）”的特点。",
+      "publishedAt": "2022-04-22",
+      "readingTimeMinutes": 10,
+      "sourceUrl": "https://kexue.fm/archives/9052"
+    },
+    {
+      "id": "kexue-10373",
+      "title": "Softmax后传：寻找Top-K的光滑近似",
+      "slug": "kexue-10373",
+      "summary": "Softmax，顾名思义是“soft的max”，是$\\max$算子（准确来说是$\\text{argmax}$）的光滑近似，它通过指数归一化将任意向量$\\boldsymbol{x}\\in\\mathbb{R}^n$转化为分量非负且和为1的新向量，并允许我们通过温度参数来调节它与$\\text{argmax}$（的one hot形式）的近似程度。",
+      "publishedAt": "2024-09-19",
+      "readingTimeMinutes": 43,
+      "sourceUrl": "https://kexue.fm/archives/10373"
+    },
+    {
+      "id": "kexue-11320",
+      "title": "为什么线性注意力要加Short Conv？",
+      "slug": "kexue-11320",
+      "summary": "如果读者有关注模型架构方面的进展，那么就会发现，比较新的线性Attention（参考《线性注意力简史：从模仿、创新到反哺》）模型都给$\\boldsymbol{Q},\\boldsymbol{K},\\boldsymbol{V}$加上了Short Conv，比如下图所示的DeltaNet：\nDeltaNet中的Short Conv\n为什么要加这个Short Conv呢？",
+      "publishedAt": "2025-10-05",
+      "readingTimeMinutes": 18,
+      "sourceUrl": "https://kexue.fm/archives/11320"
+    },
+    {
+      "id": "kexue-11371",
+      "title": "低精度Attention可能存在有偏的舍入误差",
+      "slug": "kexue-11371",
+      "summary": "前段时间笔者在arXiv上刷到了论文《Why Low-Precision Transformer Training Fails: An Analysis on Flash Attention》，里面描述的实验现象跟我们在训练Kimi K2时出现的一些现象很吻合，比如都是第二层Attention开始出现问题。",
+      "publishedAt": "2025-10-27",
+      "readingTimeMinutes": 22,
+      "sourceUrl": "https://kexue.fm/archives/11371"
+    },
+    {
+      "id": "kexue-11480",
+      "title": "让炼丹更科学一些（三）：SGD的终点损失收敛",
+      "slug": "kexue-11480",
+      "summary": "目前我们已经有两篇文章讨论SGD的收敛性质，不过它们都只是损失值的收敛结果，所以它们只保证我们能找到最优的损失值，但不能保证找到最优值的所在位置$\\boldsymbol{\\theta}^*$，这是目前的结论跟实践之间的一个显著gap。",
+      "publishedAt": "2025-12-16",
+      "readingTimeMinutes": 29,
+      "sourceUrl": "https://kexue.fm/archives/11480"
+    },
+    {
+      "id": "kexue-11605",
+      "title": "MuP之上：2. 线性层与最速下降",
+      "slug": "kexue-11605",
+      "summary": "在上一篇文章《MuP之上：1.",
+      "publishedAt": "2026-02-15",
+      "readingTimeMinutes": 32,
+      "sourceUrl": "https://kexue.fm/archives/11605"
+    },
+    {
+      "id": "kexue-11664",
+      "title": "Attention Residuals 回忆录",
+      "slug": "kexue-11664",
+      "summary": "这篇文章介绍我们的一个最新作品Attention Residuals（AttnRes），顾名思义，这是用Attention的思路去改进Residuals。",
+      "publishedAt": "2026-03-19",
+      "readingTimeMinutes": 43,
+      "sourceUrl": "https://kexue.fm/archives/11664"
+    },
+    {
+      "id": "kexue-11782",
+      "title": "MoE环游记：9、门控归一化之争",
+      "slug": "kexue-11782",
+      "summary": "追溯一下MoE历史，我们都能发现，早些年MoE的Router在作为Gate去乘到Expert上时，基本都是用Softmax激活，直到现在它仍是MoE的标准形式之一。",
+      "publishedAt": "2026-06-17",
+      "readingTimeMinutes": 30,
+      "sourceUrl": "https://kexue.fm/archives/11782"
+    },
+    {
+      "id": "kexue-11804",
+      "title": "让炼丹更科学一些（七）：步长调度与权重平均",
+      "slug": "kexue-11804",
+      "summary": "精通炼丹的同学都知道，步长调度，或者说学习率调度（LR Schedule），对模型最终效果来说至关重要。",
+      "publishedAt": "2026-07-06",
+      "readingTimeMinutes": 32,
+      "sourceUrl": "https://kexue.fm/archives/11804"
+    },
+    {
+      "id": "kexue-11814",
+      "title": "LogSumExp和Softmax的泰勒展开",
+      "slug": "kexue-11814",
+      "summary": "最近看到论文《The Key to Going Linear: Analysis-Driven Transformer Linearization》里边直接对Softmax做近似展开来线性化Attention，有点收获，在此记录一下。",
+      "publishedAt": "2026-07-13",
+      "readingTimeMinutes": 26,
+      "sourceUrl": "https://kexue.fm/archives/11814"
+    },
+    {
+      "id": "kexue-11823",
+      "title": "将Softmax Attention线性化为Gated DeltaNet",
+      "slug": "kexue-11823",
+      "summary": "在文章《LogSumExp和Softmax的泰勒展开》中，我们介绍了LogSumExp和Softmax的近似展开，并由此得到了一种线性化Softmax Attention的简单方案。",
+      "publishedAt": "2026-07-21",
+      "readingTimeMinutes": 37,
+      "sourceUrl": "https://kexue.fm/archives/11823"
+    },
+    {
+      "id": "kexue-11833",
+      "title": "解构Scaling Law：优化、架构、数据的三重奏",
+      "slug": "kexue-11833",
+      "summary": "训练一个大型的神经网络，最终效果会受到非常多因素的影响，换个优化器，换个模型架构，或者换一个训练集，结果都可能截然不同。",
+      "publishedAt": "2026-07-29",
+      "readingTimeMinutes": 75,
+      "sourceUrl": "https://kexue.fm/archives/11833"
+    },
+    {
+      "id": "kexue-11848",
+      "title": "简单谈谈K3的MoE和Attention",
+      "slug": "kexue-11848",
+      "summary": "上个月，我们发布了迄今为止最大的开源模型K3。",
+      "publishedAt": "2026-08-04",
+      "readingTimeMinutes": 23,
+      "sourceUrl": "https://kexue.fm/archives/11848"
+    },
+    {
+      "id": "kexue-11854",
+      "title": "除了交叉熵，LM Loss还有什么选择？",
+      "slug": "kexue-11854",
+      "summary": "一直以来，交叉熵（Cross Entropy）都是LLM预训练和微调的标准损失函数。",
+      "publishedAt": "2026-08-09",
+      "readingTimeMinutes": 35,
+      "sourceUrl": "https://kexue.fm/archives/11854"
+    },
+    {
+      "id": "kexue-11875",
+      "title": "动量的新理解：逼近特征层面的梯度下降",
+      "slug": "kexue-11875",
+      "summary": "一个以动量为状态变量的优化器，基本形式如下：\n\\begin{equation}\\begin{aligned}\n\\boldsymbol{M}_t =&\\, \\beta \\boldsymbol{M}_{t-1} + (1 - \\beta) \\boldsymbol{G}_t \\\\[4pt]\n\\boldsymbol{W}_t =&\\, \\phi(\\boldsymbol{W}_{t-1}, \\boldsymbol{M}_t, \\boldsymbol{G}_t, t)\n\\end{aligned}\\end{equation}\n不同的优化器差别主要体现在更新函数$\\phi$上，如SGDM、SignSGD、Muon等，新的探索也基本围绕$\\phi$进行，因为第一个式子的动量太简单，简单到大家不认为它有什么修改空间。",
+      "publishedAt": "2026-08-23",
+      "readingTimeMinutes": 25,
+      "sourceUrl": "https://kexue.fm/archives/11875"
+    },
+    {
+      "id": "kexue-11879",
+      "title": "让炼丹更科学一些（八）：多阶段训练的学习率",
+      "slug": "kexue-11879",
+      "summary": "上篇文章《让炼丹更科学一些（七）：步长调度与权重平均》我们简单介绍了无调度（Schedule-Free）学习率的工作，它试图通过某种权重平均来替代学习率调度，实现常数学习率就可以训出最优模型的效果。",
+      "publishedAt": "2026-08-31",
+      "readingTimeMinutes": 24,
+      "sourceUrl": "https://kexue.fm/archives/11879"
+    }
+  ],
+  "concepts": [
+    {
+      "id": "concept-anisotropy",
+      "name": "各向异性",
+      "slug": "anisotropy",
+      "summary": "向量空间中的分布特性，文章指出V矩阵的各向异性（如符号分布不均）是触发Attention偏差的关键条件之一。",
+      "domain": "模型基础",
+      "level": "advanced",
+      "aliases": [],
+      "evidenceArticleIds": [
+        "kexue-11371"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-architecture-error",
+      "name": "架构误差",
+      "slug": "architecture-error",
+      "summary": "特定架构下的理论极限损失与任意强大架构下的理论极限损失之差，衡量模型结构本身的表达能力限制。",
+      "domain": "模型基础",
+      "level": "intermediate",
+      "aliases": [],
+      "evidenceArticleIds": [
+        "kexue-11833"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-attention-is-all-you-need",
+      "name": "Attention is All You Need",
+      "slug": "attention-is-all-you-need",
+      "summary": "Google提出的论文，主张抛弃RNN结构，仅使用注意力机制进行序列到序列（Seq2Seq）任务。",
+      "domain": "模型基础",
+      "level": "foundation",
+      "aliases": [],
+      "evidenceArticleIds": [
+        "kexue-4765"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-attention-mechanism",
+      "name": "Attention机制",
+      "slug": "attention-mechanism",
+      "summary": "Transformer中的核心组件，标准实现具有O(n^2)的时间与空间复杂度。",
+      "domain": "注意力机制",
+      "level": "foundation",
+      "aliases": [
+        "Attention",
+        "Scaled-Dot Attention",
+        "Self Attention"
+      ],
+      "evidenceArticleIds": [
+        "kexue-7921"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-attention-residuals-attnres",
+      "name": "Attention Residuals (AttnRes)",
+      "slug": "attention-residuals-attnres",
+      "summary": "一种用层间注意力机制替代传统残差连接（Residuals）的模型架构改进方法，通过加权求和不同层的输出状态来增强信息流动。",
+      "domain": "模型基础",
+      "level": "advanced",
+      "aliases": [
+        "Attention Residuals",
+        "AttnRes"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11664"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-average-loss-convergence",
+      "name": "平均损失收敛",
+      "slug": "average-loss-convergence",
+      "summary": "指训练轨迹中各步损失值的平均值收敛于最优损失值，通常通过Jensen不等式和凸性性质推导得出。",
+      "domain": "通用方法",
+      "level": "intermediate",
+      "aliases": [
+        "平均损失的收敛结果"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11480"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-bf16",
+      "name": "BF16",
+      "slug": "bf16",
+      "summary": "Brain Float 16，LLM训练主要浮点格式，具有8位指数和7位尾数，采用FP32累加策略。",
+      "domain": "模型基础",
+      "level": "foundation",
+      "aliases": [
+        "BF16格式",
+        "BF16精度"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11371"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-block-attnres",
+      "name": "Block AttnRes",
+      "slug": "block-attnres",
+      "summary": "AttnRes的高效变体，将层分块并在块内求和压缩，仅在块间进行注意力计算，从而大幅降低训练和推理开销同时保持大部分性能收益。",
+      "domain": "模型基础",
+      "level": "advanced",
+      "aliases": [
+        "Block版"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11664"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-brier-score",
+      "name": "Brier评分",
+      "slug": "brier-score",
+      "summary": "一种平方损失形式的评分规则。在Softmax激活下，其梯度包含额外变换项，导致“自信地错误”时梯度消失，但具有较好的抗噪声能力。",
+      "domain": "通用方法",
+      "level": "intermediate",
+      "aliases": [
+        "平方损失"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11854"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-centroid-weight",
+      "name": "质心权重",
+      "slug": "centroid-weight",
+      "summary": "定义为训练轨迹$\boldsymbol{\theta}_1,\\dots,\\boldsymbol{\theta}_T$的平均值$\bar{\boldsymbol{\theta}}_T$，其对应的损失值在平均意义上收敛于最优损失。",
+      "domain": "通用方法",
+      "level": "intermediate",
+      "aliases": [
+        "$\\bar{\\boldsymbol{\theta}}_T$",
+        "质心"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11480"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "id": "concept-classical-convergence-result",
+      "name": "经典收敛结论",
+      "slug": "classical-convergence-result",
+      "summary": "基于SGD的凸优化收敛界，表明最优学习率依赖于训练步数T，是后续分析的理论基础。",
+      "domain": "通用方法",
+      "level": "foundation",
+      "aliases": [
+        "收敛结论",
+        "经典结论"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11879"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-convexity-assumption",
+      "name": "凸性假设",
+      "slug": "convexity-assumption",
+      "summary": "理论推导的基础假设，文中指出实际非凸情况下该假设导致等权平均效果不佳，需局部近似为凸。",
+      "domain": "通用方法",
+      "level": "advanced",
+      "aliases": [
+        "凸性",
+        "目标函数是凸的"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11804"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "id": "concept-convolutional-sequence-to-sequence-learning",
+      "name": "Convolutional Sequence to Sequence Learning",
+      "slug": "convolutional-sequence-to-sequence-learning",
+      "summary": "Facebook提出的论文，同样抛弃了RNN结构，主要使用卷积神经网络处理Seq2Seq任务。",
+      "domain": "模型基础",
+      "level": "intermediate",
+      "aliases": [],
+      "evidenceArticleIds": [
+        "kexue-4765"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-cross-entropy",
+      "name": "交叉熵",
+      "slug": "cross-entropy",
+      "summary": "LLM预训练和微调的标准损失函数，对应于对数评分规则。在Softmax激活下具有凸性且梯度形式简洁（q-e_i），学习效率较高。",
+      "domain": "通用方法",
+      "level": "foundation",
+      "aliases": [
+        "Cross Entropy",
+        "对数评分"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11854"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-data-error",
+      "name": "数据误差",
+      "slug": "data-error",
+      "summary": "理想分布上的损失与训练集上的损失之差，主要受数据数量、质量及多样性影响，也称为泛化误差。",
+      "domain": "通用方法",
+      "level": "intermediate",
+      "aliases": [
+        "泛化误差"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11833"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-dependency-stability",
+      "name": "依赖稳定性",
+      "slug": "dependency-stability",
+      "summary": "模型输出差异与输入差异之比的最大值应为常数阶，反映模型对输入扰动的敏感度。",
+      "domain": "通用方法",
+      "level": "intermediate",
+      "aliases": [],
+      "evidenceArticleIds": [
+        "kexue-11605"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-dsv4-attention-design",
+      "name": "DSV4 Attention",
+      "slug": "dsv4-attention-design",
+      "summary": "DeepSeek V4's attention design, described as an extreme evolution of MLA principles using MQA with head_dims=512, Sparse, and Compress techniques to manage costs and KV cache.",
+      "domain": "注意力机制",
+      "level": "advanced",
+      "aliases": [
+        "DSV4"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11848"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "id": "concept-dynamic-learning-rate",
+      "name": "动态学习率",
+      "slug": "dynamic-learning-rate",
+      "summary": "随时间变化的学习率设置（如$\\eta_t = \\alpha/\\sqrt{t}$），在此条件下终点损失的收敛速度为$\\mathcal{O}(\\ln T / \\sqrt{T})$。",
+      "domain": "通用方法",
+      "level": "foundation",
+      "aliases": [
+        "$\\eta_t = \\frac{\\alpha}{\\sqrt{t}}$"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11480"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "id": "concept-effective-parameter-count",
+      "name": "等效参数量",
+      "slug": "effective-parameter-count",
+      "summary": "将MoE模型的激活参数量和总参数量折算为一个Dense模型的参数量，用于统一比较不同架构的效果。",
+      "domain": "模型基础",
+      "level": "advanced",
+      "aliases": [
+        "Effective Parameter Count"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11833"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-ema",
+      "name": "指数滑动平均",
+      "slug": "ema",
+      "summary": "EMA技巧，将权重平均系数改为常数，更倾向于平均最近的优化轨迹，实践中表现优于等权平均。",
+      "domain": "通用方法",
+      "level": "intermediate",
+      "aliases": [
+        "EMA"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11804"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-entmax",
+      "name": "Entmax",
+      "slug": "entmax",
+      "summary": "一类稀疏激活函数，包括Sparsemax等变体。它们是Tsallis、Rényi等评分函数在特定参数下的最优激活形式，用于替代Softmax以生成稀疏分布。",
+      "domain": "模型基础",
+      "level": "advanced",
+      "aliases": [
+        "Sparsemax"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11854"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-entropy-invariant-softmax",
+      "name": "熵不变性Softmax",
+      "slug": "entropy-invariant-softmax",
+      "summary": "GAU-α中采用的Attention归一化方法，由作者提出，具有较好的外推能力，在bert4keras中暂称为softmax_plus。",
+      "domain": "注意力机制",
+      "level": "advanced",
+      "aliases": [
+        "softmax_plus"
+      ],
+      "evidenceArticleIds": [
+        "kexue-9052"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-equivalent-steps",
+      "name": "等效步数",
+      "slug": "equivalent-steps",
+      "summary": "引入的概念，用于量化多阶段训练中因非全局最优学习率导致的“步数亏损”，便于将理论结论迁移至实际Scaling Law。",
+      "domain": "通用方法",
+      "level": "advanced",
+      "aliases": [
+        "T_2^{\\#}"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11879"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-feature-level-gradient-descent",
+      "name": "特征层面的梯度下降",
+      "slug": "feature-level-gradient-descent",
+      "summary": "一种理想的优化目标，直接对模型输出（特征）进行梯度更新，而非仅对参数进行更新。由于无法直接修改输出，需通过调整权重间接实现。",
+      "domain": "通用方法",
+      "level": "advanced",
+      "aliases": [
+        "\\boldsymbol{Y}\\quad\\leftarrow\\quad \\boldsymbol{Y} - \\eta\\frac{\\partial \\mathcal{L}}{\\partial\\boldsymbol{Y}}"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11875"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-fenchel-young-losses",
+      "name": "Fenchel-Young Losses",
+      "slug": "fenchel-young-losses",
+      "summary": "一个统一的损失函数框架，通过凸共轭关系连接评分函数（Loss）与激活函数（Mapping）。文章利用此框架反推不同评分对应的最优激活。",
+      "domain": "通用方法",
+      "level": "advanced",
+      "aliases": [
+        "Fenchel-Young Losses框架",
+        "凸共轭"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11854"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-flash-attention",
+      "name": "Flash Attention",
+      "slug": "flash-attention",
+      "summary": "一种高效的注意力实现方式，文章澄清其分块计算并非导致偏差的主要原因，但检测与修正需按Block进行。",
+      "domain": "推理系统",
+      "level": "intermediate",
+      "aliases": [],
+      "evidenceArticleIds": [
+        "kexue-11371"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-forward-stability",
+      "name": "前向稳定性",
+      "slug": "forward-stability",
+      "summary": "模型输出范数的最大值应为常数阶，用于衡量模型在输入变化时的输出稳定性。",
+      "domain": "通用方法",
+      "level": "intermediate",
+      "aliases": [],
+      "evidenceArticleIds": [
+        "kexue-11605"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-full-attnres",
+      "name": "Full AttnRes",
+      "slug": "full-attnres",
+      "summary": "AttnRes的基础版本，计算当前层与所有前序层之间的注意力权重，虽然效果显著但在大规模训练中存在通信和显存开销问题。",
+      "domain": "模型基础",
+      "level": "advanced",
+      "aliases": [
+        "Full版"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11664"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-gated-deltanet",
+      "name": "Gated DeltaNet",
+      "slug": "gated-deltanet",
+      "summary": "A variant of linear attention incorporating gating mechanisms. The main result of the article is that proper linearization of Softmax Attention yields GDN rather than basic DeltaNet.",
+      "domain": "模型基础",
+      "level": "advanced",
+      "aliases": [
+        "GDN"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11823"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-gau",
+      "name": "GAU",
+      "slug": "gau",
+      "summary": "Gated Attention Unit，门控线性单元，被作者称为目前最有潜力的下一代Attention设计，具有更快、更好、更省的特点。",
+      "domain": "注意力机制",
+      "level": "intermediate",
+      "aliases": [
+        "Gated Attention Unit",
+        "门控线性单元"
+      ],
+      "evidenceArticleIds": [
+        "kexue-9052"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-gau-alpha",
+      "name": "GAU-α",
+      "slug": "gau-alpha",
+      "summary": "GAU的尝鲜版实现，在CLUE任务上表现优异，将RoFormerV2中的Attention+FFN组合替换为两层GAU，速度比BERT等模型快，且在长序列下显存占用更低。",
+      "domain": "注意力机制",
+      "level": "advanced",
+      "aliases": [],
+      "evidenceArticleIds": [
+        "kexue-9052"
+      ],
+      "confidence": 1,
+      "parentId": "concept-gau"
+    },
+    {
+      "id": "concept-gradtopk",
+      "name": "GradTopK",
+      "slug": "gradtopk",
+      "summary": "A Gradient-guided Soft Top-k operator derived from the observation that the Top-k indicator is the gradient of the sum of the top-k elements. It uses LogSumExp for smoothing but faces numerical stability challenges for large variance or k.",
+      "domain": "通用方法",
+      "level": "advanced",
+      "aliases": [
+        "Gradient-guided Soft Top-k operator"
+      ],
+      "evidenceArticleIds": [
+        "kexue-10373"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-greedy-decision",
+      "name": "贪心决策",
+      "slug": "greedy-decision",
+      "summary": "针对意外续训情形的策略，第一阶段取局部最优，第二阶段在现有基础上求次优解，导致整体效果相当于亏损部分步数。",
+      "domain": "通用方法",
+      "level": "intermediate",
+      "aliases": [
+        "贪心版",
+        "贪心解"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11879"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-heterogeneous-power-inequality",
+      "name": "异幂不等式",
+      "slug": "heterogeneous-power-inequality",
+      "summary": "一种数学工具，用于求解形如 $ax^p + bx^{-q}$ 的最小值及其取等条件，是推导最优超参数配比的基石。",
+      "domain": "通用方法",
+      "level": "intermediate",
+      "aliases": [],
+      "evidenceArticleIds": [
+        "kexue-11833"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-hyper-connections-hc",
+      "name": "Hyper-Connections (HC)",
+      "slug": "hyper-connections-hc",
+      "summary": "一种扩大残差流维度的架构变体，通过引入额外的矩阵变换来调节残差路径，被证明可以理解为一种特殊的层间注意力。",
+      "domain": "模型基础",
+      "level": "intermediate",
+      "aliases": [
+        "HC",
+        "Hyper-Connections"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11664"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-in-norm",
+      "name": "In Norm",
+      "slug": "in-norm",
+      "summary": "在线性层之前对输入进行归一化（如RMSNorm），以确保稳定性指标有界，对应Pre Norm结构。",
+      "domain": "模型基础",
+      "level": "intermediate",
+      "aliases": [
+        "Pre Norm"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11605"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-initial-variance",
+      "name": "初始方差",
+      "slug": "initial-variance",
+      "summary": "为了满足前向和依赖稳定性为Theta(1)，权重矩阵W的初始化方差需满足特定缩放关系。",
+      "domain": "通用方法",
+      "level": "intermediate",
+      "aliases": [],
+      "evidenceArticleIds": [
+        "kexue-11605"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-iterative-construction",
+      "name": "Iterative Construction",
+      "slug": "iterative-construction",
+      "summary": "A method to construct Top-k smooth approximations by iteratively applying Softmax-like operations, masking out previously selected elements. The article notes potential issues with this approach regarding theoretical properties like monotonicity.",
+      "domain": "通用方法",
+      "level": "advanced",
+      "aliases": [
+        "soft-$k$-max",
+        "迭代构造"
+      ],
+      "evidenceArticleIds": [
+        "kexue-10373"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "id": "concept-key-identity",
+      "name": "关键恒等式",
+      "slug": "key-identity",
+      "summary": "建立终点值$q_T$与平均值$\frac{1}{T}\\sum q_t$之间联系的数学恒等式，是证明终点损失收敛的核心工具。",
+      "domain": "通用方法",
+      "level": "advanced",
+      "aliases": [
+        "关键等式",
+        "恒等式"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11480"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "id": "concept-key-value-homogeneity",
+      "name": "键值同源问题",
+      "slug": "key-value-homogeneity",
+      "summary": "指在标准Attention中K和V由同一输入投影而来，导致信息重合度高，使得TTT框架下的回归任务变得平凡（如恒等变换）。",
+      "domain": "注意力机制",
+      "level": "advanced",
+      "aliases": [
+        "K=V",
+        "键值同源"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11320"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-kimia-linear-attention",
+      "name": "KDA",
+      "slug": "kimia-linear-attention",
+      "summary": "Kimi Linear Attention, an expressive and efficient linear attention architecture. In K3, it is mixed with MLA to provide implicit positional encoding capabilities.",
+      "domain": "注意力机制",
+      "level": "advanced",
+      "aliases": [
+        "Kimi Linear"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11848"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-kl-divergence",
+      "name": "KL Divergence",
+      "slug": "kl-divergence",
+      "summary": "Kullback-Leibler散度，文中用于构建目标函数，通过最小化预测分布p与基于损失构建的目标分布q之间的距离来优化Router。",
+      "domain": "通用方法",
+      "level": "intermediate",
+      "aliases": [
+        "KL散度"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11782"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-linear-attention",
+      "name": "线性注意力",
+      "slug": "linear-attention",
+      "summary": "一种旨在降低Transformer计算复杂度的注意力机制变体，常通过Short Conv等技巧增强表达能力。",
+      "domain": "注意力机制",
+      "level": "intermediate",
+      "aliases": [
+        "Based",
+        "Linear Attention",
+        "Linear Transformer",
+        "新式线性Attention",
+        "线性Attention",
+        "线性注意"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11320",
+        "kexue-11814",
+        "kexue-7921"
+      ],
+      "confidence": 0.98
+    },
+    {
+      "id": "concept-linear-layer",
+      "name": "线性层",
+      "slug": "linear-layer",
+      "summary": "由权重矩阵W和输入向量x构成的基本计算单元 f(x;W)=xW，是本文分析的主要对象。",
+      "domain": "模型基础",
+      "level": "foundation",
+      "aliases": [
+        "线性变换"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11605"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-lm-loss",
+      "name": "LM Loss",
+      "slug": "lm-loss",
+      "summary": "语言模型损失函数的统称。文章探讨其构造原理，指出由于自然语言的一对多特性及采样需求，损失函数需满足关于目标分布的线性约束。",
+      "domain": "通用方法",
+      "level": "intermediate",
+      "aliases": [
+        "损失函数"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11854"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-logsumexp",
+      "name": "LogSumExp",
+      "slug": "logsumexp",
+      "summary": "A smooth maximum approximation function defined as log(sum(exp(x_i))). Its Taylor expansion is derived in the article to analyze block scoring in sparse attention.",
+      "domain": "通用方法",
+      "level": "intermediate",
+      "aliases": [
+        "$\\text{logsumexp}$"
+      ],
+      "evidenceArticleIds": [
+        "kexue-10373",
+        "kexue-11814"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "id": "concept-logsumexp-softmax-taylor-expansion",
+      "name": "LogSumExp and Softmax Taylor Expansion",
+      "slug": "logsumexp-softmax-taylor-expansion",
+      "summary": "Mathematical technique used to approximate Softmax probabilities. The article applies first-order approximation specifically to diagonal elements to improve accuracy over global approximation.",
+      "domain": "通用方法",
+      "level": "intermediate",
+      "aliases": [
+        "LogSumExp和Softmax的泰勒展开",
+        "Softmax的一阶近似"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11823"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-loss-free-load-balancing",
+      "name": "Loss-Free Load Balancing",
+      "slug": "loss-free-load-balancing",
+      "summary": "DeepSeek提出的一种负载均衡机制，配合Sigmoid激活使用，无需额外的辅助损失即可实现专家均衡。",
+      "domain": "模型基础",
+      "level": "intermediate",
+      "aliases": [
+        "Loss-Free负载均衡"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11782"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-low-precision-attention",
+      "name": "低精度Attention",
+      "slug": "low-precision-attention",
+      "summary": "在BF16等低精度格式下进行的注意力机制计算，文章指出其存在固有的有偏舍入误差。",
+      "domain": "注意力机制",
+      "level": "advanced",
+      "aliases": [
+        "低精度运算"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11371"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-lr-schedule",
+      "name": "学习率调度",
+      "slug": "lr-schedule",
+      "summary": "文中明确指出“步长调度，或者说学习率调度（LR Schedule）”，对模型最终效果至关重要。",
+      "domain": "通用方法",
+      "level": "foundation",
+      "aliases": [
+        "LR Schedule"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11804"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-maxlogit-explosion",
+      "name": "MaxLogit爆炸",
+      "slug": "maxlogit-explosion",
+      "summary": "训练过程中出现的异常现象，表现为最大对数值激增，文章认为可能与低精度Attention的累积偏差有关。",
+      "domain": "模型基础",
+      "level": "intermediate",
+      "aliases": [],
+      "evidenceArticleIds": [
+        "kexue-11371"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-memory-layer",
+      "name": "Memory层",
+      "slug": "memory-layer",
+      "summary": "一种稀疏型架构组件（如PKM, Engram），通过可训练向量存储知识，进一步解耦计算与参数。",
+      "domain": "模型基础",
+      "level": "advanced",
+      "aliases": [],
+      "evidenceArticleIds": [
+        "kexue-11833"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-mhc",
+      "name": "mHC",
+      "slug": "mhc",
+      "summary": "DeepSeek提出的对HC的改进版本，通过Sigmoid激活和双随机归一化解决了HC中权重爆炸或坍缩的问题，并验证了其有效性。",
+      "domain": "模型基础",
+      "level": "intermediate",
+      "aliases": [],
+      "evidenceArticleIds": [
+        "kexue-11664"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-minimax-optimization-objective",
+      "name": "Minimax优化目标",
+      "slug": "minimax-optimization-objective",
+      "summary": "在计划情形下使用的优化目标，旨在最小化各阶段实际效果与理想值之比的最大值，实现均衡。",
+      "domain": "通用方法",
+      "level": "advanced",
+      "aliases": [
+        "minimax"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11879"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-mixture-of-experts",
+      "name": "MoE",
+      "slug": "mixture-of-experts",
+      "summary": "混合专家架构，通过稀疏激活解耦参数量和计算量，引入稀疏度作为新的Scaling变量。",
+      "domain": "模型基础",
+      "level": "advanced",
+      "aliases": [],
+      "evidenceArticleIds": [
+        "kexue-11833"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-momentum",
+      "name": "动量",
+      "slug": "momentum",
+      "summary": "优化器中的状态变量，传统上视为梯度的指数移动平均。本文提出将其重新诠释为在线回归问题的解，即特征层面梯度下降的近似实现。",
+      "domain": "通用方法",
+      "level": "intermediate",
+      "aliases": [
+        "\\boldsymbol{M}_t"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11875"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-moving-average",
+      "name": "滑动平均",
+      "slug": "moving-average",
+      "summary": "一种对训练轨迹进行平滑处理以获得更好权重的操作，文中指出其合理性可由质心权重的收敛性解释。",
+      "domain": "通用方法",
+      "level": "foundation",
+      "aliases": [],
+      "evidenceArticleIds": [
+        "kexue-11480"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "id": "concept-multi-head-attention",
+      "name": "Multi-Head Attention",
+      "slug": "multi-head-attention",
+      "summary": "多头注意力，将Q,K,V映射后重复做多次Attention并拼接结果，是Attention机制的完善。",
+      "domain": "注意力机制",
+      "level": "intermediate",
+      "aliases": [
+        "多头"
+      ],
+      "evidenceArticleIds": [
+        "kexue-4765"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-multi-head-latent-attention",
+      "name": "MLA",
+      "slug": "multi-head-latent-attention",
+      "summary": "Multi-head Latent Attention, a full attention variant used in K3. It balances training cost, KV cache size, and decoding efficiency, often combined with linear attention mechanisms.",
+      "domain": "注意力机制",
+      "level": "intermediate",
+      "aliases": [
+        "Multi-head Latent Attention"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11848"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-multi-stage-training-learning-rate",
+      "name": "多阶段训练的学习率",
+      "slug": "multi-stage-training-learning-rate",
+      "summary": "文章核心主题，探讨在多阶段训练场景下如何设置学习率以平衡各阶段终点的最优性。",
+      "domain": "通用方法",
+      "level": "advanced",
+      "aliases": [],
+      "evidenceArticleIds": [
+        "kexue-11879"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-muon-optimizer",
+      "name": "Muon优化器",
+      "slug": "muon-optimizer",
+      "summary": "一种基于正交化梯度更新的优化器，本文从第一性原理推导出其MuP版本的形式。",
+      "domain": "推理系统",
+      "level": "intermediate",
+      "aliases": [
+        "Muon"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11605"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-next-token-prediction",
+      "name": "Next Token Prediction (NTP)",
+      "slug": "next-token-prediction",
+      "summary": "大语言模型的主流训练任务，即根据上文预测下一个词，被引入TTT框架以解决自预测的平凡性问题。",
+      "domain": "通用方法",
+      "level": "foundation",
+      "aliases": [
+        "NTP",
+        "Next Token Predict"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11320"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-no-positional-encoding",
+      "name": "NoPE",
+      "slug": "no-positional-encoding",
+      "summary": "The removal of explicit Rotary Position Embeddings (RoPE) from the MLA component in K3, relying instead on the implicit positional information provided by the KDA+MLA hybrid structure.",
+      "domain": "注意力机制",
+      "level": "intermediate",
+      "aliases": [],
+      "evidenceArticleIds": [
+        "kexue-11848"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-nuclear-norm",
+      "name": "核范数",
+      "slug": "nuclear-norm",
+      "summary": "矩阵所有奇异值之和，出现在最速下降问题的对偶形式或上界估计中。",
+      "domain": "通用方法",
+      "level": "advanced",
+      "aliases": [
+        "Nuclear Norm"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11605"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-optimal-batch-size",
+      "name": "最优批大小",
+      "slug": "optimal-batch-size",
+      "summary": "在固定总训练样本数下，使优化误差最小的批大小，通常正比于总样本数的某个幂次。",
+      "domain": "推理系统",
+      "level": "intermediate",
+      "aliases": [],
+      "evidenceArticleIds": [
+        "kexue-11833"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-optimal-learning-rate",
+      "name": "最优学习率",
+      "slug": "optimal-learning-rate",
+      "summary": "在给定训练步数和批大小下，使优化误差最小的学习率，通常随训练步数增加而减小。",
+      "domain": "推理系统",
+      "level": "intermediate",
+      "aliases": [],
+      "evidenceArticleIds": [
+        "kexue-11833"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-optimization-error",
+      "name": "优化误差",
+      "slug": "optimization-error",
+      "summary": "当前优化器下的训练损失与完美优化器（或无限步数）下的理论最小损失之差，衡量优化器的效率。",
+      "domain": "通用方法",
+      "level": "intermediate",
+      "aliases": [],
+      "evidenceArticleIds": [
+        "kexue-11833"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-orthogonal-sampling",
+      "name": "正交化采样",
+      "slug": "orthogonal-sampling",
+      "summary": "对随机投影中采样的向量进行施密特正交化处理，以降低估算方差并提高精度。",
+      "domain": "通用方法",
+      "level": "advanced",
+      "aliases": [
+        "正交化",
+        "采样正交化"
+      ],
+      "evidenceArticleIds": [
+        "kexue-7921"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-out-norm",
+      "name": "Out Norm",
+      "slug": "out-norm",
+      "summary": "在线性层之后对输出进行归一化，相比In Norm其提速空间较小。",
+      "domain": "模型基础",
+      "level": "intermediate",
+      "aliases": [
+        "Post Norm"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11605"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-performer",
+      "name": "Performer",
+      "slug": "performer",
+      "summary": "Google提出的通过随机投影将Attention复杂度线性化的模型，旨在不损失精度的情况下将O(n^2)降至O(n)。",
+      "domain": "注意力机制",
+      "level": "advanced",
+      "aliases": [],
+      "evidenceArticleIds": [
+        "kexue-7921"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-planned-scenario",
+      "name": "计划情形",
+      "slug": "planned-scenario",
+      "summary": "针对提前规划的多阶段训练，使用minimax目标联合调优两个阶段的学习率，以平衡各阶段终点的相对损失。",
+      "domain": "通用方法",
+      "level": "advanced",
+      "aliases": [
+        "计划"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11879"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-position-embedding",
+      "name": "Position Embedding",
+      "slug": "position-embedding",
+      "summary": "位置编码，为纯Attention模型引入顺序信息，通常使用正弦/余弦函数构造。",
+      "domain": "长上下文",
+      "level": "intermediate",
+      "aliases": [
+        "Sinusoidal形式的Position Embedding",
+        "位置向量"
+      ],
+      "evidenceArticleIds": [
+        "kexue-4765"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-power-law-assumption",
+      "name": "幂律假设",
+      "slug": "power-law-assumption",
+      "summary": "假设模型性能随资源投入呈幂函数关系衰减，因其长尾特性符合持续改善的直觉且便于数学处理。",
+      "domain": "通用方法",
+      "level": "foundation",
+      "aliases": [
+        "幂律"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11833"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-preconditioner",
+      "name": "Preconditioner",
+      "slug": "preconditioner",
+      "summary": "基于输入数据构建的校正矩阵（如 $(\\boldsymbol{X}^{\\top}\\boldsymbol{X} + \\lambda \\boldsymbol{I})^{-1}$），用于将参数梯度转换为更准确的特征梯度方向。",
+      "domain": "通用方法",
+      "level": "advanced",
+      "aliases": [
+        "(\\boldsymbol{X}^{\\top}\\boldsymbol{X} + \\lambda \\boldsymbol{I})^{-1}"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11875"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-proper-scoring-rules",
+      "name": "恰当评分规则",
+      "slug": "proper-scoring-rules",
+      "summary": "Proper Scoring Rules，指能够正确评估概率预测质量的评分函数集合。文章推导了其一般形式，并列举了Brier、Tsallis等经典例子。",
+      "domain": "通用方法",
+      "level": "advanced",
+      "aliases": [
+        "Proper Scoring Rules",
+        "评分函数"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11854"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-quadratic-complexity-rnn",
+      "name": "Quadratic Complexity RNN",
+      "slug": "quadratic-complexity-rnn",
+      "summary": "The interpretation of Softmax Attention as an RNN where each query requires independent iteration, leading to O(t^2) total complexity. Linearization aims to decouple query operations to achieve linear complexity.",
+      "domain": "推理系统",
+      "level": "intermediate",
+      "aliases": [
+        "平方复杂度的RNN"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11823"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-quantile-balancing",
+      "name": "Quantile Balancing",
+      "slug": "quantile-balancing",
+      "summary": "A loss-free load balancing method for MoE that uses global quantiles estimated via histogram approximation to ensure expert utilization without extra hyperparameters.",
+      "domain": "通用方法",
+      "level": "advanced",
+      "aliases": [
+        "QB"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11848"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-random-projection",
+      "name": "随机投影",
+      "slug": "random-projection",
+      "summary": "Performer的核心技术，利用从正态分布采样的随机向量近似核函数（如softmax），从而将高维内积转化为低维或固定维度的内积。",
+      "domain": "通用方法",
+      "level": "advanced",
+      "aliases": [],
+      "evidenceArticleIds": [
+        "kexue-7921"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-residuals",
+      "name": "Residuals",
+      "slug": "residuals",
+      "summary": "深度学习中的标准残差连接，形式为 x_t = x_{t-1} + f_t(x_{t-1})，可视为对所有前序层输出的等权求和。",
+      "domain": "模型基础",
+      "level": "foundation",
+      "aliases": [],
+      "evidenceArticleIds": [
+        "kexue-11664"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-restricted-self-attention",
+      "name": "Restricted Self-Attention",
+      "slug": "restricted-self-attention",
+      "summary": "受限自注意力，假设当前词只与前后r个词发生联系，以降低计算量并捕捉局部结构。",
+      "domain": "注意力机制",
+      "level": "advanced",
+      "aliases": [
+        "restricted版的Self-Attention"
+      ],
+      "evidenceArticleIds": [
+        "kexue-4765"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "id": "concept-rmsnorm",
+      "name": "RMSNorm",
+      "slug": "rmsnorm",
+      "summary": "均方根归一化技术，在AttnRes中用于保证输入处理的稳定性，并利用其尺度不变性简化了加权平均与加权求和的等价性讨论。",
+      "domain": "通用方法",
+      "level": "foundation",
+      "aliases": [],
+      "evidenceArticleIds": [
+        "kexue-11664"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-roformerv2",
+      "name": "RoFormerV2",
+      "slug": "roformerv2",
+      "summary": "一种高效的Transformer变体，保留了Post Norm结构，去掉了Bias项，使用RMS Norm变体。GAU-α与其进行对比，两者整体结构一致，仅内部模块不同。",
+      "domain": "模型基础",
+      "level": "intermediate",
+      "aliases": [],
+      "evidenceArticleIds": [
+        "kexue-9052"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-round-to-even",
+      "name": "向偶舍入",
+      "slug": "round-to-even",
+      "summary": "IEEE 754提出的舍入原则，旨在消除“四舍五入”产生的正偏差，但在特定多数相加场景下可能被破坏。",
+      "domain": "通用方法",
+      "level": "foundation",
+      "aliases": [
+        "Round-to-Even"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11371"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-scaling-law",
+      "name": "Scaling Law",
+      "slug": "scaling-law",
+      "summary": "描述模型性能与计算量、参数量、数据量之间定量关系的经验规律，用于预估性能和指导超参数选择。",
+      "domain": "通用方法",
+      "level": "foundation",
+      "aliases": [],
+      "evidenceArticleIds": [
+        "kexue-11833"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-schedule-free-learning-rate",
+      "name": "Schedule-Free Learning Rate",
+      "slug": "schedule-free-learning-rate",
+      "summary": "试图通过权重平均替代学习率调度，实现常数学习率训练的方法，但其最优常数学习率仍依赖总步数T。",
+      "domain": "通用方法",
+      "level": "intermediate",
+      "aliases": [
+        "LR Schedule替代方案",
+        "Schedule-Free",
+        "无调度（Schedule-Free）学习率"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11804",
+        "kexue-11879"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "id": "concept-self-attention",
+      "name": "Self Attention",
+      "slug": "self-attention",
+      "summary": "自注意力机制，将输入序列自身作为Query, Key, Value，用于捕捉序列内部联系。",
+      "domain": "注意力机制",
+      "level": "intermediate",
+      "aliases": [
+        "内部注意力",
+        "自注意力"
+      ],
+      "evidenceArticleIds": [
+        "kexue-4765"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-seq2seq",
+      "name": "Seq2Seq",
+      "slug": "seq2seq",
+      "summary": "序列到序列的任务范式，本文讨论的两种创新方法均旨在解决此任务。",
+      "domain": "模型基础",
+      "level": "foundation",
+      "aliases": [],
+      "evidenceArticleIds": [
+        "kexue-4765"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-sgd-final-loss-convergence",
+      "name": "SGD的终点损失收敛",
+      "slug": "sgd-final-loss-convergence",
+      "summary": "将SGD的平均损失收敛结果转化为终点损失（即训练结束时权重对应的损失）的收敛结果，证明$\boldsymbol{\theta}_T$与最优解$\boldsymbol{\theta}^*$的距离界限。",
+      "domain": "通用方法",
+      "level": "advanced",
+      "aliases": [
+        "终点损失收敛",
+        "终点损失的收敛结果"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11480"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-short-conv",
+      "name": "Short Conv",
+      "slug": "short-conv",
+      "summary": "短卷积操作，通常应用于Q、K、V投影层，用于补偿线性化导致的Token-Mixing能力下降。",
+      "domain": "模型基础",
+      "level": "intermediate",
+      "aliases": [
+        "kernel_size=2的Conv"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11320"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-sigmoid-function",
+      "name": "Sigmoid Function",
+      "slug": "sigmoid-function",
+      "summary": "A smooth, monotonically increasing function often used as the base function f(x) in ThreTopK when an analytical solution is not required or when global smoothness is prioritized over computational simplicity.",
+      "domain": "通用方法",
+      "level": "foundation",
+      "aliases": [
+        "$\\sigma(x)$",
+        "Sigmoid函数",
+        "sigmoid"
+      ],
+      "evidenceArticleIds": [
+        "kexue-10373"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "id": "concept-situ-activation",
+      "name": "SiTU",
+      "slug": "situ-activation",
+      "summary": "Sigmoid Tanh Unit, an activation function replacing SiLU in SwiGLU to prevent value explosion via softcap operations, used within Stable LatentMoE experts.",
+      "domain": "通用方法",
+      "level": "intermediate",
+      "aliases": [
+        "SiTU-GLU",
+        "Sigmoid Tanh Unit"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11848"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-sliding-window-attention-swa",
+      "name": "Sliding Window Attention (SWA)",
+      "slug": "sliding-window-attention-swa",
+      "summary": "一种稀疏注意力机制，仅关注局部窗口内的历史状态。在AttnRes实验中，直接应用SWA导致效果不如Residuals，因为它无法覆盖“所有状态向量等权求和”这一特例。",
+      "domain": "注意力机制",
+      "level": "intermediate",
+      "aliases": [
+        "SWA",
+        "Sliding Window Attention"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11664"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-smooth-approximation",
+      "name": "Smooth Approximation",
+      "slug": "smooth-approximation",
+      "summary": "The process of constructing differentiable mappings that approximate discrete or non-smooth operators (like Top-k), allowing gradient flow during backpropagation.",
+      "domain": "通用方法",
+      "level": "intermediate",
+      "aliases": [
+        "Differentiable Top-$k$ Operator",
+        "光滑近似",
+        "可微Top-$k$算子"
+      ],
+      "evidenceArticleIds": [
+        "kexue-10373"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-softmax",
+      "name": "Softmax",
+      "slug": "softmax",
+      "summary": "The smooth approximation of the argmax (Top-1) operator, defined by exponential normalization. It serves as the baseline for generalizing to Top-k approximations.",
+      "domain": "通用方法",
+      "level": "foundation",
+      "aliases": [
+        "激活函数"
+      ],
+      "evidenceArticleIds": [
+        "kexue-10373",
+        "kexue-11814",
+        "kexue-11854"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-spectral-norm",
+      "name": "谱范数",
+      "slug": "spectral-norm",
+      "summary": "矩阵的最大奇异值，用于定义和计算线性层的三个稳定性指标。",
+      "domain": "通用方法",
+      "level": "advanced",
+      "aliases": [
+        "\\Vert\\boldsymbol{W}\\Vert_2"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11605"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-stable-latent-moe",
+      "name": "Stable LatentMoE",
+      "slug": "stable-latent-moe",
+      "summary": "An improved Mixture of Experts architecture based on LatentMoE, incorporating SiTU activation, RMS Norm for stability, and Quantile Balancing (QB) for load balancing.",
+      "domain": "模型基础",
+      "level": "advanced",
+      "aliases": [
+        "LatentMoE"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11848"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-static-learning-rate",
+      "name": "静态学习率",
+      "slug": "static-learning-rate",
+      "summary": "固定不变的学习率设置，在此条件下终点损失的收敛速度为$\\mathcal{O}(\\sqrt{\\ln T/T})$。",
+      "domain": "通用方法",
+      "level": "foundation",
+      "aliases": [
+        "$\\eta_t = \\eta$"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11480"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "id": "concept-steepest-descent",
+      "name": "最速下降",
+      "slug": "steepest-descent",
+      "summary": "在给定约束下使损失函数下降最快的更新方向，本文通过求解该问题推导优化器形式。",
+      "domain": "通用方法",
+      "level": "advanced",
+      "aliases": [],
+      "evidenceArticleIds": [
+        "kexue-11605"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-step-size-schedule",
+      "name": "步长调度",
+      "slug": "step-size-schedule",
+      "summary": "文章标题及正文中提到的核心概念，指训练过程中学习率随时间变化的策略。",
+      "domain": "通用方法",
+      "level": "intermediate",
+      "aliases": [],
+      "evidenceArticleIds": [
+        "kexue-11804"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-straight-through-estimator",
+      "name": "Straight-Through Estimator (STE)",
+      "slug": "straight-through-estimator",
+      "summary": "一种处理离散操作梯度的技术，前向传播使用硬选择（如argmax），反向传播使用软梯度（如log p_i），存在前后向不一致的问题。",
+      "domain": "通用方法",
+      "level": "advanced",
+      "aliases": [
+        "STE",
+        "Straight-Through Estimator"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11782"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-taylor-expansion",
+      "name": "Taylor Expansion",
+      "slug": "taylor-expansion",
+      "summary": "Mathematical technique used to approximate non-linear functions (LogSumExp and Softmax) with polynomial series, enabling analysis and linearization of attention operations.",
+      "domain": "通用方法",
+      "level": "foundation",
+      "aliases": [
+        "泰勒展开"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11814"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-test-time-training",
+      "name": "Test Time Training (TTT)",
+      "slug": "test-time-training",
+      "summary": "利用优化器更新构建RNN模型的核心思想，将KV对视为语料进行在线学习以压缩信息。",
+      "domain": "通用方法",
+      "level": "advanced",
+      "aliases": [
+        "Online Learning",
+        "TTT",
+        "Test Time Training"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11320"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-thretopk",
+      "name": "ThreTopK",
+      "slug": "thretopk",
+      "summary": "A Threshold-adjusted Soft Top-k operator that uses a monotonic function f(x) and solves for a threshold lambda such that the sum of f(x_i - lambda) equals k. It supports analytical solutions for specific functions like min(1, e^x).",
+      "domain": "通用方法",
+      "level": "advanced",
+      "aliases": [
+        "Threshold-adjusted Soft Top-k operator"
+      ],
+      "evidenceArticleIds": [
+        "kexue-10373"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-top-k-operator",
+      "name": "Top-k Operator",
+      "slug": "top-k-operator",
+      "summary": "A hard assignment mapping that identifies the indices of the k largest components in a vector, producing a Multi-Hot vector. It is non-differentiable and requires smooth approximation for end-to-end training.",
+      "domain": "通用方法",
+      "level": "intermediate",
+      "aliases": [
+        "$\\mathcal{T}_k$",
+        "Top-$k$算子",
+        "Top-k"
+      ],
+      "evidenceArticleIds": [
+        "kexue-10373"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-triple-decomposition",
+      "name": "三重分解",
+      "slug": "triple-decomposition",
+      "summary": "将总损失差距分解为数据误差、优化误差和架构误差三个部分，以解耦各因素对模型效果的影响。",
+      "domain": "通用方法",
+      "level": "advanced",
+      "aliases": [],
+      "evidenceArticleIds": [
+        "kexue-11833"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-update-stability",
+      "name": "更新稳定性",
+      "slug": "update-stability",
+      "summary": "参数增量导致的模型输出变化的最大值应为常数阶，指导优化器步长和参数更新规则的设计。",
+      "domain": "通用方法",
+      "level": "intermediate",
+      "aliases": [],
+      "evidenceArticleIds": [
+        "kexue-11605"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-vanilla-linear-attention",
+      "name": "Vanilla Linear Attention",
+      "slug": "vanilla-linear-attention",
+      "summary": "A basic form of linear attention obtained from first-order Taylor expansion of Softmax. The article notes that simple linearization leads to this, but seeks a better approximation.",
+      "domain": "注意力机制",
+      "level": "intermediate",
+      "aliases": [
+        "VaLA"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11823"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-weight-averaging",
+      "name": "权重平均",
+      "slug": "weight-averaging",
+      "summary": "一种通过平均优化轨迹中的多个权重来替代或辅助学习率调度的技术，文中推导了其收敛界。",
+      "domain": "通用方法",
+      "level": "intermediate",
+      "aliases": [],
+      "evidenceArticleIds": [
+        "kexue-11804"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "concept-wsm-merge-operation",
+      "name": "WSM Merge操作",
+      "slug": "wsm-merge-operation",
+      "summary": "Warmup-Stable and Merge (WSM) 策略中的Merge步骤，文中提到其合理性同样可以由质心权重的收敛理论来解释。",
+      "domain": "通用方法",
+      "level": "intermediate",
+      "aliases": [
+        "Merge操作",
+        "WSM"
+      ],
+      "evidenceArticleIds": [
+        "kexue-11480"
+      ],
+      "confidence": 0.85
+    }
+  ],
+  "relations": [
+    {
+      "id": "article-concept:kexue-10373:concept-gradtopk",
+      "kind": "article-concept",
+      "sourceId": "kexue-10373",
+      "targetId": "concept-gradtopk",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-10373",
+          "quote": "所以我们似乎可以改为找$\\sum\\limits_{i\\in\\Omega_k(\\boldsymbol{x})} x_i$的光滑近似，然后求梯度就得到$\\mathcal{T}_k(\\boldsymbol{x})$的光滑近似了，前者是一个标量，它的光滑近似找起来更容易一些，比如利用恒等式\n\\begin{equation}\\sum_{i\\in\\Omega_k(\\boldsymbol{x})} x_i = \\max_{i_1 《寻求一个光滑的最大值函数》），答案是$\\text{logsumexp}$：\n\\begin{equation}\\max_{i_1 单调性、不变性和趋近性，并且$\\mathcal{ST}_1(\\boldsymbol{x})$它就是Softmax，这些特性显示它确实是Softmax对于Top-$k$算子的自然推广，我们暂且称之为“GradTopK（Gradient-guided Soft Top-k operator）”。",
+          "startOffset": 4234,
+          "endOffset": 4655,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-10373:concept-iterative-construction",
+      "kind": "article-concept",
+      "sourceId": "kexue-10373",
+      "targetId": "concept-iterative-construction",
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "articleId": "kexue-10373",
+          "quote": "\n迭代构造 #\n事实上，笔者很早之前就关注过该问题，首次讨论于2019年的文章《函数光滑化杂谈：不可导函数的可导逼近》中，当时称之为$\\text{soft-}k\\text{-max}$，并给出过一个迭代构造方案：\n输入为$\\boldsymbol{x}$，初始化$\\boldsymbol{p}^{(0)}$为全0向量；\n执行$\\boldsymbol{x} = \\boldsymbol{x} - \\min(\\boldsymbol{x})$（保证所有元素非负）\n对于$i=1,2,\\dots,k$，执行：\n&emsp;&emsp;&emsp;&emsp; $\\boldsymbol{y} = (1 - \\boldsymbol{p}^{(i-1)})\\otimes\\boldsymbol{x}$;\n&emsp;&emsp;&emsp;&emsp; $\\boldsymbol{p}^{(i)} = \\boldsymbol{p}^{(i-1)} + \\text{softmax}(\\boldsymbol{y})$\n返回$\\boldsymbol{p}^{(k)}$。",
+          "startOffset": 2158,
+          "endOffset": 2634,
+          "supportScore": 0.9
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-10373:concept-logsumexp",
+      "kind": "article-concept",
+      "sourceId": "kexue-10373",
+      "targetId": "concept-logsumexp",
+      "confidence": 0.8,
+      "evidence": [
+        {
+          "articleId": "kexue-10373",
+          "quote": "所以我们似乎可以改为找$\\sum\\limits_{i\\in\\Omega_k(\\boldsymbol{x})} x_i$的光滑近似，然后求梯度就得到$\\mathcal{T}_k(\\boldsymbol{x})$的光滑近似了，前者是一个标量，它的光滑近似找起来更容易一些，比如利用恒等式\n\\begin{equation}\\sum_{i\\in\\Omega_k(\\boldsymbol{x})} x_i = \\max_{i_1 《寻求一个光滑的最大值函数》），答案是$\\text{logsumexp}$：\n\\begin{equation}\\max_{i_1 单调性、不变性和趋近性，并且$\\mathcal{ST}_1(\\boldsymbol{x})$它就是Softmax，这些特性显示它确实是Softmax对于Top-$k$算子的自然推广，我们暂且称之为“GradTopK（Gradient-guided Soft Top-k operator）”。",
+          "startOffset": 4234,
+          "endOffset": 4655,
+          "supportScore": 0.8
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-10373:concept-sigmoid-function",
+      "kind": "article-concept",
+      "sourceId": "kexue-10373",
+      "targetId": "concept-sigmoid-function",
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "articleId": "kexue-10373",
+          "quote": "看上去条件很多，但实际上这种函数构造起来没有什么难度，比如经典的Sigmoid函数$\\sigma(x)=1/(1+e^{-x})$，还有$\\text{clip}(x,0,1)$、$\\min(1, e^x)$等。",
+          "startOffset": 6013,
+          "endOffset": 6118,
+          "supportScore": 0.9
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-10373:concept-smooth-approximation",
+      "kind": "article-concept",
+      "sourceId": "kexue-10373",
+      "targetId": "concept-smooth-approximation",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-10373",
+          "quote": "Softmax，顾名思义是“soft的max”，是$\\max$算子（准确来说是$\\text{argmax}$）的光滑近似，它通过指数归一化将任意向量$\\boldsymbol{x}\\in\\mathbb{R}^n$转化为分量非负且和为1的新向量，并允许我们通过温度参数来调节它与$\\text{argmax}$（的one hot形式）的近似程度。",
+          "startOffset": 0,
+          "endOffset": 170,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-10373:concept-softmax",
+      "kind": "article-concept",
+      "sourceId": "kexue-10373",
+      "targetId": "concept-softmax",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-10373",
+          "quote": "Softmax，顾名思义是“soft的max”，是$\\max$算子（准确来说是$\\text{argmax}$）的光滑近似，它通过指数归一化将任意向量$\\boldsymbol{x}\\in\\mathbb{R}^n$转化为分量非负且和为1的新向量，并允许我们通过温度参数来调节它与$\\text{argmax}$（的one hot形式）的近似程度。",
+          "startOffset": 0,
+          "endOffset": 170,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-10373:concept-thretopk",
+      "kind": "article-concept",
+      "sourceId": "kexue-10373",
+      "targetId": "concept-thretopk",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-10373",
+          "quote": "每个分量都在$[0,1]$内肯定是满足了，但是分量之和等于$k$无法保证，所以我们引入一个跟$\\boldsymbol{x}$相关的待定常数$\\lambda(x)$来保证这一点：\n\\begin{equation}\\mathcal{ST}_k(\\boldsymbol{x}) \\triangleq f(\\boldsymbol{x} - \\lambda(\\boldsymbol{x})),\\quad \\sum_{i=1}^n f(x_i - \\lambda(\\boldsymbol{x})) = k\\end{equation}\n也就是通过分量之和为$k$来反解出$\\lambda(\\boldsymbol{x})$，我们可以称之为“ThreTopK（Threshold-adjusted Soft Top-k operator）”，如果读者已经阅读过《通向概率分布之路：盘点Softmax及其替代品》，就会发现这个做法跟Sparsemax、Entmax-$\\alpha$是一样的。",
+          "startOffset": 6267,
+          "endOffset": 6703,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-10373:concept-top-k-operator",
+      "kind": "article-concept",
+      "sourceId": "kexue-10373",
+      "targetId": "concept-top-k-operator",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-10373",
+          "quote": "我们定义Top-$k$算子$\\mathcal{T}_k$为$\\mathbb{R}^n\\mapsto\\{0,1\\}^n$的映射：\n\\begin{equation}\n[\\mathcal{T}_k(\\boldsymbol{x})]_i = \\left\\{\\begin{aligned}1,\\,\\, i\\in \\Omega_k(\\boldsymbol{x}) \\\\ 0,\\,\\, i \\not\\in \\Omega_k(\\boldsymbol{x})\\end{aligned}\\right.",
+          "startOffset": 623,
+          "endOffset": 863,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11320:concept-key-value-homogeneity",
+      "kind": "article-concept",
+      "sourceId": "kexue-11320",
+      "targetId": "concept-key-value-homogeneity",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11320",
+          "quote": "\n键值同源 #\n举个例子，如果我们取$\\boldsymbol{K}=\\boldsymbol{V}$，那么TTT这套框架理论上就失效了，因为这时候模型$\\boldsymbol{v} = \\boldsymbol{f}(\\boldsymbol{S}_t;\\boldsymbol{k})$的最优解就是恒等变换，它是一个平凡解，这相当于没记住任何东西。",
+          "startOffset": 2621,
+          "endOffset": 2792,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11320:concept-linear-attention",
+      "kind": "article-concept",
+      "sourceId": "kexue-11320",
+      "targetId": "concept-linear-attention",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11320",
+          "quote": "如果读者有关注模型架构方面的进展，那么就会发现，比较新的线性Attention（参考《线性注意力简史：从模仿、创新到反哺》）模型都给$\\boldsymbol{Q},\\boldsymbol{K},\\boldsymbol{V}$加上了Short Conv，比如下图所示的DeltaNet：\nDeltaNet中的Short Conv\n为什么要加这个Short Conv呢？",
+          "startOffset": 0,
+          "endOffset": 183,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11320:concept-next-token-prediction",
+      "kind": "article-concept",
+      "sourceId": "kexue-11320",
+      "targetId": "concept-next-token-prediction",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11320",
+          "quote": "\n以Word2Vec为例，我们知道它的训练方式是“中心词预测上下文”；之前流行的BERT，预训练方式是MLM，它是某些词Mask掉来预测这些词，可以说是“上下文预测中心词”；现在主流的LLM，训练任务则是NTP（Next Token Predict），根据上文预测下一个词。",
+          "startOffset": 3650,
+          "endOffset": 3787,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11320:concept-short-conv",
+      "kind": "article-concept",
+      "sourceId": "kexue-11320",
+      "targetId": "concept-short-conv",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11320",
+          "quote": "到这里，大家可能反应过来了，“把$\\boldsymbol{k}_{t-1}$和$\\boldsymbol{k}_t$以某种方式混合起来”这不就相当于kernel_size=2的Conv嘛！",
+          "startOffset": 4241,
+          "endOffset": 4334,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11320:concept-test-time-training",
+      "kind": "article-concept",
+      "sourceId": "kexue-11320",
+      "targetId": "concept-test-time-training",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11320",
+          "quote": "\n测试训练 #\n从《线性注意力简史：从模仿、创新到反哺》我们知道，目前的新式线性Attention背后的核心思想都是TTT（Test Time Training）或者说Online Learning。",
+          "startOffset": 313,
+          "endOffset": 413,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11371:concept-anisotropy",
+      "kind": "article-concept",
+      "sourceId": "kexue-11371",
+      "targetId": "concept-anisotropy",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11371",
+          "quote": "\n然后，随着层数的堆叠和训练的进行，输入$\\boldsymbol{V}$可能会出现“各向异性”，其中一种表现是某些维度的正负号分布不均匀，不失一般性，我们假设$v_i$大部分都是正数（负数同理），并且数量级大致相等。",
+          "startOffset": 3652,
+          "endOffset": 3760,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11371:concept-bf16",
+      "kind": "article-concept",
+      "sourceId": "kexue-11371",
+      "targetId": "concept-bf16",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11371",
+          "quote": "\n简单起见，我们只分析单头Attention，设$\\boldsymbol{Q},\\boldsymbol{K},\\boldsymbol{V}\\in\\mathbb{R}^{n\\times d}$，记$\\boldsymbol{S} = \\boldsymbol{Q}\\boldsymbol{K}^{\\top}$，加粗的$\\boldsymbol{1}$是指$n\\times 1$的全1矩阵，$\\boldsymbol{S}_{\\max}$则指$\\boldsymbol{S}$每行取最大值后得到的$n\\times 1$矩阵，那么\n\\begin{equation}\\boldsymbol{O} = \\frac{\\exp(\\boldsymbol{S})\\boldsymbol{V}}{\\exp(\\boldsymbol{S})\\boldsymbol{1}} = \\frac{\\exp(\\boldsymbol{S} - \\boldsymbol{S}_{\\max})\\boldsymbol{V}}{\\exp(\\boldsymbol{S}- \\boldsymbol{S}_{\\max})\\boldsymbol{1}}\\end{equation}\n我们记$\\bar{\\boldsymbol{P}} = \\exp(\\boldsymbol{S} - \\boldsymbol{S}_{\\max})$，那么Attention的关键计算是矩阵乘法$\\bar{\\boldsymbol{P}}\\boldsymbol{V}$，它一般是在BF16精度下进行。",
+          "startOffset": 440,
+          "endOffset": 1096,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11371:concept-flash-attention",
+      "kind": "article-concept",
+      "sourceId": "kexue-11371",
+      "targetId": "concept-flash-attention",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11371",
+          "quote": "前段时间笔者在arXiv上刷到了论文《Why Low-Precision Transformer Training Fails: An Analysis on Flash Attention》，里面描述的实验现象跟我们在训练Kimi K2时出现的一些现象很吻合，比如都是第二层Attention开始出现问题。",
+          "startOffset": 0,
+          "endOffset": 154,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11371:concept-low-precision-attention",
+      "kind": "article-concept",
+      "sourceId": "kexue-11371",
+      "targetId": "concept-low-precision-attention",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11371",
+          "quote": "论文将其归因为低精度Attention固有的有偏误差，这个分析角度是比较出乎笔者意料的，所以饶有兴致地阅读了一番。",
+          "startOffset": 154,
+          "endOffset": 211,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11371:concept-maxlogit-explosion",
+      "kind": "article-concept",
+      "sourceId": "kexue-11371",
+      "targetId": "concept-maxlogit-explosion",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11371",
+          "quote": "\n这样一来，不同训练步骤之间的偏差可能就会持续累积，从而引起MaxLogit爆炸、Loss Spike等问题，直至训练崩溃。",
+          "startOffset": 1230,
+          "endOffset": 1292,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11371:concept-round-to-even",
+      "kind": "article-concept",
+      "sourceId": "kexue-11371",
+      "targetId": "concept-round-to-even",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11371",
+          "quote": "\n向偶舍入 #\n为了理解论文结论，我们先来补习一些关于舍入误差的基本常识。",
+          "startOffset": 1354,
+          "endOffset": 1391,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11480:concept-average-loss-convergence",
+      "kind": "article-concept",
+      "sourceId": "kexue-11480",
+      "targetId": "concept-average-loss-convergence",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11480",
+          "quote": "\n所以，这篇文章我们就将平均损失的收敛结果转化为终点损失的收敛结果，初步从理论上了解$\\boldsymbol{\\theta}_T$与$\\boldsymbol{\\theta}^*$差多远。",
+          "startOffset": 203,
+          "endOffset": 296,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11480:concept-centroid-weight",
+      "kind": "article-concept",
+      "sourceId": "kexue-11480",
+      "targetId": "concept-centroid-weight",
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "articleId": "kexue-11480",
+          "quote": "为此，一个比较简单的思路是利用$L$的凸性和Jensen不等式，得到\n\\begin{equation}\\frac{1}{T}\\sum_{t=1}^T \\mathbb{E}[L(\\boldsymbol{\\theta}_t)] = \\mathbb{E}\\left[\\frac{1}{T}\\sum_{t=1}^T L(\\boldsymbol{\\theta}_t)\\right] \\geq \\mathbb{E}\\left[L\\left(\\frac{1}{T}\\sum_{t=1}^T \\boldsymbol{\\theta}_t\\right)\\right]\\end{equation}\n定义$\\bar{\\boldsymbol{\\theta}}_T = \\frac{1}{T}\\sum_{t=1}^T \\boldsymbol{\\theta}_t$，那么我们就有\n\\begin{equation}\\mathbb{E}[L(\\bar{\\boldsymbol{\\theta}}_T) - L(\\boldsymbol{\\theta}^*)] \\leq \\frac{\\Vert\\boldsymbol{\\theta}_1 - \\boldsymbol{\\theta}^*\\Vert^2}{2T\\eta_T} + \\frac{G^2}{2T}\\sum_{t=1}^T \\frac{\\eta_t^2}{\\eta_T}\\end{equation}\n即训练轨迹$\\boldsymbol{\\theta}_1,\\boldsymbol{\\theta}_2,\\cdots,\\boldsymbol{\\theta}_T$的质心$\\bar{\\boldsymbol{\\theta}}_T$对应的损失值$L(\\bar{\\boldsymbol{\\theta}}_T)$平均而言是收敛于$L(\\boldsymbol{\\theta}^*)$，即意味着$\\bar{\\boldsymbol{\\theta}}_T$平均而言是收敛于$\\boldsymbol{\\theta}^*$的（因为严格凸函数的最小值点唯一）。",
+          "startOffset": 988,
+          "endOffset": 1862,
+          "supportScore": 0.95
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11480:concept-dynamic-learning-rate",
+      "kind": "article-concept",
+      "sourceId": "kexue-11480",
+      "targetId": "concept-dynamic-learning-rate",
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "articleId": "kexue-11480",
+          "quote": "我们依旧从静态学习率和动态学习率两个例子来观察最终结论的表现。",
+          "startOffset": 6158,
+          "endOffset": 6189,
+          "supportScore": 0.9
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11480:concept-key-identity",
+      "kind": "article-concept",
+      "sourceId": "kexue-11480",
+      "targetId": "concept-key-identity",
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "articleId": "kexue-11480",
+          "quote": "\n关键等式 #\n为了将平均损失的结论转化成终点形式，我们还需要准备一个非常关键的恒等式：\n\\begin{equation}q_T = \\frac{1}{T}\\sum_{t=1}^T q_t + \\sum_{k=1}^{T-1} \\frac{1}{k(k+1)}\\sum_{t=T-k}^T (q_t - q_{T-k})\\label{eq:qt}\\end{equation}\n这个恒等式巧妙地建立了终点值和平均值之间的联系，笔者曾花了几天时间想要得到一个直观理解，但没有成功，所以只能按部就班地介绍它的证明了。",
+          "startOffset": 3426,
+          "endOffset": 3681,
+          "supportScore": 0.95
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11480:concept-moving-average",
+      "kind": "article-concept",
+      "sourceId": "kexue-11480",
+      "targetId": "concept-moving-average",
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "articleId": "kexue-11480",
+          "quote": "这一定程度上解释了对训练轨迹进行滑动平均来获得更好权重的操作，这也包括WSM（Warmup-Stable and Merge）的Merge操作的合理性等。",
+          "startOffset": 1862,
+          "endOffset": 1939,
+          "supportScore": 0.9
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11480:concept-sgd-final-loss-convergence",
+      "kind": "article-concept",
+      "sourceId": "kexue-11480",
+      "targetId": "concept-sgd-final-loss-convergence",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11480",
+          "quote": "\n所以，这篇文章我们就将平均损失的收敛结果转化为终点损失的收敛结果，初步从理论上了解$\\boldsymbol{\\theta}_T$与$\\boldsymbol{\\theta}^*$差多远。",
+          "startOffset": 203,
+          "endOffset": 296,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11480:concept-static-learning-rate",
+      "kind": "article-concept",
+      "sourceId": "kexue-11480",
+      "targetId": "concept-static-learning-rate",
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "articleId": "kexue-11480",
+          "quote": "我们依旧从静态学习率和动态学习率两个例子来观察最终结论的表现。",
+          "startOffset": 6158,
+          "endOffset": 6189,
+          "supportScore": 0.9
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11480:concept-wsm-merge-operation",
+      "kind": "article-concept",
+      "sourceId": "kexue-11480",
+      "targetId": "concept-wsm-merge-operation",
+      "confidence": 0.85,
+      "evidence": [
+        {
+          "articleId": "kexue-11480",
+          "quote": "这一定程度上解释了对训练轨迹进行滑动平均来获得更好权重的操作，这也包括WSM（Warmup-Stable and Merge）的Merge操作的合理性等。",
+          "startOffset": 1862,
+          "endOffset": 1939,
+          "supportScore": 0.85
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11605:concept-dependency-stability",
+      "kind": "article-concept",
+      "sourceId": "kexue-11605",
+      "targetId": "concept-dependency-stability",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11605",
+          "quote": " 好模型的三个特征》中，我们提出了前向稳定性、依赖稳定性、更新稳定性这三个核心指标，并给出了相应的数学定义。",
+          "startOffset": 15,
+          "endOffset": 69,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11605:concept-forward-stability",
+      "kind": "article-concept",
+      "sourceId": "kexue-11605",
+      "targetId": "concept-forward-stability",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11605",
+          "quote": " 好模型的三个特征》中，我们提出了前向稳定性、依赖稳定性、更新稳定性这三个核心指标，并给出了相应的数学定义。",
+          "startOffset": 15,
+          "endOffset": 69,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11605:concept-in-norm",
+      "kind": "article-concept",
+      "sourceId": "kexue-11605",
+      "targetId": "concept-in-norm",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11605",
+          "quote": "对此，我们只需给模型补充一些让结果有界的运算，比如：\n\\begin{align} \\newcommand{Norm}{\\mathop{\\text{Norm}}}\n&\\text{In Norm:}\\quad \\Norm(\\boldsymbol{x})\\boldsymbol{W} \\\\[5pt]\n&\\text{Out Norm:}\\quad \\Norm(\\boldsymbol{x}\\boldsymbol{W})\n\\end{align}\n其中$\\Norm(\\boldsymbol{x}) = \\boldsymbol{x} / \\Vert\\boldsymbol{x}\\Vert_{RMS}$，这里省掉了RMS Norm带有的gamma参数，假设它的影响是次要的。",
+          "startOffset": 1283,
+          "endOffset": 1612,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11605:concept-initial-variance",
+      "kind": "article-concept",
+      "sourceId": "kexue-11605",
+      "targetId": "concept-initial-variance",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11605",
+          "quote": "\n初始方差 #\n根据上一节的讨论，约定我们只考虑带有In Norm的线性层，那么由谱范数定义可以计算三个指标：\n\\begin{align}\n&\\text{前向稳定性:}\\quad\\max_{\\Vert\\boldsymbol{x}\\Vert_{RMS}=1} \\Vert \\boldsymbol{x}\\boldsymbol{W}\\Vert_{RMS} = \\sqrt{\\frac{d_{in}}{d_{out}}}\\Vert\\boldsymbol{W}\\Vert_2 \\\\[5pt]\n&\\text{依赖稳定性:}\\quad\\max_{\\Vert\\boldsymbol{x}_1\\Vert_{RMS}=\\Vert\\boldsymbol{x}_2\\Vert_{RMS}=1} \\frac{\\Vert \\boldsymbol{x}_1\\boldsymbol{W} - \\boldsymbol{x}_2\\boldsymbol{W}\\Vert_{RMS}}{\\Vert \\boldsymbol{x}_1 - \\boldsymbol{x}_2\\Vert_{RMS}} = \\sqrt{\\frac{d_{in}}{d_{out}}}\\Vert\\boldsymbol{W}\\Vert_2 \\\\[5pt]\n&\\text{更新稳定性:}\\quad\\max_{\\Vert\\boldsymbol{x}\\Vert_{RMS}=1} \\Vert \\boldsymbol{x}(\\boldsymbol{W} + \\Delta\\boldsymbol{W}) - \\boldsymbol{x}\\boldsymbol{W}\\Vert_{RMS} = \\sqrt{\\frac{d_{in}}{d_{out}}}\\Vert\\Delta\\boldsymbol{W}\\Vert_2\n\\end{align}\n其中对一个矩阵取$\\Vert\\cdot\\Vert_2$表示该矩阵的谱范数，可以看到，三个指标都是谱范数的某个变体，或者更准确地说，笔者所提的这三个指标，本就是从谱范数出发所做的推广。",
+          "startOffset": 2725,
+          "endOffset": 3596,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11605:concept-linear-layer",
+      "kind": "article-concept",
+      "sourceId": "kexue-11605",
+      "targetId": "concept-linear-layer",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11605",
+          "quote": "\n\\begin{align}\n&\\text{前向稳定性:}\\quad\\max_{\\boldsymbol{x}} \\Vert \\boldsymbol{f}(\\boldsymbol{x};\\boldsymbol{\\omega})\\Vert_{RMS} = \\Theta(1) \\label{eq:c1} \\\\[5pt]\n&\\text{依赖稳定性:}\\quad\\max_{\\boldsymbol{x}_1,\\boldsymbol{x}_2} \\frac{\\Vert \\boldsymbol{f}(\\boldsymbol{x}_1;\\boldsymbol{\\omega}) - \\boldsymbol{f}(\\boldsymbol{x}_2;\\boldsymbol{\\omega})\\Vert_{RMS}}{\\Vert\\boldsymbol{x}_1 - \\boldsymbol{x}_2\\Vert_{RMS}} = \\Theta(1) \\label{eq:c2} \\\\[5pt]\n&\\text{更新稳定性:}\\quad\\max_{\\boldsymbol{x}} \\Vert \\boldsymbol{f}(\\boldsymbol{x};\\boldsymbol{\\omega} + \\Delta\\boldsymbol{\\omega}) - \\boldsymbol{f}(\\boldsymbol{x};\\boldsymbol{\\omega})\\Vert_{RMS} = \\Theta(1) \\label{eq:c3}\n\\end{align}\n我们以线性层作为第一个例子，其结果对部分读者来说应该不陌生，它就是去年逐渐兴起的Muon优化器。",
+          "startOffset": 164,
+          "endOffset": 877,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11605:concept-muon-optimizer",
+      "kind": "article-concept",
+      "sourceId": "kexue-11605",
+      "targetId": "concept-muon-optimizer",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11605",
+          "quote": "\n\\begin{align}\n&\\text{前向稳定性:}\\quad\\max_{\\boldsymbol{x}} \\Vert \\boldsymbol{f}(\\boldsymbol{x};\\boldsymbol{\\omega})\\Vert_{RMS} = \\Theta(1) \\label{eq:c1} \\\\[5pt]\n&\\text{依赖稳定性:}\\quad\\max_{\\boldsymbol{x}_1,\\boldsymbol{x}_2} \\frac{\\Vert \\boldsymbol{f}(\\boldsymbol{x}_1;\\boldsymbol{\\omega}) - \\boldsymbol{f}(\\boldsymbol{x}_2;\\boldsymbol{\\omega})\\Vert_{RMS}}{\\Vert\\boldsymbol{x}_1 - \\boldsymbol{x}_2\\Vert_{RMS}} = \\Theta(1) \\label{eq:c2} \\\\[5pt]\n&\\text{更新稳定性:}\\quad\\max_{\\boldsymbol{x}} \\Vert \\boldsymbol{f}(\\boldsymbol{x};\\boldsymbol{\\omega} + \\Delta\\boldsymbol{\\omega}) - \\boldsymbol{f}(\\boldsymbol{x};\\boldsymbol{\\omega})\\Vert_{RMS} = \\Theta(1) \\label{eq:c3}\n\\end{align}\n我们以线性层作为第一个例子，其结果对部分读者来说应该不陌生，它就是去年逐渐兴起的Muon优化器。",
+          "startOffset": 164,
+          "endOffset": 877,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11605:concept-nuclear-norm",
+      "kind": "article-concept",
+      "sourceId": "kexue-11605",
+      "targetId": "concept-nuclear-norm",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11605",
+          "quote": "}\\qquad \\Vert\\boldsymbol{\\Phi}\\Vert_2=1\\end{equation}\n接下来，设$\\boldsymbol{G}$可以SVD成$\\boldsymbol{U}\\boldsymbol{\\Sigma}\\boldsymbol{V}^{\\top} = \\sum\\limits_{i=1}^r \\sigma_i \\boldsymbol{u}_i \\boldsymbol{v}_i^{\\top}$，$r$是$\\boldsymbol{G}$的秩，我们有\n\\begin{equation}\\tr(\\boldsymbol{G}^{\\top}\\boldsymbol{\\Phi})=\\tr\\left(\\sum_{i=1}^r \\sigma_i \\boldsymbol{v}_i \\boldsymbol{u}_i^{\\top}\\boldsymbol{\\Phi}\\right) = \\sum_{i=1}^r \\sigma_i \\boldsymbol{u}_i^{\\top}\\boldsymbol{\\Phi}\\boldsymbol{v}_i\\end{equation}\n根据定义，当$\\Vert\\boldsymbol{\\Phi}\\Vert_2=1$时$\\Vert\\boldsymbol{\\Phi}\\boldsymbol{v}_i\\Vert_2\\leq \\Vert\\boldsymbol{v}_i\\Vert_2=1$，于是$\\boldsymbol{u}_i^{\\top}\\boldsymbol{\\Phi}\\boldsymbol{v}_i\\leq 1$，因此\n\\begin{equation}\\tr(\\boldsymbol{G}^{\\top}\\boldsymbol{\\Phi})\\leq \\sum_{i=1}^r \\sigma_i = \\Vert \\boldsymbol{G}\\Vert_*\\end{equation}\n其中$\\Vert\\cdot\\Vert_*$称为矩阵的核范数（Nuclear Norm），等号在所有$\\boldsymbol{u}_i^{\\top}\\boldsymbol{\\Phi}\\boldsymbol{v}_i$都等于1时取到，此时\n\\begin{equation}\\newcommand{msign}{\\mathop{\\text{msign}}}\\boldsymbol{\\Phi} = \\sum_{i=1}^r \\boldsymbol{u}_i \\boldsymbol{v}_i^{\\top} = \\boldsymbol{U}_{[:,:r]}\\boldsymbol{V}_{[:,:r]}^{\\top} = \\msign(\\boldsymbol{G})\\end{equation}\n结果汇总 #\n简单总结一下，到目前为止，我们从三个稳定性指标触发，至少得到了两个结论，一是参数$\\boldsymbol{W}$的初始化方差$\\sigma^2$应当满足\n\\begin{equation}\\sigma = \\Theta\\left(\\sqrt{\\frac{d_{out}}{d_{in}}}\\frac{1}{\\sqrt{d_{in}} + \\sqrt{d_{out}}}\\right)\\end{equation}\n二是它的增量$\\Delta\\boldsymbol{W}$应当取如下形式\n\\begin{equation}\\Delta\\boldsymbol{W} = -\\eta\\sqrt{\\frac{d_{out}}{d_{in}}}\\msign(\\boldsymbol{G})\\end{equation}\n这正好是MuP版Muon（几个版本的区别可以参考《Muon优化器指南：快速上手与关键细节》，标准的Muon会将$\\boldsymbol{G}$换成它的动量，这可以视为更平滑的梯度估计）。",
+          "startOffset": 5950,
+          "endOffset": 7556,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11605:concept-out-norm",
+      "kind": "article-concept",
+      "sourceId": "kexue-11605",
+      "targetId": "concept-out-norm",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11605",
+          "quote": "对此，我们只需给模型补充一些让结果有界的运算，比如：\n\\begin{align} \\newcommand{Norm}{\\mathop{\\text{Norm}}}\n&\\text{In Norm:}\\quad \\Norm(\\boldsymbol{x})\\boldsymbol{W} \\\\[5pt]\n&\\text{Out Norm:}\\quad \\Norm(\\boldsymbol{x}\\boldsymbol{W})\n\\end{align}\n其中$\\Norm(\\boldsymbol{x}) = \\boldsymbol{x} / \\Vert\\boldsymbol{x}\\Vert_{RMS}$，这里省掉了RMS Norm带有的gamma参数，假设它的影响是次要的。",
+          "startOffset": 1283,
+          "endOffset": 1612,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11605:concept-spectral-norm",
+      "kind": "article-concept",
+      "sourceId": "kexue-11605",
+      "targetId": "concept-spectral-norm",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11605",
+          "quote": "\n初始方差 #\n根据上一节的讨论，约定我们只考虑带有In Norm的线性层，那么由谱范数定义可以计算三个指标：\n\\begin{align}\n&\\text{前向稳定性:}\\quad\\max_{\\Vert\\boldsymbol{x}\\Vert_{RMS}=1} \\Vert \\boldsymbol{x}\\boldsymbol{W}\\Vert_{RMS} = \\sqrt{\\frac{d_{in}}{d_{out}}}\\Vert\\boldsymbol{W}\\Vert_2 \\\\[5pt]\n&\\text{依赖稳定性:}\\quad\\max_{\\Vert\\boldsymbol{x}_1\\Vert_{RMS}=\\Vert\\boldsymbol{x}_2\\Vert_{RMS}=1} \\frac{\\Vert \\boldsymbol{x}_1\\boldsymbol{W} - \\boldsymbol{x}_2\\boldsymbol{W}\\Vert_{RMS}}{\\Vert \\boldsymbol{x}_1 - \\boldsymbol{x}_2\\Vert_{RMS}} = \\sqrt{\\frac{d_{in}}{d_{out}}}\\Vert\\boldsymbol{W}\\Vert_2 \\\\[5pt]\n&\\text{更新稳定性:}\\quad\\max_{\\Vert\\boldsymbol{x}\\Vert_{RMS}=1} \\Vert \\boldsymbol{x}(\\boldsymbol{W} + \\Delta\\boldsymbol{W}) - \\boldsymbol{x}\\boldsymbol{W}\\Vert_{RMS} = \\sqrt{\\frac{d_{in}}{d_{out}}}\\Vert\\Delta\\boldsymbol{W}\\Vert_2\n\\end{align}\n其中对一个矩阵取$\\Vert\\cdot\\Vert_2$表示该矩阵的谱范数，可以看到，三个指标都是谱范数的某个变体，或者更准确地说，笔者所提的这三个指标，本就是从谱范数出发所做的推广。",
+          "startOffset": 2725,
+          "endOffset": 3596,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11605:concept-steepest-descent",
+      "kind": "article-concept",
+      "sourceId": "kexue-11605",
+      "targetId": "concept-steepest-descent",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11605",
+          "quote": "接下来，我们将会把它们跟最速下降思想结合，给每个参数定制“稳中求快”的更新规则。",
+          "startOffset": 124,
+          "endOffset": 164,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11605:concept-update-stability",
+      "kind": "article-concept",
+      "sourceId": "kexue-11605",
+      "targetId": "concept-update-stability",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11605",
+          "quote": " 好模型的三个特征》中，我们提出了前向稳定性、依赖稳定性、更新稳定性这三个核心指标，并给出了相应的数学定义。",
+          "startOffset": 15,
+          "endOffset": 69,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11664:concept-attention-residuals-attnres",
+      "kind": "article-concept",
+      "sourceId": "kexue-11664",
+      "targetId": "concept-attention-residuals-attnres",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11664",
+          "quote": "这篇文章介绍我们的一个最新作品Attention Residuals（AttnRes），顾名思义，这是用Attention的思路去改进Residuals。",
+          "startOffset": 0,
+          "endOffset": 77,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11664:concept-block-attnres",
+      "kind": "article-concept",
+      "sourceId": "kexue-11664",
+      "targetId": "concept-block-attnres",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11664",
+          "quote": "\n但很不幸的是，训练的同学如@王哥经过仔细分析，判断出在我们当前的训练环境下，AttnRes还是不够可行（说白了还是穷），需要一个进一步降低通信和显存的方案，于是就有了下面的Block版，相应地，之前的版本我们称为Full版。",
+          "startOffset": 5000,
+          "endOffset": 5113,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11664:concept-full-attnres",
+      "kind": "article-concept",
+      "sourceId": "kexue-11664",
+      "targetId": "concept-full-attnres",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11664",
+          "quote": "\n但很不幸的是，训练的同学如@王哥经过仔细分析，判断出在我们当前的训练环境下，AttnRes还是不够可行（说白了还是穷），需要一个进一步降低通信和显存的方案，于是就有了下面的Block版，相应地，之前的版本我们称为Full版。",
+          "startOffset": 5000,
+          "endOffset": 5113,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11664:concept-hyper-connections-hc",
+      "kind": "article-concept",
+      "sourceId": "kexue-11664",
+      "targetId": "concept-hyper-connections-hc",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11664",
+          "quote": "\n超级连接 #\n在开展AttnRes之前，我们先简单回顾一下HC（Hyper-Connections），并证明它也可以理解为层间Attention，从而表明层间Attention确实是一条更为本质的路线。",
+          "startOffset": 1732,
+          "endOffset": 1834,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11664:concept-mhc",
+      "kind": "article-concept",
+      "sourceId": "kexue-11664",
+      "targetId": "concept-mhc",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11664",
+          "quote": "\n矩阵视角 #\n值得一提的是，我们还可以通过Attention矩阵，将Residuals、HC/mHC、Full AttnRes、Block AttnRes统一起来，这也是一个比较有趣的理解视角，示例如下。",
+          "startOffset": 5959,
+          "endOffset": 6062,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11664:concept-residuals",
+      "kind": "article-concept",
+      "sourceId": "kexue-11664",
+      "targetId": "concept-residuals",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11664",
+          "quote": "这篇文章介绍我们的一个最新作品Attention Residuals（AttnRes），顾名思义，这是用Attention的思路去改进Residuals。",
+          "startOffset": 0,
+          "endOffset": 77,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11664:concept-rmsnorm",
+      "kind": "article-concept",
+      "sourceId": "kexue-11664",
+      "targetId": "concept-rmsnorm",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11664",
+          "quote": "上式还给$a_{t,s}$多加了两个约束，我们先来讨论一下它们的必要性：\n1、约束$a_{t,s}\\geq 0$保证了同一个$\\boldsymbol{y}_s$对不同层的贡献始终是同向的，避免出现一层想要增大$\\boldsymbol{y}_s$而另一层却想要缩小$\\boldsymbol{y}_s$的不一致性，直觉上对模型的学习更加友好；\n2、我们用的$\\boldsymbol{f}$是带In Norm的，会对输入先做$\\newcommand{RMSNorm}{\\mathop{\\text{RMSNorm}}}\\RMSNorm$，由于$\\RMSNorm(\\boldsymbol{x})=\\RMSNorm(c\\boldsymbol{x})$对$\\forall c > 0$都恒成立，所以加权平均和加权求和完全等价，约束$\\sum_{s=0}^t a_{t,s}=1$不会降低表达力。",
+          "startOffset": 1342,
+          "endOffset": 1732,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11664:concept-sliding-window-attention-swa",
+      "kind": "article-concept",
+      "sourceId": "kexue-11664",
+      "targetId": "concept-sliding-window-attention-swa",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11664",
+          "quote": "\n分块版本 #\n从Full AttnRes到Block AttnRes，相当于以往的将平方Attention线性化的过程，各种已有的Efficient Attention的思路都可以套上去试试，比如我们第一个尝试的就是SWA（Sliding Window Attention），然而发现实际效果很糟糕，甚至还不如Residuals。",
+          "startOffset": 5113,
+          "endOffset": 5279,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11782:concept-kl-divergence",
+      "kind": "article-concept",
+      "sourceId": "kexue-11782",
+      "targetId": "concept-kl-divergence",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11782",
+          "quote": "为此，我们考虑最小化KL散度\n\\begin{equation}KL(\\boldsymbol{p}\\Vert \\boldsymbol{q}) = \\sum_{i=1}^n p_i \\log \\frac{p_i}{q_i}\\end{equation}\n稍加变形得\n\\begin{equation}KL(\\boldsymbol{p}\\Vert \\boldsymbol{q}) = - \\mathcal{H}(\\boldsymbol{p}) + \\frac{1}{\\tau}\\sum_{i=1}^n p_i \\ell(\\boldsymbol{e}_i) - \\log \\sum_{i=1}^n e^{-\\ell(\\boldsymbol{e}_i)/\\tau}\\end{equation}\n可以看到，这个目标分三项，第一项是负熵$-\\mathcal{H}(\\boldsymbol{p})$，最小化它意味着最大熵，这实际上鼓励模型进行充分的尝试，可以认为负载均衡已经承担了类似角色，所以先不管它；第三项跟$\\boldsymbol{p}$无关，也就是跟$\\boldsymbol{\\theta}$无关，所以等效的损失函数是$\\mathcal{L} = \\sum_{i=1}^n p_i \\ell(\\boldsymbol{e}_i)$\n直通估计 #\n对等效损失求梯度得\n\\begin{equation}\\nabla_{\\boldsymbol{\\theta}}\\mathcal{L} = \\sum_{i=1}^n \\nabla_{\\boldsymbol{\\theta}} p_i \\cdot \\ell(\\boldsymbol{e}_i) = \\sum_{i=1}^n p_i \\nabla_{\\boldsymbol{\\theta}} \\log p_i \\cdot \\ell(\\boldsymbol{e}_i) = \\mathbb{E}_{i\\sim \\boldsymbol{p}} [\\nabla_{\\boldsymbol{\\theta}}\\log p_i \\cdot \\ell(\\boldsymbol{e}_i)]\\end{equation}\n这里的关键是利用$\\nabla_{\\boldsymbol{\\theta}} p_i = p_i \\nabla_{\\boldsymbol{\\theta}} \\log p_i$单独分离出了一项$p_i$，这样才能求和转化为期望，进而通过采样来达到MoE的稀疏计算目标。",
+          "startOffset": 3136,
+          "endOffset": 4181,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11782:concept-loss-free-load-balancing",
+      "kind": "article-concept",
+      "sourceId": "kexue-11782",
+      "targetId": "concept-loss-free-load-balancing",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11782",
+          "quote": "不过，为了配合Loss-Free负载均衡，DeepSeek将激活函数改成了Sigmoid，并证明了这也是一个颇有竞争力的方案，这引发了大家对Router形式更深入的思考和尝试。",
+          "startOffset": 82,
+          "endOffset": 170,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11782:concept-straight-through-estimator",
+      "kind": "article-concept",
+      "sourceId": "kexue-11782",
+      "targetId": "concept-straight-through-estimator",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11782",
+          "quote": "最终我们得到了一个“前向传播用$1$、反向传播用$\\log p_i$”的Straight-Through Estimator（STE）来为Router提供梯度。",
+          "startOffset": 5531,
+          "endOffset": 5611,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11804:concept-convexity-assumption",
+      "kind": "article-concept",
+      "sourceId": "kexue-11804",
+      "targetId": "concept-convexity-assumption",
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "articleId": "kexue-11804",
+          "quote": "设$q_t=\\mathbb{E}[L(\\boldsymbol{\\theta}_t)-L(\\boldsymbol{\\theta}^*)]$，代入到式$\\eqref{eq:qt-gg}$得\n\\begin{equation}\\frac{1}{v_{1:T}}\\sum_{t=1}^T v_t \\mathbb{E}[L(\\boldsymbol{\\theta}_t) - L(\\boldsymbol{\\theta}^*)] = \\frac{1}{w_{1:T}}\\sum_{t=1}^T w_t \\mathbb{E}[L(\\boldsymbol{\\theta}_t) - L(\\boldsymbol{\\theta}^*)] + \\frac{1}{v_{1:T}}\\sum_{k=1}^{T-1}\\left(\\frac{v_{k+1:T}}{w_{k+1:T}} - \\frac{v_{k:T}}{w_{k:T}}\\right)\\sum_{t=k+1}^T w_t \\mathbb{E}[L(\\boldsymbol{\\theta}_t) - L(\\boldsymbol{\\theta}_k)]\\end{equation}\n利用$L$的凸性，对$\\mathbb{E}[L(\\boldsymbol{\\theta}_t)-L(\\boldsymbol{\\theta}^*)]$和$\\mathbb{E}[L(\\boldsymbol{\\theta}_t)-L(\\boldsymbol{\\theta}_k)]$进行放缩，然后像上一篇文章的“恒等变换”一节那样仔细整理，可得\n\\begin{equation}\\frac{1}{v_{1:T}}\\sum_{t=1}^T v_t\\,\\mathbb{E}[L(\\boldsymbol{\\theta}_t)-L(\\boldsymbol{\\theta}^*)]\\leq \\frac{1}{w_{1:T}}\\sum_{t=1}^T w_t\\,\\mathbb{E}[\\boldsymbol{g}(\\boldsymbol{x}_t,\\boldsymbol{\\theta}_t)\\cdot(\\boldsymbol{\\psi}_t-\\boldsymbol{\\theta}^*)] \\label{leq:mid}\\end{equation}\n其中\n\\begin{equation}\\boldsymbol{\\psi}_t=\\frac{w_{1:T}}{v_{1:T}}\\left[\\frac{v_{t:T}}{w_{t:T}}\\boldsymbol{\\theta}_t-\\sum_{k=1}^{t-1}\\left(\\frac{v_{k+1:T}}{w_{k+1:T}}-\\frac{v_{k:T}}{w_{k:T}}\\right)\\boldsymbol{\\theta}_k\\right]\\end{equation}\n并且直接验证可得\n\\begin{equation}\\boldsymbol{\\psi}_{t+1}-\\boldsymbol{\\psi}_t=\\frac{v_{t+1:T}}{v_{1:T}}\\frac{w_{1:T}}{w_{t+1:T}}(\\boldsymbol{\\theta}_{t+1}-\\boldsymbol{\\theta}_t)\\end{equation}\n因此，如果我们让$\\boldsymbol{\\psi}_t$按照$\\boldsymbol{\\psi}_{t+1}=\\boldsymbol{\\psi}_t-w_t\\boldsymbol{g}(\\boldsymbol{x}_t,\\boldsymbol{\\theta}_t)$更新，那么对应的$\\boldsymbol{\\theta}_t$的更新规则是\n\\begin{equation}\\boldsymbol{\\theta}_{t+1}=\\boldsymbol{\\theta}_t-\\underbrace{\\frac{v_{1:T}}{v_{t+1:T}}\\frac{w_t w_{t+1:T}}{w_{1:T}}}_{\\eta_t}\\boldsymbol{g}(\\boldsymbol{x}_t,\\boldsymbol{\\theta}_t)\\end{equation}\n一般结论 #\n接下来的操作就比较朴素了，对式$\\eqref{leq:mid}$右端应用《让炼丹更科学一些（五）：基于梯度精调学习率》等文章的结论得\n\\begin{equation}\\frac{1}{w_{1:T}}\\sum_{t=1}^T w_t\\,\\mathbb{E}[\\boldsymbol{g}(\\boldsymbol{x}_t,\\boldsymbol{\\theta}_t)\\cdot(\\boldsymbol{\\psi}_t-\\boldsymbol{\\theta}^*)] \\leq \\frac{1}{2 w_{1:T}}\\left(R^2 + \\sum_{t=1}^T w_t^2 G_t^2\\right) \\end{equation}\n其中$R = \\Vert\\boldsymbol{\\theta}_1 - \\boldsymbol{\\theta}^*\\Vert, G_t^2 = \\mathbb{E}[\\Vert\\boldsymbol{g}(\\boldsymbol{x}_t, \\boldsymbol{\\theta}_t)\\Vert^2]$，约定$\\boldsymbol{\\psi}_1=\\boldsymbol{\\theta}_1$。",
+          "startOffset": 2934,
+          "endOffset": 5227,
+          "supportScore": 0.95
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11804:concept-ema",
+      "kind": "article-concept",
+      "sourceId": "kexue-11804",
+      "targetId": "concept-ema",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11804",
+          "quote": "\n不过，如果我们将$c_t$改为某个与$t$无关的适当的常数，比如$10^{-3}$，那么实践中往往有着不俗的表现——这正是笔者之前打比赛常用的指数滑动平均（EMA）技巧。",
+          "startOffset": 1201,
+          "endOffset": 1287,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11804:concept-lr-schedule",
+      "kind": "article-concept",
+      "sourceId": "kexue-11804",
+      "targetId": "concept-lr-schedule",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11804",
+          "quote": "精通炼丹的同学都知道，步长调度，或者说学习率调度（LR Schedule），对模型最终效果来说至关重要。",
+          "startOffset": 0,
+          "endOffset": 52,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11804:concept-schedule-free-learning-rate",
+      "kind": "article-concept",
+      "sourceId": "kexue-11804",
+      "targetId": "concept-schedule-free-learning-rate",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11804",
+          "quote": "折中方案是假设局部近似为凸，那么可以在有限区间内对等权重平均，又或者直接考虑它的平滑版本——指数滑动平均（EMA），此时$v_t = \\gamma^{-t}$（其中$0 相关工作 #\n对于式$\\eqref{eq:pr}$效果欠佳的问题，论文《The Road Less Scheduled》提出了“Schedule-Free”，它将求梯度的点改为了$\\boldsymbol{\\theta}_t$与$\\boldsymbol{\\mu}_t$的插值：\n\\begin{equation}\\begin{aligned}\n\\hat{\\boldsymbol{\\theta}}_t =&\\, (1-\\beta)\\boldsymbol{\\theta}_t + \\beta \\boldsymbol{\\mu}_t \\\\[4pt]\n\\boldsymbol{\\theta}_{t+1} =&\\, \\boldsymbol{\\theta}_t - \\eta\\, \\boldsymbol{g}(\\boldsymbol{x}_t, \\hat{\\boldsymbol{\\theta}}_t) \\\\[4pt]\n\\boldsymbol{\\mu}_{t+1} =&\\, (1 - c_{t+1}) \\boldsymbol{\\mu}_t + c_{t+1} \\boldsymbol{\\theta}_{t+1}\n\\end{aligned}\\end{equation}\n直观来想，就是原本的平均操作完全独立于训练过程，模型从未感知过$\\boldsymbol{\\mu}_t$究竟好不好，现在我们将求梯度的点换成$\\boldsymbol{\\theta}_t$与$\\boldsymbol{\\mu}_t$的插值，模型能感知到$\\boldsymbol{\\mu}_t$的好坏，从而作出调整。",
+          "startOffset": 6839,
+          "endOffset": 7604,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11804:concept-step-size-schedule",
+      "kind": "article-concept",
+      "sourceId": "kexue-11804",
+      "targetId": "concept-step-size-schedule",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11804",
+          "quote": "精通炼丹的同学都知道，步长调度，或者说学习率调度（LR Schedule），对模型最终效果来说至关重要。",
+          "startOffset": 0,
+          "endOffset": 52,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11804:concept-weight-averaging",
+      "kind": "article-concept",
+      "sourceId": "kexue-11804",
+      "targetId": "concept-weight-averaging",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11804",
+          "quote": "\n如何从理论上分析学习率调度与权重平均的联系呢？",
+          "startOffset": 172,
+          "endOffset": 196,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11814:concept-linear-attention",
+      "kind": "article-concept",
+      "sourceId": "kexue-11814",
+      "targetId": "concept-linear-attention",
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "articleId": "kexue-11814",
+          "quote": "\n线性注意 #\n至于$\\softmax(\\boldsymbol{x})$展开式的应用，自然是线性化Attention了。",
+          "startOffset": 5595,
+          "endOffset": 5655,
+          "supportScore": 0.95
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11814:concept-logsumexp",
+      "kind": "article-concept",
+      "sourceId": "kexue-11814",
+      "targetId": "concept-logsumexp",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11814",
+          "quote": "\n一些记号 #\n首先引入如下记号：\n\\begin{gather}\\newcommand{logsumexp}{\\mathop{\\text{logsumexp}}}\\newcommand{softmax}{\\mathop{\\text{softmax}}}\n\\boldsymbol{x} = (x_1, x_2, \\cdots, x_n) \\in \\mathbb{R}^n,\\qquad\\overline{\\boldsymbol{x}} = \\frac{1}{n}\\sum_{i=1}^n x_i \\\\\n\\logsumexp(\\boldsymbol{x}) = \\log\\sum_{i=1}^n e^{x_i} = \\log n + \\log \\overline{e^{\\boldsymbol{x}}} \\\\\n\\softmax(\\boldsymbol{x}) = \\frac{e^{\\boldsymbol{x}}}{\\sum_{i=1}^n e^{x_i}} = e^{\\boldsymbol{x} - \\logsumexp(\\boldsymbol{x})} \\\\\n\\end{gather}\n并约定向量的函数运算都是Hadamard意义下的，例如\n\\begin{equation}e^{\\boldsymbol{x}} = (e^{x_1},e^{x_2},\\cdots,e^{x_n}),\\qquad\\boldsymbol{x}^2 = (x_1^2,x_2^2,\\cdots,x_n^2)\\end{equation}\n特别地，要仔细留意$\\overline{e^{\\boldsymbol{x}}}$与$e^{\\overline{\\boldsymbol{x}}}$、$\\overline{\\boldsymbol{x}^2}$与$\\overline{\\boldsymbol{x}}^2$的区别：前者是先对每个分量做函数再平均，后者是先平均再做函数，二者一般不相等。",
+          "startOffset": 117,
+          "endOffset": 946,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11814:concept-softmax",
+      "kind": "article-concept",
+      "sourceId": "kexue-11814",
+      "targetId": "concept-softmax",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11814",
+          "quote": "\n一些记号 #\n首先引入如下记号：\n\\begin{gather}\\newcommand{logsumexp}{\\mathop{\\text{logsumexp}}}\\newcommand{softmax}{\\mathop{\\text{softmax}}}\n\\boldsymbol{x} = (x_1, x_2, \\cdots, x_n) \\in \\mathbb{R}^n,\\qquad\\overline{\\boldsymbol{x}} = \\frac{1}{n}\\sum_{i=1}^n x_i \\\\\n\\logsumexp(\\boldsymbol{x}) = \\log\\sum_{i=1}^n e^{x_i} = \\log n + \\log \\overline{e^{\\boldsymbol{x}}} \\\\\n\\softmax(\\boldsymbol{x}) = \\frac{e^{\\boldsymbol{x}}}{\\sum_{i=1}^n e^{x_i}} = e^{\\boldsymbol{x} - \\logsumexp(\\boldsymbol{x})} \\\\\n\\end{gather}\n并约定向量的函数运算都是Hadamard意义下的，例如\n\\begin{equation}e^{\\boldsymbol{x}} = (e^{x_1},e^{x_2},\\cdots,e^{x_n}),\\qquad\\boldsymbol{x}^2 = (x_1^2,x_2^2,\\cdots,x_n^2)\\end{equation}\n特别地，要仔细留意$\\overline{e^{\\boldsymbol{x}}}$与$e^{\\overline{\\boldsymbol{x}}}$、$\\overline{\\boldsymbol{x}^2}$与$\\overline{\\boldsymbol{x}}^2$的区别：前者是先对每个分量做函数再平均，后者是先平均再做函数，二者一般不相等。",
+          "startOffset": 117,
+          "endOffset": 946,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11814:concept-taylor-expansion",
+      "kind": "article-concept",
+      "sourceId": "kexue-11814",
+      "targetId": "concept-taylor-expansion",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11814",
+          "quote": "\n文章小结 #\n本文分别推导了LogSumExp和Softmax的泰勒展开式，并讨论了它们的两个潜在应用。",
+          "startOffset": 7117,
+          "endOffset": 7170,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11823:concept-gated-deltanet",
+      "kind": "article-concept",
+      "sourceId": "kexue-11823",
+      "targetId": "concept-gated-deltanet",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11823",
+          "quote": "令人意外的是，最终得到的结果并不是基本的DeltaNet，而是直接得到了Gated DeltaNet（GDN）。",
+          "startOffset": 196,
+          "endOffset": 252,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11823:concept-logsumexp-softmax-taylor-expansion",
+      "kind": "article-concept",
+      "sourceId": "kexue-11823",
+      "targetId": "concept-logsumexp-softmax-taylor-expansion",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11823",
+          "quote": "在文章《LogSumExp和Softmax的泰勒展开》中，我们介绍了LogSumExp和Softmax的近似展开，并由此得到了一种线性化Softmax Attention的简单方案。",
+          "startOffset": 0,
+          "endOffset": 91,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11823:concept-quadratic-complexity-rnn",
+      "kind": "article-concept",
+      "sourceId": "kexue-11823",
+      "targetId": "concept-quadratic-complexity-rnn",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11823",
+          "quote": "\n递归形式 #\n事实上，Softmax Attention本身就可以写成RNN的形式，这我们在《时空之章：将Attention视为平方复杂度的RNN》中就有过讨论，而且这个转换并不难理解：\n\\begin{equation}\\boldsymbol{o}_t = \\sum_{i=1}^t \\alpha_{t, i} \\boldsymbol{v}_i = \\frac{\\sum_{i=1}^t e^{\\boldsymbol{q}\\cdot \\boldsymbol{k}_i} \\boldsymbol{v}_i}{Z_t} = \\frac{(\\sum_{i=1}^{t-1} e^{\\boldsymbol{q}\\cdot \\boldsymbol{k}_i} \\boldsymbol{v}_i) + e^{\\boldsymbol{q}\\cdot \\boldsymbol{k}_t} \\boldsymbol{v}_t}{Z_t} = \\frac{Z_{t-1} \\boldsymbol{o}_{t-1} + e^{\\boldsymbol{q}\\cdot \\boldsymbol{k}_t} \\boldsymbol{v}_t}{Z_t}\\end{equation}\n整理得\n\\begin{equation}\\boldsymbol{o}_t = \\boldsymbol{o}_{t-1} + \\alpha_{t,t}(\\boldsymbol{v}_t - \\boldsymbol{o}_{t-1})\\label{eq:attn-rnn}\\end{equation}\n眼尖的同学可能已经察觉到，右端的增量是$\\boldsymbol{v}_t - \\boldsymbol{o}_{t-1}$的形式，即“新观测与旧预测之差”，这已经隐隐有Delta Rule的样子。",
+          "startOffset": 1348,
+          "endOffset": 2121,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11823:concept-vanilla-linear-attention",
+      "kind": "article-concept",
+      "sourceId": "kexue-11823",
+      "targetId": "concept-vanilla-linear-attention",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11823",
+          "quote": "可以看出，最后的式子就是一个线性注意力，而且是最早的Vanilla Linear Attention（下面简称“VaLA”）的变体。",
+          "startOffset": 1133,
+          "endOffset": 1199,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11833:concept-architecture-error",
+      "kind": "article-concept",
+      "sourceId": "kexue-11833",
+      "targetId": "concept-architecture-error",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11833",
+          "quote": "\n架构误差 #\n第三层分解是\n\\begin{equation}L(\\mathcal{D}|\\mathcal{A},\\infty) = \\Big[L(\\mathcal{D}|\\mathcal{A},\\infty) - L(\\mathcal{D}|\\infty,\\infty)\\Big] + L(\\mathcal{D}|\\infty,\\infty)\\end{equation}\n其中$L(\\mathcal{D}|\\infty,\\infty)$代表优化和架构都推到极致——任意优秀的优化器、任意强大的模型——时，训练集上能达到的最理想损失。",
+          "startOffset": 4001,
+          "endOffset": 4268,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11833:concept-data-error",
+      "kind": "article-concept",
+      "sourceId": "kexue-11833",
+      "targetId": "concept-data-error",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11833",
+          "quote": "\n数据误差 #\n第一层分解是\n\\begin{equation}L(\\mathcal{E}|\\mathcal{D},\\mathcal{A},\\mathcal{O}) = \\Big[L(\\mathcal{E}|\\mathcal{D},\\mathcal{A},\\mathcal{O}) - L(\\mathcal{D}|\\mathcal{A},\\mathcal{O})\\Big] + L(\\mathcal{D}|\\mathcal{A},\\mathcal{O})\\end{equation}\n其中$L(\\mathcal{D}|\\mathcal{A},\\mathcal{O})$代表着给定架构$\\mathcal{A}$和优化器$\\mathcal{O}$下，模型在训练集$\\mathcal{D}$上的损失值。",
+          "startOffset": 2734,
+          "endOffset": 3081,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11833:concept-effective-parameter-count",
+      "kind": "article-concept",
+      "sourceId": "kexue-11833",
+      "targetId": "concept-effective-parameter-count",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11833",
+          "quote": "从上式中，我们还能导出“等效参数量”的概念：\n\\begin{equation}N_{eff} = N_{act}^{\\frac{\\gamma_{act}}{\\gamma_{act}+\\gamma_{total}}} N_{total}^{\\frac{\\gamma_{total}}{\\gamma_{act}+\\gamma_{total}}},\\qquad F_{\\text{arch}} \\sim \\alpha_4 N_{act}^{-\\gamma_{act}} N_{total}^{-\\gamma_{total}} = \\alpha_4 N_{eff}^{-(\\gamma_{act}+\\gamma_{total})}\\end{equation}\n即激活参数量为$N_{act}$、总参数量为$N_{total}$的MoE模型，等效于一个参数量为$N_{eff}$的Dense模型，一个民间常用的经验公式是$N_{eff}=\\sqrt{N_{act}N_{total}}$（参考）。",
+          "startOffset": 14210,
+          "endOffset": 14653,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11833:concept-heterogeneous-power-inequality",
+      "kind": "article-concept",
+      "sourceId": "kexue-11833",
+      "targetId": "concept-heterogeneous-power-inequality",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11833",
+          "quote": "\n异幂不等式 #\n首先是一个使用次数最多的不等式，设$a,b,p,q,x > 0$，那么\n\\begin{equation}a x^p + b x^{-q} \\geq (p+q)\\left(\\frac{a^{q}b^{p}}{p^{p}q^{q}}\\right)^{\\frac{1}{p+q}}\\end{equation}\n取等号的条件是\n\\begin{equation}x=\\left(\\frac{bq}{ap}\\right)^{\\frac{1}{p+q}}\\end{equation}\n它是简单不等式$x + x^{-1} \\geq 2$的推广，可以通过求导或者加权AM-GM不等式来证明。",
+          "startOffset": 392,
+          "endOffset": 688,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11833:concept-memory-layer",
+      "kind": "article-concept",
+      "sourceId": "kexue-11833",
+      "targetId": "concept-memory-layer",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11833",
+          "quote": "\n记忆之层 #\n除了MoE外，解耦参数量和计算量的途径还包括稀疏型的Memory层，经典的比如PKM、UltraMem等，而新兴起的比如Over-Encoding、Engram等都可以归入此类。",
+          "startOffset": 15284,
+          "endOffset": 15381,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11833:concept-mixture-of-experts",
+      "kind": "article-concept",
+      "sourceId": "kexue-11833",
+      "targetId": "concept-mixture-of-experts",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11833",
+          "quote": "因此，合理猜测$F_{\\text{arch}}$应当多一项关于$N_{act}$的惩罚项，来保证一定的激活参数：\n\\begin{equation}F_{\\text{arch}} \\sim \\alpha_4 N_{act}^{-\\gamma_{act}} N_{total}^{-\\gamma_{total}} + \\alpha_8 N_{act}^{-\\gamma_8}\\label{eq:arch-law-moe}\\end{equation}\n建模稀疏度的工作还包括2309.",
+          "startOffset": 14827,
+          "endOffset": 15066,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11833:concept-optimal-batch-size",
+      "kind": "article-concept",
+      "sourceId": "kexue-11833",
+      "targetId": "concept-optimal-batch-size",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11833",
+          "quote": "\n最优批大小 #\n现在从最优学习率的假设出发，优化误差设为\n\\begin{equation}F_{\\text{opt}} \\sim \\tilde{\\alpha}_1 T^{-\\tilde{\\gamma}_1} + \\alpha_2 B^{-\\gamma_2}\\end{equation}\n记$K = B T$，它表示训练过程中所学过的样本数，注意我们没限制Multi-Epoch，所以不排除某些样本会被重复学习多次的可能。",
+          "startOffset": 6115,
+          "endOffset": 6326,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11833:concept-optimal-learning-rate",
+      "kind": "article-concept",
+      "sourceId": "kexue-11833",
+      "targetId": "concept-optimal-learning-rate",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11833",
+          "quote": "\n最优学习率 #\n式$\\eqref{eq:optimizer-law}$里边有6个参数，直接拿去拟合的话，需要打非常多的点，成本会非常高。",
+          "startOffset": 5401,
+          "endOffset": 5470,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11833:concept-optimization-error",
+      "kind": "article-concept",
+      "sourceId": "kexue-11833",
+      "targetId": "concept-optimization-error",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11833",
+          "quote": "\n优化误差 #\n第二层分解是\n\\begin{equation}L(\\mathcal{D}|\\mathcal{A},\\mathcal{O}) = \\Big[L(\\mathcal{D}|\\mathcal{A},\\mathcal{O}) - L(\\mathcal{D}|\\mathcal{A},\\infty)\\Big] + L(\\mathcal{D}|\\mathcal{A},\\infty)\\end{equation}\n其中$L(\\mathcal{D}|\\mathcal{A},\\infty)$代表把优化推到极致——比如有一个完美的超级优化器，或者把训练步数与调参次数都推向无穷——时，训练集上能达到的理想损失。",
+          "startOffset": 3505,
+          "endOffset": 3808,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11833:concept-power-law-assumption",
+      "kind": "article-concept",
+      "sourceId": "kexue-11833",
+      "targetId": "concept-power-law-assumption",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11833",
+          "quote": "\n准备篇 #\n后文会反复遇到“在某个约束下，求幂律组合的最小值”这类问题，所以我们这一篇先准备两个基础结论。",
+          "startOffset": 338,
+          "endOffset": 392,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11833:concept-scaling-law",
+      "kind": "article-concept",
+      "sourceId": "kexue-11833",
+      "targetId": "concept-scaling-law",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11833",
+          "quote": "\n“Scaling Law”便试图以一种相对定量的方式来回答这个问题。",
+          "startOffset": 143,
+          "endOffset": 178,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11833:concept-triple-decomposition",
+      "kind": "article-concept",
+      "sourceId": "kexue-11833",
+      "targetId": "concept-triple-decomposition",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11833",
+          "quote": "\n三重分解 #\n我们考虑如下分解\n\\begin{equation}\\begin{aligned}\nL(\\mathcal{E}|\\mathcal{D},\\mathcal{A},\\mathcal{O}) &\\,= \\underbrace{L(\\mathcal{E}|\\mathcal{D},\\mathcal{A},\\mathcal{O}) - L(\\mathcal{D}|\\mathcal{A},\\mathcal{O})}_{\\text{数据}} \\\\\n&\\,\\qquad + \\underbrace{L(\\mathcal{D}|\\mathcal{A},\\mathcal{O}) - L(\\mathcal{D}|\\mathcal{A},\\infty)}_{\\text{优化}} \\\\\n&\\,\\qquad\\qquad + \\underbrace{L(\\mathcal{D}|\\mathcal{A},\\infty) - L(\\mathcal{D}|\\infty,\\infty)}_{\\text{架构}} \\\\\n&\\,\\qquad\\qquad\\qquad + L(\\mathcal{D}|\\infty,\\infty) \\\\\n\\end{aligned}\\end{equation}\n这个分解看上去将问题复杂化了，但实际上它将当前训练状态到理想目标的距离，分解成了层层递进的三步。",
+          "startOffset": 2042,
+          "endOffset": 2625,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11848:concept-dsv4-attention-design",
+      "kind": "article-concept",
+      "sourceId": "kexue-11848",
+      "targetId": "concept-dsv4-attention-design",
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "articleId": "kexue-11848",
+          "quote": "\nDSV4 #\n这里我们加个插曲，简单讨论一下DSV4的Attention。",
+          "startOffset": 4377,
+          "endOffset": 4415,
+          "supportScore": 0.9
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11848:concept-kimia-linear-attention",
+      "kind": "article-concept",
+      "sourceId": "kexue-11848",
+      "targetId": "concept-kimia-linear-attention",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11848",
+          "quote": "\n写在前面 #\n简单来说，在架构方面K3 = KDA + MLA + Stable LatentMoE + AttnRes，训练优化器依然是Moonlight版Muon，但Attention部分的权重改成了Per-Head形式来优化。",
+          "startOffset": 155,
+          "endOffset": 272,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11848:concept-multi-head-latent-attention",
+      "kind": "article-concept",
+      "sourceId": "kexue-11848",
+      "targetId": "concept-multi-head-latent-attention",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11848",
+          "quote": "\n写在前面 #\n简单来说，在架构方面K3 = KDA + MLA + Stable LatentMoE + AttnRes，训练优化器依然是Moonlight版Muon，但Attention部分的权重改成了Per-Head形式来优化。",
+          "startOffset": 155,
+          "endOffset": 272,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11848:concept-no-positional-encoding",
+      "kind": "article-concept",
+      "sourceId": "kexue-11848",
+      "targetId": "concept-no-positional-encoding",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11848",
+          "quote": "\nNoPE #\nK3的MLA还有另外一个细节：它在保持标准MLA结构的前提下，将RoPE直接移除，变成了NoPE。",
+          "startOffset": 5097,
+          "endOffset": 5154,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11848:concept-quantile-balancing",
+      "kind": "article-concept",
+      "sourceId": "kexue-11848",
+      "targetId": "concept-quantile-balancing",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11848",
+          "quote": "\nQB #\nK3的MoE，原本的设想是448选8，而引入LatentMoE后，就变成了896选16，虽然稀疏度不变，但总Expert数的增加，依然会加剧负载不均衡问题。",
+          "startOffset": 2733,
+          "endOffset": 2817,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11848:concept-situ-activation",
+      "kind": "article-concept",
+      "sourceId": "kexue-11848",
+      "targetId": "concept-situ-activation",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11848",
+          "quote": "\nSiTU #\n当前主流MoE架构，单个Expert通常都是采用SwiGLU的形式：\n\\begin{equation}\\newcommand{SiLU}{\\mathop{\\text{SiLU}}}\\boldsymbol{W}_3(\\SiLU(\\boldsymbol{W}_1 \\boldsymbol{x}) \\odot \\boldsymbol{W}_2 \\boldsymbol{x})\\end{equation}\n其中$\\SiLU(x) = x\\sigma(x)$（Sigmoid Linear Unit，亦称Swish），$\\sigma$是Sigmoid函数。",
+          "startOffset": 781,
+          "endOffset": 1062,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11848:concept-stable-latent-moe",
+      "kind": "article-concept",
+      "sourceId": "kexue-11848",
+      "targetId": "concept-stable-latent-moe",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11848",
+          "quote": "\n写在前面 #\n简单来说，在架构方面K3 = KDA + MLA + Stable LatentMoE + AttnRes，训练优化器依然是Moonlight版Muon，但Attention部分的权重改成了Per-Head形式来优化。",
+          "startOffset": 155,
+          "endOffset": 272,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11854:concept-brier-score",
+      "kind": "article-concept",
+      "sourceId": "kexue-11854",
+      "targetId": "concept-brier-score",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11854",
+          "quote": "5ex}}\n\\begin{array}{c|c|c}\n\\hline\n\\rs\\text{名称} & H(\\boldsymbol{p}) & S(\\boldsymbol{q},i) \\\\\n\\hline\n\\rs\\text{对数评分 (交叉熵)} & -\\sum_i p_i\\log p_i & -\\log q_i \\\\\n\\hline\n\\rs\\text{Brier评分 (平方损失)} & 1-\\sum_i p_i^2 & \\|\\boldsymbol{q}-\\boldsymbol{e}_i\\|^2 \\\\\n\\hline\n\\rs\\text{Tsallis评分 }(\\alpha > 0) & \\frac{1-\\sum_i p_i^\\alpha}{\\alpha-1} & \\sum_j q_j^\\alpha - \\frac{\\alpha}{\\alpha-1}q_i^{\\alpha-1} + \\frac{1}{\\alpha-1} \\\\\n\\hline\n\\rs\\text{球面评分 }(\\alpha > 0) & \\frac{1-\\Vert\\boldsymbol{p}\\Vert_\\alpha}{\\alpha-1} & \\frac{1}{\\alpha-1}\\left(1 -\\frac{q_i^{\\alpha-1}}{\\Vert\\boldsymbol{q}\\Vert_\\alpha^{\\alpha-1}}\\right) \\\\\n\\hline\n\\rs\\text{Rényi评分 }(0 值得指出的是，后三个评分函数都在$\\alpha\\to 1$时退化成对数评分，这意味着它们都是交叉熵的某种推广。",
+          "startOffset": 3461,
+          "endOffset": 4149,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11854:concept-cross-entropy",
+      "kind": "article-concept",
+      "sourceId": "kexue-11854",
+      "targetId": "concept-cross-entropy",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11854",
+          "quote": "一直以来，交叉熵（Cross Entropy）都是LLM预训练和微调的标准损失函数。",
+          "startOffset": 0,
+          "endOffset": 42,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11854:concept-entmax",
+      "kind": "article-concept",
+      "sourceId": "kexue-11854",
+      "targetId": "concept-entmax",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11854",
+          "quote": "\\end{equation}\n其中$[x]_+ = \\max(x, 0)$，但$\\alpha  1$对应稀疏分布，$\\alpha Sparsemax，其余情况则称为Entmax-$\\alpha$，当$\\alpha=2$和$\\alpha=1.",
+          "startOffset": 9444,
+          "endOffset": 9564,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11854:concept-fenchel-young-losses",
+      "kind": "article-concept",
+      "sourceId": "kexue-11854",
+      "targetId": "concept-fenchel-young-losses",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11854",
+          "quote": "即我们希望寻找一个变换$\\boldsymbol{q} = \\sigma(\\boldsymbol{z})\\in\\Delta^{n-1}$，使得对于给定$S(\\boldsymbol{q}, i)$，成立\n\\begin{equation}\\nabla_{\\boldsymbol{z}} S(\\boldsymbol{q}, i) = \\boldsymbol{q} - \\boldsymbol{e}_i\\end{equation}\n注意$\\boldsymbol{e}_i= \\nabla_{\\boldsymbol{z}} z_i$，所以上式也可以写成$\\nabla_{\\boldsymbol{z}} (S(\\boldsymbol{q}, i) + z_i) = \\boldsymbol{q}$，这就表明，存在某个跟$i$无关的标量函数$\\Phi(\\boldsymbol{z})$，使得\n\\begin{equation}\\Phi(\\boldsymbol{z}) = S(\\boldsymbol{q}, i) + z_i,\\qquad \\boldsymbol{q} = \\nabla_{\\boldsymbol{z}}\\Phi(\\boldsymbol{z})\\end{equation}\n移项得$\\Phi(\\boldsymbol{z}) - z_i = S(\\boldsymbol{q}, i)$，两端乘$p_i$然后求和得\n\\begin{equation}\\Phi(\\boldsymbol{z}) - \\boldsymbol{p}\\cdot\\boldsymbol{z} = L(\\boldsymbol{p},\\boldsymbol{q})\\geq H(\\boldsymbol{p})\\end{equation}\n继续移项得$\\Phi(\\boldsymbol{z}) \\geq \\boldsymbol{p}\\cdot\\boldsymbol{z} + H(\\boldsymbol{p})$，这是对任意$\\boldsymbol{p}$都成立，所以$\\Phi(\\boldsymbol{z})$是全体$\\boldsymbol{p}\\cdot\\boldsymbol{z} + H(\\boldsymbol{p})$的上界，然后代入$\\boldsymbol{p}=\\boldsymbol{q}$到上式得$\\Phi(\\boldsymbol{z}) - \\boldsymbol{q}\\cdot\\boldsymbol{z} = L(\\boldsymbol{q},\\boldsymbol{q}) = H(\\boldsymbol{q})$，即$\\boldsymbol{p}=\\boldsymbol{q}$时能取到等号，所以$\\Phi(\\boldsymbol{z})$是全体$\\boldsymbol{p}\\cdot\\boldsymbol{z} + H(\\boldsymbol{p})$的“上确界”，即\n\\begin{equation}\\newcommand{argmax}{\\mathop{\\text{argmax}}}\\Phi(\\boldsymbol{z}) = \\max_{\\boldsymbol{p}\\in\\Delta^{n-1}} \\boldsymbol{p}\\cdot \\boldsymbol{z} + H(\\boldsymbol{p}),\\qquad \\boldsymbol{q} = \\argmax_{\\boldsymbol{p}\\in\\Delta^{n-1}} \\boldsymbol{p}\\cdot \\boldsymbol{z} + H(\\boldsymbol{p})\\end{equation}\n这正好是凸函数$-H(\\boldsymbol{p})$的凸共轭，而这几节的内容加起来，正好是经典的Fenchel-Young Losses框架。",
+          "startOffset": 6851,
+          "endOffset": 8460,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11854:concept-lm-loss",
+      "kind": "article-concept",
+      "sourceId": "kexue-11854",
+      "targetId": "concept-lm-loss",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11854",
+          "quote": "一直以来，交叉熵（Cross Entropy）都是LLM预训练和微调的标准损失函数。",
+          "startOffset": 0,
+          "endOffset": 42,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11854:concept-proper-scoring-rules",
+      "kind": "article-concept",
+      "sourceId": "kexue-11854",
+      "targetId": "concept-proper-scoring-rules",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11854",
+          "quote": "不难看出$S(\\boldsymbol{q},i)$关于$H(\\boldsymbol{q})$是线性的，并且两个凹函数的线性插值依然是凹函数，所以两个评分函数的线性插值也还是一个评分函数。",
+          "startOffset": 3247,
+          "endOffset": 3340,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11854:concept-softmax",
+      "kind": "article-concept",
+      "sourceId": "kexue-11854",
+      "targetId": "concept-softmax",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11854",
+          "quote": "\n一般情况下，模型只能预测无界的Logits向量$\\boldsymbol{z}\\in\\mathbb{R}^n$，我们需要加一个激活函数，才能将它投影成概率分布$\\boldsymbol{q}$，而激活函数通常的选择便是Softmax。",
+          "startOffset": 5245,
+          "endOffset": 5361,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11875:concept-feature-level-gradient-descent",
+      "kind": "article-concept",
+      "sourceId": "kexue-11875",
+      "targetId": "concept-feature-level-gradient-descent",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11875",
+          "quote": "理想情况下，我们希望实现特征层面的梯度下降\n\\begin{equation}\\boldsymbol{Y}\\quad\\leftarrow\\quad \\boldsymbol{Y} - \\eta\\frac{\\partial \\mathcal{L}}{\\partial\\boldsymbol{Y}}\\label{eq:gd-y}\\end{equation}\n问题在于，$\\boldsymbol{Y}$不是可以随意修改的变量，我们能直接修改的只有$\\boldsymbol{W}$，所以只能设法通过修改$\\boldsymbol{W}$来间接实现这一效果。",
+          "startOffset": 1261,
+          "endOffset": 1532,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11875:concept-momentum",
+      "kind": "article-concept",
+      "sourceId": "kexue-11875",
+      "targetId": "concept-momentum",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11875",
+          "quote": "一个以动量为状态变量的优化器，基本形式如下：\n\\begin{equation}\\begin{aligned}\n\\boldsymbol{M}_t =&\\, \\beta \\boldsymbol{M}_{t-1} + (1 - \\beta) \\boldsymbol{G}_t \\\\[4pt]\n\\boldsymbol{W}_t =&\\, \\phi(\\boldsymbol{W}_{t-1}, \\boldsymbol{M}_t, \\boldsymbol{G}_t, t)\n\\end{aligned}\\end{equation}\n不同的优化器差别主要体现在更新函数$\\phi$上，如SGDM、SignSGD、Muon等，新的探索也基本围绕$\\phi$进行，因为第一个式子的动量太简单，简单到大家不认为它有什么修改空间。",
+          "startOffset": 0,
+          "endOffset": 353,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11875:concept-preconditioner",
+      "kind": "article-concept",
+      "sourceId": "kexue-11875",
+      "targetId": "concept-preconditioner",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11875",
+          "quote": "事实上，这只不过是一个线性回归问题，可以直接解得\n\\begin{equation}\\boldsymbol{\\Phi}^* = (\\boldsymbol{X}^{\\top}\\boldsymbol{X} + \\lambda \\boldsymbol{I})^{-1} \\boldsymbol{X}^{\\top}\\frac{\\partial \\mathcal{L}}{\\partial\\boldsymbol{Y}}\\end{equation}\n留意到$\\boldsymbol{X}^{\\top}\\frac{\\partial \\mathcal{L}}{\\partial\\boldsymbol{Y}}$正好是$\\boldsymbol{G}=\\frac{\\partial \\mathcal{L}}{\\partial\\boldsymbol{W}}$，$(\\boldsymbol{X}^{\\top}\\boldsymbol{X} + \\lambda \\boldsymbol{I})^{-1}$是基于输入数据的Preconditioner，为了综合不同batch的贡献，我们考虑对$\\boldsymbol{X}^{\\top}\\boldsymbol{X}$和$\\boldsymbol{X}^{\\top}\\frac{\\partial \\mathcal{L}}{\\partial\\boldsymbol{Y}}$都做EMA，这将得到一个SGDM变体：\n\\begin{equation}\\begin{aligned}\n\\boldsymbol{M}_t =&\\, \\beta \\boldsymbol{M}_{t-1} + (1 - \\beta) \\boldsymbol{G}_t \\\\[4pt]\n\\boldsymbol{Z}_t =&\\, \\beta \\boldsymbol{Z}_{t-1} + (1 - \\beta) (\\boldsymbol{X}_t^{\\top}\\boldsymbol{X}_t + \\lambda \\boldsymbol{I}) \\\\[4pt]\n\\boldsymbol{W}_t =&\\, \\boldsymbol{W}_{t-1} - \\eta \\boldsymbol{Z}_t^{-1}\\boldsymbol{M}_t\n\\end{aligned}\\end{equation}\n切换视角 #\n现在我们知道，通过校正的梯度$(\\boldsymbol{X}^{\\top}\\boldsymbol{X} + \\lambda \\boldsymbol{I})^{-1}\\boldsymbol{G}$，可以实现特征层面的梯度下降，那么我们可以将它视为某种“更靠谱的梯度”，同理，相应的$\\boldsymbol{Z}_t^{-1}\\boldsymbol{M}_t$我们可以视为“更靠谱的动量”。",
+          "startOffset": 2104,
+          "endOffset": 3289,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11879:concept-classical-convergence-result",
+      "kind": "article-concept",
+      "sourceId": "kexue-11879",
+      "targetId": "concept-classical-convergence-result",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11879",
+          "quote": "\n经典结论 #\n我们先从一个经典的收敛结论出发，来理解为什么最优学习率依赖于训练步数。",
+          "startOffset": 222,
+          "endOffset": 265,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11879:concept-equivalent-steps",
+      "kind": "article-concept",
+      "sourceId": "kexue-11879",
+      "targetId": "concept-equivalent-steps",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11879",
+          "quote": "第二阶段我们需要在此基础上求$\\eta_{T_1+1},\\cdots,\\eta_{T_2}$，最小化\n\\begin{equation}f_{T_2}(\\eta) = \\frac{R^2 + G^2(T_1 (\\eta_{(1)}^*)^2 + \\sum_{t=T_1+1}^{T_2} \\eta_t^2)}{2(T_1 \\eta_{(1)}^* + \\sum_{t=T_1+1}^{T_2} \\eta_t)}\\end{equation}\n基于同样的不等式$\\sum_{t=T_1+1}^{T_2} \\eta_t^2 \\geq (\\sum_{t=T_1+1}^{T_2} \\eta_t)^2/(T_2-T_1)$，可知最小值依然在常数学习率取到，所以简化成\n\\begin{equation}f_{T_2}(\\eta) = \\frac{R^2 + G^2(T_1 (\\eta_{(1)}^*)^2 + (T_2 - T_1) (\\eta_{(2)})^2)}{2(T_1 \\eta_{(1)}^* + (T_2 - T_1) \\eta_{(2)})}\\end{equation}\n这可以通过配凑不等式或者直接求导完成，最小值点是\n\\begin{equation}\\eta_{(2)}^* = \\frac{R/G}{\\sqrt{T_2^{\\#}}}, \\qquad f(\\eta_{(2)}^*) = \\frac{RG}{\\sqrt{T_2^{\\#}}}\\end{equation}\n这里\n\\begin{equation}T_2^{\\#} = \\frac{1}{2}T_2 + \\frac{1}{2}\\sqrt{T_1(2T_2 - T_1)}\\end{equation}\n等效步数 #\n这里我们引入了记号$T_2^{\\#}$，它的含义是“等效步数”。",
+          "startOffset": 1967,
+          "endOffset": 2740,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11879:concept-greedy-decision",
+      "kind": "article-concept",
+      "sourceId": "kexue-11879",
+      "targetId": "concept-greedy-decision",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11879",
+          "quote": "\n这里又可以接着分为“意外”和“计划”两种情况：“意外”是指本无计划续训，所以第一阶段会尽可能调到最优，决定续训后，第二阶段则是在现有基础上设法调到最优，这样就得到一个贪心解，缺点是第二阶段不论怎么调，结果都是相对次优的；至于“计划”情形，则是提前做了多阶段训练的规划，理论上我们可以更好地平衡两个阶段的效果。",
+          "startOffset": 1711,
+          "endOffset": 1866,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11879:concept-minimax-optimization-objective",
+      "kind": "article-concept",
+      "sourceId": "kexue-11879",
+      "targetId": "concept-minimax-optimization-objective",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11879",
+          "quote": "为此，我们引入minimax优化目标：\n\\begin{equation}\\min_{\\eta\\geq 0} \\max_{T\\in\\{T_1,T_2\\}} \\frac{f_T(\\eta)}{f_T^*}\\end{equation}\n它希望每个阶段的实际效果与其理想值之比都尽可能小。",
+          "startOffset": 3502,
+          "endOffset": 3642,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11879:concept-multi-stage-training-learning-rate",
+      "kind": "article-concept",
+      "sourceId": "kexue-11879",
+      "targetId": "concept-multi-stage-training-learning-rate",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11879",
+          "quote": " 《让炼丹更科学一些（八）：多阶段训练的学习率 》[Blog post].",
+          "startOffset": 6693,
+          "endOffset": 6730,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11879:concept-planned-scenario",
+      "kind": "article-concept",
+      "sourceId": "kexue-11879",
+      "targetId": "concept-planned-scenario",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11879",
+          "quote": "\n这里又可以接着分为“意外”和“计划”两种情况：“意外”是指本无计划续训，所以第一阶段会尽可能调到最优，决定续训后，第二阶段则是在现有基础上设法调到最优，这样就得到一个贪心解，缺点是第二阶段不论怎么调，结果都是相对次优的；至于“计划”情形，则是提前做了多阶段训练的规划，理论上我们可以更好地平衡两个阶段的效果。",
+          "startOffset": 1711,
+          "endOffset": 1866,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-11879:concept-schedule-free-learning-rate",
+      "kind": "article-concept",
+      "sourceId": "kexue-11879",
+      "targetId": "concept-schedule-free-learning-rate",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11879",
+          "quote": "上篇文章《让炼丹更科学一些（七）：步长调度与权重平均》我们简单介绍了无调度（Schedule-Free）学习率的工作，它试图通过某种权重平均来替代学习率调度，实现常数学习率就可以训出最优模型的效果。",
+          "startOffset": 0,
+          "endOffset": 99,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-4765:concept-attention-is-all-you-need",
+      "kind": "article-concept",
+      "sourceId": "kexue-4765",
+      "targetId": "concept-attention-is-all-you-need",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-4765",
+          "quote": "2017年中，有两篇类似同时也是笔者非常欣赏的论文，分别是FaceBook的《Convolutional Sequence to Sequence Learning》和Google的《Attention is All You Need》，它们都算是Seq2Seq上的创新，本质上来说，都是抛弃了RNN结构来做Seq2Seq任务。",
+          "startOffset": 0,
+          "endOffset": 164,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-4765:concept-convolutional-sequence-to-sequence-learning",
+      "kind": "article-concept",
+      "sourceId": "kexue-4765",
+      "targetId": "concept-convolutional-sequence-to-sequence-learning",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-4765",
+          "quote": "2017年中，有两篇类似同时也是笔者非常欣赏的论文，分别是FaceBook的《Convolutional Sequence to Sequence Learning》和Google的《Attention is All You Need》，它们都算是Seq2Seq上的创新，本质上来说，都是抛弃了RNN结构来做Seq2Seq任务。",
+          "startOffset": 0,
+          "endOffset": 164,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-4765:concept-multi-head-attention",
+      "kind": "article-concept",
+      "sourceId": "kexue-4765",
+      "targetId": "concept-multi-head-attention",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-4765",
+          "quote": "\nMulti-Head Attention #\nMulti-Head Attention\n这个是Google提出的新概念，是Attention机制的完善。",
+          "startOffset": 2936,
+          "endOffset": 3013,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-4765:concept-position-embedding",
+      "kind": "article-concept",
+      "sourceId": "kexue-4765",
+      "targetId": "concept-position-embedding",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-4765",
+          "quote": "\n当然，更准确来说，Google所用的是Self Multi-Head Attention：\n\\begin{equation}\\boldsymbol{Y}=MultiHead(\\boldsymbol{X},\\boldsymbol{X},\\boldsymbol{X})\\end{equation}\nPosition Embedding #\n然而，只要稍微思考一下就会发现，这样的模型并不能捕捉序列的顺序！",
+          "startOffset": 4181,
+          "endOffset": 4382,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-4765:concept-restricted-self-attention",
+      "kind": "article-concept",
+      "sourceId": "kexue-4765",
+      "targetId": "concept-restricted-self-attention",
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "articleId": "kexue-4765",
+          "quote": "事实上，Google似乎也意识到了这个问题，因此论文中也提到了一个restricted版的Self-Attention（不过论文正文应该没有用到它），它假设当前词只与前后$r$个词发生联系，因此注意力也只发生在这$2r+1$个词之间，这样计算量就是$\\mathcal{O}(nr)$，这样也能捕捉到序列的局部结构了。",
+          "startOffset": 7247,
+          "endOffset": 7405,
+          "supportScore": 0.9
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-4765:concept-self-attention",
+      "kind": "article-concept",
+      "sourceId": "kexue-4765",
+      "targetId": "concept-self-attention",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-4765",
+          "quote": "\nSelf Attention #\n到目前为止，对Attention层的描述都是一般化的，我们可以落实一些应用。",
+          "startOffset": 3665,
+          "endOffset": 3721,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-4765:concept-seq2seq",
+      "kind": "article-concept",
+      "sourceId": "kexue-4765",
+      "targetId": "concept-seq2seq",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-4765",
+          "quote": "就论文的工作而言，也许降低一下身段，称为Attention is All Seq2Seq Need（事实上也这标题的“口气”也很大），会获得更多的肯定。",
+          "startOffset": 7566,
+          "endOffset": 7642,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-7921:concept-attention-mechanism",
+      "kind": "article-concept",
+      "sourceId": "kexue-7921",
+      "targetId": "concept-attention-mechanism",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-7921",
+          "quote": "Attention机制的$\\mathcal{O}(n^2)$复杂度是一个老大难问题了，改变这一复杂度的思路主要有两种：一是走稀疏化的思路，比如我们以往介绍过的Sparse Attention以及Google前几个月搞出来的Big Bird，等等；二是走线性化的思路，这部分工作我们之前总结在《线性Attention的探索：Attention必须有个Softmax吗？",
+          "startOffset": 0,
+          "endOffset": 183,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-7921:concept-linear-attention",
+      "kind": "article-concept",
+      "sourceId": "kexue-7921",
+      "targetId": "concept-linear-attention",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-7921",
+          "quote": "Attention机制的$\\mathcal{O}(n^2)$复杂度是一个老大难问题了，改变这一复杂度的思路主要有两种：一是走稀疏化的思路，比如我们以往介绍过的Sparse Attention以及Google前几个月搞出来的Big Bird，等等；二是走线性化的思路，这部分工作我们之前总结在《线性Attention的探索：Attention必须有个Softmax吗？",
+          "startOffset": 0,
+          "endOffset": 183,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-7921:concept-orthogonal-sampling",
+      "kind": "article-concept",
+      "sourceId": "kexue-7921",
+      "targetId": "concept-orthogonal-sampling",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-7921",
+          "quote": "置换$\\boldsymbol{q}\\to -i\\boldsymbol{q},\\boldsymbol{k}\\to i\\boldsymbol{k}$使得上述左边保持不变，并且右边完全脱离虚数还保持了非负性，真的是集众多巧合于一身，“只此一家，别无分号”的感觉～\n正交化降低方差 #\n除了提出式$\\eqref{eq:core}$来对标准Attention进行线性化外，原论文还做了进一步的增强。",
+          "startOffset": 7970,
+          "endOffset": 8164,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-7921:concept-performer",
+      "kind": "article-concept",
+      "sourceId": "kexue-7921",
+      "targetId": "concept-performer",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-7921",
+          "quote": "\nPerformer #\n现在我们就可以进入到Performer的介绍了，开头已经说了，Performer的出发点还是标准的Attention，所以在它那里还是有$\\text{sim}(\\boldsymbol{q}, \\boldsymbol{k})=e^{\\boldsymbol{q}\\cdot \\boldsymbol{k}}$，然后它希望将复杂度线性化，那就是需要找到新的$\\tilde{\\boldsymbol{q}}, \\tilde{\\boldsymbol{k}}$，使得：\n\\begin{equation}\\text{sim}(\\boldsymbol{q}, \\boldsymbol{k}) \\approx \\tilde{\\boldsymbol{q}}\\cdot\\tilde{\\boldsymbol{k}}\\end{equation}\n如何找到合理的从$\\boldsymbol{q},\\boldsymbol{k}$到$\\tilde{\\boldsymbol{q}},\\tilde{\\boldsymbol{k}}$的映射方案，便是该思路的最大难度了。",
+          "startOffset": 1768,
+          "endOffset": 2244,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-7921:concept-random-projection",
+      "kind": "article-concept",
+      "sourceId": "kexue-7921",
+      "targetId": "concept-random-projection",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-7921",
+          "quote": "本文则介绍一项新的改进工作Performer，出自Google的文章《Rethinking Attention with Performers》，它的目标相当霸气：通过随机投影，在不损失精度的情况下，将Attention的复杂度线性化。",
+          "startOffset": 195,
+          "endOffset": 313,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-9052:concept-entropy-invariant-softmax",
+      "kind": "article-concept",
+      "sourceId": "kexue-9052",
+      "targetId": "concept-entropy-invariant-softmax",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-9052",
+          "quote": "\n归一化： 在《听说Attention与Softmax更配哦～》中我们讨论过Attention的归一化问题，GAU-α的Attention归一化选取了其中笔者自行提出的具有较好外推能力的熵不变性Softmax（在bert4keras中暂称为softmax_plus）。",
+          "startOffset": 2007,
+          "endOffset": 2141,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-9052:concept-gau",
+      "kind": "article-concept",
+      "sourceId": "kexue-9052",
+      "targetId": "concept-gau",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-9052",
+          "quote": "在《FLASH：可能是近来最有意思的高效Transformer设计》中，我们介绍了GAU（Gated Attention Unit，门控线性单元），在这里笔者愿意称之为“目前最有潜力的下一代Attention设计”，因为它真正达到了“更快（速度）、更好（效果）、更省（显存）”的特点。",
+          "startOffset": 0,
+          "endOffset": 142,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-9052:concept-gau-alpha",
+      "kind": "article-concept",
+      "sourceId": "kexue-9052",
+      "targetId": "concept-gau-alpha",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-9052",
+          "quote": "本文就来分享一下笔者自己的训练经验，并且放出一个尝鲜版“GAU-α”供大家测试。",
+          "startOffset": 193,
+          "endOffset": 233,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "article-concept:kexue-9052:concept-roformerv2",
+      "kind": "article-concept",
+      "sourceId": "kexue-9052",
+      "targetId": "concept-roformerv2",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-9052",
+          "quote": "72\\\\\n\\text{RoFormerV2}^* & 60.",
+          "startOffset": 879,
+          "endOffset": 909,
+          "supportScore": 1
+        }
+      ]
+    },
+    {
+      "id": "concept-relation:extends:concept-attention-residuals-attnres:concept-residuals",
+      "kind": "extends",
+      "sourceId": "concept-attention-residuals-attnres",
+      "targetId": "concept-residuals",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11664",
+          "quote": "这篇文章介绍我们的一个最新作品Attention Residuals（AttnRes），顾名思义，这是用Attention的思路去改进Residuals。",
+          "startOffset": 0,
+          "endOffset": 77,
+          "supportScore": 1
+        }
+      ],
+      "reasoning": "AttnRes generalizes standard residuals by replacing equal-weight summation with attention-based weighting."
+    },
+    {
+      "id": "concept-relation:extends:concept-block-attnres:concept-full-attnres",
+      "kind": "extends",
+      "sourceId": "concept-block-attnres",
+      "targetId": "concept-full-attnres",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11664",
+          "quote": "\n但很不幸的是，训练的同学如@王哥经过仔细分析，判断出在我们当前的训练环境下，AttnRes还是不够可行（说白了还是穷），需要一个进一步降低通信和显存的方案，于是就有了下面的Block版，相应地，之前的版本我们称为Full版。",
+          "startOffset": 5000,
+          "endOffset": 5113,
+          "supportScore": 1
+        }
+      ],
+      "reasoning": "Block AttnRes is an efficient variant of Full AttnRes designed to reduce computational overhead."
+    },
+    {
+      "id": "concept-relation:extends:concept-ema:concept-weight-averaging",
+      "kind": "extends",
+      "sourceId": "concept-ema",
+      "targetId": "concept-weight-averaging",
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "articleId": "kexue-11804",
+          "quote": "折中方案是假设局部近似为凸，那么可以在有限区间内对等权重平均，又或者直接考虑它的平滑版本——指数滑动平均（EMA），此时$v_t = \\gamma^{-t}$（其中$0 相关工作 #\n对于式$\\eqref{eq:pr}$效果欠佳的问题，论文《The Road Less Scheduled》提出了“Schedule-Free”，它将求梯度的点改为了$\\boldsymbol{\\theta}_t$与$\\boldsymbol{\\mu}_t$的插值：\n\\begin{equation}\\begin{aligned}\n\\hat{\\boldsymbol{\\theta}}_t =&\\, (1-\\beta)\\boldsymbol{\\theta}_t + \\beta \\boldsymbol{\\mu}_t \\\\[4pt]\n\\boldsymbol{\\theta}_{t+1} =&\\, \\boldsymbol{\\theta}_t - \\eta\\, \\boldsymbol{g}(\\boldsymbol{x}_t, \\hat{\\boldsymbol{\\theta}}_t) \\\\[4pt]\n\\boldsymbol{\\mu}_{t+1} =&\\, (1 - c_{t+1}) \\boldsymbol{\\mu}_t + c_{t+1} \\boldsymbol{\\theta}_{t+1}\n\\end{aligned}\\end{equation}\n直观来想，就是原本的平均操作完全独立于训练过程，模型从未感知过$\\boldsymbol{\\mu}_t$究竟好不好，现在我们将求梯度的点换成$\\boldsymbol{\\theta}_t$与$\\boldsymbol{\\mu}_t$的插值，模型能感知到$\\boldsymbol{\\mu}_t$的好坏，从而作出调整。",
+          "startOffset": 6839,
+          "endOffset": 7604,
+          "supportScore": 0.95
+        }
+      ],
+      "reasoning": "EMA is a specific type of weighted average applied to model weights."
+    },
+    {
+      "id": "concept-relation:extends:concept-gau-alpha:concept-gau",
+      "kind": "extends",
+      "sourceId": "concept-gau-alpha",
+      "targetId": "concept-gau",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-9052",
+          "quote": "本文就来分享一下笔者自己的训练经验，并且放出一个尝鲜版“GAU-α”供大家测试。",
+          "startOffset": 193,
+          "endOffset": 233,
+          "supportScore": 1
+        }
+      ],
+      "reasoning": "GAU-α is a specific implementation or variant of the GAU architecture."
+    },
+    {
+      "id": "concept-relation:extends:concept-mhc:concept-hyper-connections-hc",
+      "kind": "extends",
+      "sourceId": "concept-mhc",
+      "targetId": "concept-hyper-connections-hc",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11664",
+          "quote": "\n矩阵视角 #\n值得一提的是，我们还可以通过Attention矩阵，将Residuals、HC/mHC、Full AttnRes、Block AttnRes统一起来，这也是一个比较有趣的理解视角，示例如下。",
+          "startOffset": 5959,
+          "endOffset": 6062,
+          "supportScore": 1
+        }
+      ],
+      "reasoning": "mHC improves upon HC by addressing instability issues through normalization."
+    },
+    {
+      "id": "concept-relation:extends:concept-momentum:concept-feature-level-gradient-descent",
+      "kind": "extends",
+      "sourceId": "concept-momentum",
+      "targetId": "concept-feature-level-gradient-descent",
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "articleId": "kexue-11875",
+          "quote": "事实上，这只不过是一个线性回归问题，可以直接解得\n\\begin{equation}\\boldsymbol{\\Phi}^* = (\\boldsymbol{X}^{\\top}\\boldsymbol{X} + \\lambda \\boldsymbol{I})^{-1} \\boldsymbol{X}^{\\top}\\frac{\\partial \\mathcal{L}}{\\partial\\boldsymbol{Y}}\\end{equation}\n留意到$\\boldsymbol{X}^{\\top}\\frac{\\partial \\mathcal{L}}{\\partial\\boldsymbol{Y}}$正好是$\\boldsymbol{G}=\\frac{\\partial \\mathcal{L}}{\\partial\\boldsymbol{W}}$，$(\\boldsymbol{X}^{\\top}\\boldsymbol{X} + \\lambda \\boldsymbol{I})^{-1}$是基于输入数据的Preconditioner，为了综合不同batch的贡献，我们考虑对$\\boldsymbol{X}^{\\top}\\boldsymbol{X}$和$\\boldsymbol{X}^{\\top}\\frac{\\partial \\mathcal{L}}{\\partial\\boldsymbol{Y}}$都做EMA，这将得到一个SGDM变体：\n\\begin{equation}\\begin{aligned}\n\\boldsymbol{M}_t =&\\, \\beta \\boldsymbol{M}_{t-1} + (1 - \\beta) \\boldsymbol{G}_t \\\\[4pt]\n\\boldsymbol{Z}_t =&\\, \\beta \\boldsymbol{Z}_{t-1} + (1 - \\beta) (\\boldsymbol{X}_t^{\\top}\\boldsymbol{X}_t + \\lambda \\boldsymbol{I}) \\\\[4pt]\n\\boldsymbol{W}_t =&\\, \\boldsymbol{W}_{t-1} - \\eta \\boldsymbol{Z}_t^{-1}\\boldsymbol{M}_t\n\\end{aligned}\\end{equation}\n切换视角 #\n现在我们知道，通过校正的梯度$(\\boldsymbol{X}^{\\top}\\boldsymbol{X} + \\lambda \\boldsymbol{I})^{-1}\\boldsymbol{G}$，可以实现特征层面的梯度下降，那么我们可以将它视为某种“更靠谱的梯度”，同理，相应的$\\boldsymbol{Z}_t^{-1}\\boldsymbol{M}_t$我们可以视为“更靠谱的动量”。",
+          "startOffset": 2104,
+          "endOffset": 3289,
+          "supportScore": 0.9
+        }
+      ],
+      "reasoning": "Momentum is reinterpreted as a mechanism to approximate feature-level gradient descent."
+    },
+    {
+      "id": "concept-relation:extends:concept-proper-scoring-rules:concept-brier-score",
+      "kind": "extends",
+      "sourceId": "concept-proper-scoring-rules",
+      "targetId": "concept-brier-score",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11854",
+          "quote": "5ex}}\n\\begin{array}{c|c|c}\n\\hline\n\\rs\\text{名称} & H(\\boldsymbol{p}) & S(\\boldsymbol{q},i) \\\\\n\\hline\n\\rs\\text{对数评分 (交叉熵)} & -\\sum_i p_i\\log p_i & -\\log q_i \\\\\n\\hline\n\\rs\\text{Brier评分 (平方损失)} & 1-\\sum_i p_i^2 & \\|\\boldsymbol{q}-\\boldsymbol{e}_i\\|^2 \\\\\n\\hline\n\\rs\\text{Tsallis评分 }(\\alpha > 0) & \\frac{1-\\sum_i p_i^\\alpha}{\\alpha-1} & \\sum_j q_j^\\alpha - \\frac{\\alpha}{\\alpha-1}q_i^{\\alpha-1} + \\frac{1}{\\alpha-1} \\\\\n\\hline\n\\rs\\text{球面评分 }(\\alpha > 0) & \\frac{1-\\Vert\\boldsymbol{p}\\Vert_\\alpha}{\\alpha-1} & \\frac{1}{\\alpha-1}\\left(1 -\\frac{q_i^{\\alpha-1}}{\\Vert\\boldsymbol{q}\\Vert_\\alpha^{\\alpha-1}}\\right) \\\\\n\\hline\n\\rs\\text{Rényi评分 }(0 值得指出的是，后三个评分函数都在$\\alpha\\to 1$时退化成对数评分，这意味着它们都是交叉熵的某种推广。",
+          "startOffset": 3461,
+          "endOffset": 4149,
+          "supportScore": 1
+        }
+      ],
+      "reasoning": "Brier score is a specific example of proper scoring rules."
+    },
+    {
+      "id": "concept-relation:extends:concept-proper-scoring-rules:concept-cross-entropy",
+      "kind": "extends",
+      "sourceId": "concept-proper-scoring-rules",
+      "targetId": "concept-cross-entropy",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11854",
+          "quote": "5ex}}\n\\begin{array}{c|c|c}\n\\hline\n\\rs\\text{名称} & H(\\boldsymbol{p}) & S(\\boldsymbol{q},i) \\\\\n\\hline\n\\rs\\text{对数评分 (交叉熵)} & -\\sum_i p_i\\log p_i & -\\log q_i \\\\\n\\hline\n\\rs\\text{Brier评分 (平方损失)} & 1-\\sum_i p_i^2 & \\|\\boldsymbol{q}-\\boldsymbol{e}_i\\|^2 \\\\\n\\hline\n\\rs\\text{Tsallis评分 }(\\alpha > 0) & \\frac{1-\\sum_i p_i^\\alpha}{\\alpha-1} & \\sum_j q_j^\\alpha - \\frac{\\alpha}{\\alpha-1}q_i^{\\alpha-1} + \\frac{1}{\\alpha-1} \\\\\n\\hline\n\\rs\\text{球面评分 }(\\alpha > 0) & \\frac{1-\\Vert\\boldsymbol{p}\\Vert_\\alpha}{\\alpha-1} & \\frac{1}{\\alpha-1}\\left(1 -\\frac{q_i^{\\alpha-1}}{\\Vert\\boldsymbol{q}\\Vert_\\alpha^{\\alpha-1}}\\right) \\\\\n\\hline\n\\rs\\text{Rényi评分 }(0 值得指出的是，后三个评分函数都在$\\alpha\\to 1$时退化成对数评分，这意味着它们都是交叉熵的某种推广。",
+          "startOffset": 3461,
+          "endOffset": 4149,
+          "supportScore": 1
+        }
+      ],
+      "reasoning": "Cross-entropy (log score) is a specific example of proper scoring rules."
+    },
+    {
+      "id": "concept-relation:extends:concept-schedule-free-learning-rate:concept-weight-averaging",
+      "kind": "extends",
+      "sourceId": "concept-schedule-free-learning-rate",
+      "targetId": "concept-weight-averaging",
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "articleId": "kexue-11804",
+          "quote": "折中方案是假设局部近似为凸，那么可以在有限区间内对等权重平均，又或者直接考虑它的平滑版本——指数滑动平均（EMA），此时$v_t = \\gamma^{-t}$（其中$0 相关工作 #\n对于式$\\eqref{eq:pr}$效果欠佳的问题，论文《The Road Less Scheduled》提出了“Schedule-Free”，它将求梯度的点改为了$\\boldsymbol{\\theta}_t$与$\\boldsymbol{\\mu}_t$的插值：\n\\begin{equation}\\begin{aligned}\n\\hat{\\boldsymbol{\\theta}}_t =&\\, (1-\\beta)\\boldsymbol{\\theta}_t + \\beta \\boldsymbol{\\mu}_t \\\\[4pt]\n\\boldsymbol{\\theta}_{t+1} =&\\, \\boldsymbol{\\theta}_t - \\eta\\, \\boldsymbol{g}(\\boldsymbol{x}_t, \\hat{\\boldsymbol{\\theta}}_t) \\\\[4pt]\n\\boldsymbol{\\mu}_{t+1} =&\\, (1 - c_{t+1}) \\boldsymbol{\\mu}_t + c_{t+1} \\boldsymbol{\\theta}_{t+1}\n\\end{aligned}\\end{equation}\n直观来想，就是原本的平均操作完全独立于训练过程，模型从未感知过$\\boldsymbol{\\mu}_t$究竟好不好，现在我们将求梯度的点换成$\\boldsymbol{\\theta}_t$与$\\boldsymbol{\\mu}_t$的插值，模型能感知到$\\boldsymbol{\\mu}_t$的好坏，从而作出调整。",
+          "startOffset": 6839,
+          "endOffset": 7604,
+          "supportScore": 0.9
+        }
+      ],
+      "reasoning": "Schedule-Free methods utilize weight averaging techniques to replace explicit learning rate schedules."
+    },
+    {
+      "id": "concept-relation:extends:concept-sgd-final-loss-convergence:concept-average-loss-convergence",
+      "kind": "extends",
+      "sourceId": "concept-sgd-final-loss-convergence",
+      "targetId": "concept-average-loss-convergence",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11480",
+          "quote": "\n所以，这篇文章我们就将平均损失的收敛结果转化为终点损失的收敛结果，初步从理论上了解$\\boldsymbol{\\theta}_T$与$\\boldsymbol{\\theta}^*$差多远。",
+          "startOffset": 203,
+          "endOffset": 296,
+          "supportScore": 1
+        }
+      ],
+      "reasoning": "Final loss convergence extends the theory from average loss to the endpoint weights."
+    },
+    {
+      "id": "concept-relation:extends:concept-softmax:concept-linear-attention",
+      "kind": "extends",
+      "sourceId": "concept-softmax",
+      "targetId": "concept-linear-attention",
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "articleId": "kexue-11814",
+          "quote": "\n线性注意 #\n至于$\\softmax(\\boldsymbol{x})$展开式的应用，自然是线性化Attention了。",
+          "startOffset": 5595,
+          "endOffset": 5655,
+          "supportScore": 0.9
+        },
+        {
+          "articleId": "kexue-7921",
+          "quote": "\n而对于线性Attention来说，$\\text{sim}(\\boldsymbol{q}, \\boldsymbol{k})=\\phi(\\boldsymbol{q})\\cdot \\varphi(\\boldsymbol{k})$，其中$\\phi,\\varphi$是值域非负的激活函数。",
+          "startOffset": 1235,
+          "endOffset": 1375,
+          "supportScore": 0.9
+        }
+      ],
+      "reasoning": "Linear attention can be viewed as an approximation (truncation) of the Softmax expansion."
+    },
+    {
+      "id": "concept-relation:prerequisite:concept-dependency-stability:concept-initial-variance",
+      "kind": "prerequisite",
+      "sourceId": "concept-dependency-stability",
+      "targetId": "concept-initial-variance",
+      "confidence": 0.8,
+      "evidence": [
+        {
+          "articleId": "kexue-11605",
+          "quote": "\n初始方差 #\n根据上一节的讨论，约定我们只考虑带有In Norm的线性层，那么由谱范数定义可以计算三个指标：\n\\begin{align}\n&\\text{前向稳定性:}\\quad\\max_{\\Vert\\boldsymbol{x}\\Vert_{RMS}=1} \\Vert \\boldsymbol{x}\\boldsymbol{W}\\Vert_{RMS} = \\sqrt{\\frac{d_{in}}{d_{out}}}\\Vert\\boldsymbol{W}\\Vert_2 \\\\[5pt]\n&\\text{依赖稳定性:}\\quad\\max_{\\Vert\\boldsymbol{x}_1\\Vert_{RMS}=\\Vert\\boldsymbol{x}_2\\Vert_{RMS}=1} \\frac{\\Vert \\boldsymbol{x}_1\\boldsymbol{W} - \\boldsymbol{x}_2\\boldsymbol{W}\\Vert_{RMS}}{\\Vert \\boldsymbol{x}_1 - \\boldsymbol{x}_2\\Vert_{RMS}} = \\sqrt{\\frac{d_{in}}{d_{out}}}\\Vert\\boldsymbol{W}\\Vert_2 \\\\[5pt]\n&\\text{更新稳定性:}\\quad\\max_{\\Vert\\boldsymbol{x}\\Vert_{RMS}=1} \\Vert \\boldsymbol{x}(\\boldsymbol{W} + \\Delta\\boldsymbol{W}) - \\boldsymbol{x}\\boldsymbol{W}\\Vert_{RMS} = \\sqrt{\\frac{d_{in}}{d_{out}}}\\Vert\\Delta\\boldsymbol{W}\\Vert_2\n\\end{align}\n其中对一个矩阵取$\\Vert\\cdot\\Vert_2$表示该矩阵的谱范数，可以看到，三个指标都是谱范数的某个变体，或者更准确地说，笔者所提的这三个指标，本就是从谱范数出发所做的推广。",
+          "startOffset": 2725,
+          "endOffset": 3596,
+          "supportScore": 0.8
+        }
+      ],
+      "reasoning": "Initial variance constraints are derived to satisfy dependency stability requirements."
+    },
+    {
+      "id": "concept-relation:prerequisite:concept-dependency-stability:concept-linear-layer",
+      "kind": "prerequisite",
+      "sourceId": "concept-dependency-stability",
+      "targetId": "concept-linear-layer",
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "articleId": "kexue-11605",
+          "quote": "\n\\begin{align}\n&\\text{前向稳定性:}\\quad\\max_{\\boldsymbol{x}} \\Vert \\boldsymbol{f}(\\boldsymbol{x};\\boldsymbol{\\omega})\\Vert_{RMS} = \\Theta(1) \\label{eq:c1} \\\\[5pt]\n&\\text{依赖稳定性:}\\quad\\max_{\\boldsymbol{x}_1,\\boldsymbol{x}_2} \\frac{\\Vert \\boldsymbol{f}(\\boldsymbol{x}_1;\\boldsymbol{\\omega}) - \\boldsymbol{f}(\\boldsymbol{x}_2;\\boldsymbol{\\omega})\\Vert_{RMS}}{\\Vert\\boldsymbol{x}_1 - \\boldsymbol{x}_2\\Vert_{RMS}} = \\Theta(1) \\label{eq:c2} \\\\[5pt]\n&\\text{更新稳定性:}\\quad\\max_{\\boldsymbol{x}} \\Vert \\boldsymbol{f}(\\boldsymbol{x};\\boldsymbol{\\omega} + \\Delta\\boldsymbol{\\omega}) - \\boldsymbol{f}(\\boldsymbol{x};\\boldsymbol{\\omega})\\Vert_{RMS} = \\Theta(1) \\label{eq:c3}\n\\end{align}\n我们以线性层作为第一个例子，其结果对部分读者来说应该不陌生，它就是去年逐渐兴起的Muon优化器。",
+          "startOffset": 164,
+          "endOffset": 877,
+          "supportScore": 0.9
+        }
+      ],
+      "reasoning": "Dependency stability is a key metric used to analyze and constrain linear layers."
+    },
+    {
+      "id": "concept-relation:prerequisite:concept-forward-stability:concept-initial-variance",
+      "kind": "prerequisite",
+      "sourceId": "concept-forward-stability",
+      "targetId": "concept-initial-variance",
+      "confidence": 0.8,
+      "evidence": [
+        {
+          "articleId": "kexue-11605",
+          "quote": "\n初始方差 #\n根据上一节的讨论，约定我们只考虑带有In Norm的线性层，那么由谱范数定义可以计算三个指标：\n\\begin{align}\n&\\text{前向稳定性:}\\quad\\max_{\\Vert\\boldsymbol{x}\\Vert_{RMS}=1} \\Vert \\boldsymbol{x}\\boldsymbol{W}\\Vert_{RMS} = \\sqrt{\\frac{d_{in}}{d_{out}}}\\Vert\\boldsymbol{W}\\Vert_2 \\\\[5pt]\n&\\text{依赖稳定性:}\\quad\\max_{\\Vert\\boldsymbol{x}_1\\Vert_{RMS}=\\Vert\\boldsymbol{x}_2\\Vert_{RMS}=1} \\frac{\\Vert \\boldsymbol{x}_1\\boldsymbol{W} - \\boldsymbol{x}_2\\boldsymbol{W}\\Vert_{RMS}}{\\Vert \\boldsymbol{x}_1 - \\boldsymbol{x}_2\\Vert_{RMS}} = \\sqrt{\\frac{d_{in}}{d_{out}}}\\Vert\\boldsymbol{W}\\Vert_2 \\\\[5pt]\n&\\text{更新稳定性:}\\quad\\max_{\\Vert\\boldsymbol{x}\\Vert_{RMS}=1} \\Vert \\boldsymbol{x}(\\boldsymbol{W} + \\Delta\\boldsymbol{W}) - \\boldsymbol{x}\\boldsymbol{W}\\Vert_{RMS} = \\sqrt{\\frac{d_{in}}{d_{out}}}\\Vert\\Delta\\boldsymbol{W}\\Vert_2\n\\end{align}\n其中对一个矩阵取$\\Vert\\cdot\\Vert_2$表示该矩阵的谱范数，可以看到，三个指标都是谱范数的某个变体，或者更准确地说，笔者所提的这三个指标，本就是从谱范数出发所做的推广。",
+          "startOffset": 2725,
+          "endOffset": 3596,
+          "supportScore": 0.8
+        }
+      ],
+      "reasoning": "Initial variance constraints are derived to satisfy forward stability requirements."
+    },
+    {
+      "id": "concept-relation:prerequisite:concept-forward-stability:concept-linear-layer",
+      "kind": "prerequisite",
+      "sourceId": "concept-forward-stability",
+      "targetId": "concept-linear-layer",
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "articleId": "kexue-11605",
+          "quote": "\n\\begin{align}\n&\\text{前向稳定性:}\\quad\\max_{\\boldsymbol{x}} \\Vert \\boldsymbol{f}(\\boldsymbol{x};\\boldsymbol{\\omega})\\Vert_{RMS} = \\Theta(1) \\label{eq:c1} \\\\[5pt]\n&\\text{依赖稳定性:}\\quad\\max_{\\boldsymbol{x}_1,\\boldsymbol{x}_2} \\frac{\\Vert \\boldsymbol{f}(\\boldsymbol{x}_1;\\boldsymbol{\\omega}) - \\boldsymbol{f}(\\boldsymbol{x}_2;\\boldsymbol{\\omega})\\Vert_{RMS}}{\\Vert\\boldsymbol{x}_1 - \\boldsymbol{x}_2\\Vert_{RMS}} = \\Theta(1) \\label{eq:c2} \\\\[5pt]\n&\\text{更新稳定性:}\\quad\\max_{\\boldsymbol{x}} \\Vert \\boldsymbol{f}(\\boldsymbol{x};\\boldsymbol{\\omega} + \\Delta\\boldsymbol{\\omega}) - \\boldsymbol{f}(\\boldsymbol{x};\\boldsymbol{\\omega})\\Vert_{RMS} = \\Theta(1) \\label{eq:c3}\n\\end{align}\n我们以线性层作为第一个例子，其结果对部分读者来说应该不陌生，它就是去年逐渐兴起的Muon优化器。",
+          "startOffset": 164,
+          "endOffset": 877,
+          "supportScore": 0.9
+        }
+      ],
+      "reasoning": "Forward stability is a key metric used to analyze and constrain linear layers."
+    },
+    {
+      "id": "concept-relation:prerequisite:concept-gradtopk:concept-logsumexp",
+      "kind": "prerequisite",
+      "sourceId": "concept-gradtopk",
+      "targetId": "concept-logsumexp",
+      "confidence": 0.8,
+      "evidence": [
+        {
+          "articleId": "kexue-10373",
+          "quote": "所以我们似乎可以改为找$\\sum\\limits_{i\\in\\Omega_k(\\boldsymbol{x})} x_i$的光滑近似，然后求梯度就得到$\\mathcal{T}_k(\\boldsymbol{x})$的光滑近似了，前者是一个标量，它的光滑近似找起来更容易一些，比如利用恒等式\n\\begin{equation}\\sum_{i\\in\\Omega_k(\\boldsymbol{x})} x_i = \\max_{i_1 《寻求一个光滑的最大值函数》），答案是$\\text{logsumexp}$：\n\\begin{equation}\\max_{i_1 单调性、不变性和趋近性，并且$\\mathcal{ST}_1(\\boldsymbol{x})$它就是Softmax，这些特性显示它确实是Softmax对于Top-$k$算子的自然推广，我们暂且称之为“GradTopK（Gradient-guided Soft Top-k operator）”。",
+          "startOffset": 4234,
+          "endOffset": 4655,
+          "supportScore": 0.8
+        }
+      ],
+      "reasoning": "The derivation of GradTopK relies on using LogSumExp as the smooth approximation for the max function involved in the sum of top-k elements."
+    },
+    {
+      "id": "concept-relation:prerequisite:concept-heterogeneous-power-inequality:concept-optimal-batch-size",
+      "kind": "prerequisite",
+      "sourceId": "concept-heterogeneous-power-inequality",
+      "targetId": "concept-optimal-batch-size",
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "articleId": "kexue-11833",
+          "quote": "如果固定$K$，那么右端变成$\\tilde{\\alpha}_1  (B / K)^{\\tilde{\\gamma}_1} + \\alpha_2 B^{-\\gamma_2}$，继续由异幂不等式可以求得最小值为\n\\begin{equation}F_{\\text{opt}}^* = (\\tilde{\\gamma}_1 + \\gamma_2) \\left(\\frac{(\\tilde{\\alpha}_1 K^{-\\tilde{\\gamma}_1})^{\\gamma_2} \\alpha_2^{\\tilde{\\gamma}_1}}{\\tilde{\\gamma}_1^{\\tilde{\\gamma}_1} \\gamma_2^{\\gamma_2}}\\right)^{\\frac{1}{\\tilde{\\gamma}_1+\\gamma_2}} \\;\\sim\\; K^{-\\frac{\\tilde{\\gamma}_1 \\gamma_2}{\\tilde{\\gamma}_1+\\gamma_2}}\\end{equation}\n等号在\n\\begin{equation}B^* = \\left(\\frac{\\alpha_2 \\gamma_2 K^{\\tilde{\\gamma}_1}}{\\tilde{\\alpha}_1 \\tilde{\\gamma}_1}\\right)^{\\frac{1}{\\tilde{\\gamma}_1 + \\gamma_2}} \\sim K^{\\frac{\\tilde{\\gamma}_1}{\\tilde{\\gamma}_1+\\gamma_2}}\\end{equation}\n这同样有两个结论：给定总训练样本数$K$下，最优批大小$B^*$正比于$K^c$，其中$c\\in(0, 1)$；而在最优批大小下，Scaling Law简化成$\\hat{\\alpha}_1 K^{-\\hat{\\gamma}_1}$，这正是经典的Scaling Law形式。",
+          "startOffset": 6326,
+          "endOffset": 7147,
+          "supportScore": 0.95
+        }
+      ],
+      "reasoning": "The heterogeneous power inequality is used to derive the optimal batch size formula."
+    },
+    {
+      "id": "concept-relation:prerequisite:concept-heterogeneous-power-inequality:concept-optimal-learning-rate",
+      "kind": "prerequisite",
+      "sourceId": "concept-heterogeneous-power-inequality",
+      "targetId": "concept-optimal-learning-rate",
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "articleId": "kexue-11833",
+          "quote": "\n首先，根据异幂不等式，可以求得让右端最小的最优学习率是\n\\begin{equation}\\eta^* = \\left(\\frac{\\gamma_1\\alpha_1 T^{-\\gamma_1}}{\\gamma_3\\alpha_3}\\right)^{\\frac{1}{\\gamma_1+\\gamma_3}} \\sim T^{-\\frac{\\gamma_1}{\\gamma_1+\\gamma_3}}\\end{equation}\n相应的最小值是\n\\begin{equation}F_{\\text{opt}}^* = \\underbrace{(\\gamma_1+\\gamma_3)\\left(\\frac{(\\alpha_1 T^{-\\gamma_1})^{\\gamma_3} \\alpha_3^{\\gamma_1}}{\\gamma_1^{\\gamma_1} \\gamma_3^{\\gamma_3}}\\right)^{\\frac{1}{\\gamma_1+\\gamma_3}}}_{\\sim T^{-\\frac{\\gamma_1\\gamma_3}{\\gamma_1+\\gamma_3}}} + \\alpha_2 B^{-\\gamma_2}\\end{equation}\n这告诉我们两个结果：1、存在某个$0 2607.",
+          "startOffset": 5509,
+          "endOffset": 6061,
+          "supportScore": 0.95
+        }
+      ],
+      "reasoning": "The heterogeneous power inequality is used to derive the optimal learning rate formula."
+    },
+    {
+      "id": "concept-relation:prerequisite:concept-logsumexp:concept-gradtopk",
+      "kind": "prerequisite",
+      "sourceId": "concept-logsumexp",
+      "targetId": "concept-gradtopk",
+      "confidence": 0.8,
+      "evidence": [
+        {
+          "articleId": "kexue-10373",
+          "quote": "所以我们似乎可以改为找$\\sum\\limits_{i\\in\\Omega_k(\\boldsymbol{x})} x_i$的光滑近似，然后求梯度就得到$\\mathcal{T}_k(\\boldsymbol{x})$的光滑近似了，前者是一个标量，它的光滑近似找起来更容易一些，比如利用恒等式\n\\begin{equation}\\sum_{i\\in\\Omega_k(\\boldsymbol{x})} x_i = \\max_{i_1 《寻求一个光滑的最大值函数》），答案是$\\text{logsumexp}$：\n\\begin{equation}\\max_{i_1 单调性、不变性和趋近性，并且$\\mathcal{ST}_1(\\boldsymbol{x})$它就是Softmax，这些特性显示它确实是Softmax对于Top-$k$算子的自然推广，我们暂且称之为“GradTopK（Gradient-guided Soft Top-k operator）”。",
+          "startOffset": 4234,
+          "endOffset": 4655,
+          "supportScore": 0.8
+        }
+      ],
+      "reasoning": "GradTopK uses LogSumExp as the underlying smooth maximum function for its derivation."
+    },
+    {
+      "id": "concept-relation:prerequisite:concept-random-projection:concept-performer",
+      "kind": "prerequisite",
+      "sourceId": "concept-random-projection",
+      "targetId": "concept-performer",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-7921",
+          "quote": " 《Performer：用随机投影将Attention的复杂度线性化 》[Blog post].",
+          "startOffset": 12108,
+          "endOffset": 12156,
+          "supportScore": 1
+        }
+      ],
+      "reasoning": "Performer relies on random projection to linearize the attention complexity."
+    },
+    {
+      "id": "concept-relation:prerequisite:concept-smooth-approximation:concept-top-k-operator",
+      "kind": "prerequisite",
+      "sourceId": "concept-smooth-approximation",
+      "targetId": "concept-top-k-operator",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-10373",
+          "quote": "为了解决这个问题，我们就需要构造一个能够提供有效梯度信息的$\\mathcal{T}_k(\\boldsymbol{x})$的光滑近似——在有些文献中也称为“可微Top-$k$算子（Differentiable Top-$k$ Operator）”。",
+          "startOffset": 1116,
+          "endOffset": 1239,
+          "supportScore": 1
+        }
+      ],
+      "reasoning": "Smooth approximation is required to make the non-differentiable Top-k operator trainable via gradients."
+    },
+    {
+      "id": "concept-relation:prerequisite:concept-softmax:concept-cross-entropy",
+      "kind": "prerequisite",
+      "sourceId": "concept-softmax",
+      "targetId": "concept-cross-entropy",
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "articleId": "kexue-11854",
+          "quote": "以对数评分和Brier评分为例，在Softmax激活函数下损失对$\\boldsymbol{z}$的梯度分别是\n\\begin{align}\\newcommand{diag}{\\mathop{\\text{diag}}}\n\\text{对数评分 (交叉熵) :}&\\qquad \\nabla_{\\boldsymbol{z}} S(\\boldsymbol{q}, i) = \\boldsymbol{q} - \\boldsymbol{e}_i \\\\[5pt]\n\\text{Brier评分 (平方损失) :}&\\qquad \\nabla_{\\boldsymbol{z}} S(\\boldsymbol{q}, i) = 2(\\diag(\\boldsymbol{q})-\\boldsymbol{q}\\boldsymbol{q}^\\top)(\\boldsymbol{q}-\\boldsymbol{e}_i) \\\\\n\\end{align}\n显然，交叉熵的梯度看上去更加“干净”，当且仅当$\\boldsymbol{q}=\\boldsymbol{e}_i$时梯度才为零，这说明只要还没达到目标，它就能提供有效梯度，并且距离目标越远，梯度越大；平方损失多出一项变换$\\diag(\\boldsymbol{q})-\\boldsymbol{q}\\boldsymbol{q}^\\top$，当$\\boldsymbol{q}=\\boldsymbol{e}_j\\neq \\boldsymbol{e}_i$时，这一项也会为零，说明当模型“自信地错误”时，它也会梯度消失。",
+          "startOffset": 5417,
+          "endOffset": 6080,
+          "supportScore": 0.9
+        }
+      ],
+      "reasoning": "In LLM training, Cross-Entropy loss is typically paired with Softmax activation for convexity and clean gradients."
+    },
+    {
+      "id": "concept-relation:prerequisite:concept-spectral-norm:concept-dependency-stability",
+      "kind": "prerequisite",
+      "sourceId": "concept-spectral-norm",
+      "targetId": "concept-dependency-stability",
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "articleId": "kexue-11605",
+          "quote": "\n初始方差 #\n根据上一节的讨论，约定我们只考虑带有In Norm的线性层，那么由谱范数定义可以计算三个指标：\n\\begin{align}\n&\\text{前向稳定性:}\\quad\\max_{\\Vert\\boldsymbol{x}\\Vert_{RMS}=1} \\Vert \\boldsymbol{x}\\boldsymbol{W}\\Vert_{RMS} = \\sqrt{\\frac{d_{in}}{d_{out}}}\\Vert\\boldsymbol{W}\\Vert_2 \\\\[5pt]\n&\\text{依赖稳定性:}\\quad\\max_{\\Vert\\boldsymbol{x}_1\\Vert_{RMS}=\\Vert\\boldsymbol{x}_2\\Vert_{RMS}=1} \\frac{\\Vert \\boldsymbol{x}_1\\boldsymbol{W} - \\boldsymbol{x}_2\\boldsymbol{W}\\Vert_{RMS}}{\\Vert \\boldsymbol{x}_1 - \\boldsymbol{x}_2\\Vert_{RMS}} = \\sqrt{\\frac{d_{in}}{d_{out}}}\\Vert\\boldsymbol{W}\\Vert_2 \\\\[5pt]\n&\\text{更新稳定性:}\\quad\\max_{\\Vert\\boldsymbol{x}\\Vert_{RMS}=1} \\Vert \\boldsymbol{x}(\\boldsymbol{W} + \\Delta\\boldsymbol{W}) - \\boldsymbol{x}\\boldsymbol{W}\\Vert_{RMS} = \\sqrt{\\frac{d_{in}}{d_{out}}}\\Vert\\Delta\\boldsymbol{W}\\Vert_2\n\\end{align}\n其中对一个矩阵取$\\Vert\\cdot\\Vert_2$表示该矩阵的谱范数，可以看到，三个指标都是谱范数的某个变体，或者更准确地说，笔者所提的这三个指标，本就是从谱范数出发所做的推广。",
+          "startOffset": 2725,
+          "endOffset": 3596,
+          "supportScore": 0.9
+        }
+      ],
+      "reasoning": "Spectral norm is the mathematical basis for defining dependency stability."
+    },
+    {
+      "id": "concept-relation:prerequisite:concept-spectral-norm:concept-forward-stability",
+      "kind": "prerequisite",
+      "sourceId": "concept-spectral-norm",
+      "targetId": "concept-forward-stability",
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "articleId": "kexue-11605",
+          "quote": "\n初始方差 #\n根据上一节的讨论，约定我们只考虑带有In Norm的线性层，那么由谱范数定义可以计算三个指标：\n\\begin{align}\n&\\text{前向稳定性:}\\quad\\max_{\\Vert\\boldsymbol{x}\\Vert_{RMS}=1} \\Vert \\boldsymbol{x}\\boldsymbol{W}\\Vert_{RMS} = \\sqrt{\\frac{d_{in}}{d_{out}}}\\Vert\\boldsymbol{W}\\Vert_2 \\\\[5pt]\n&\\text{依赖稳定性:}\\quad\\max_{\\Vert\\boldsymbol{x}_1\\Vert_{RMS}=\\Vert\\boldsymbol{x}_2\\Vert_{RMS}=1} \\frac{\\Vert \\boldsymbol{x}_1\\boldsymbol{W} - \\boldsymbol{x}_2\\boldsymbol{W}\\Vert_{RMS}}{\\Vert \\boldsymbol{x}_1 - \\boldsymbol{x}_2\\Vert_{RMS}} = \\sqrt{\\frac{d_{in}}{d_{out}}}\\Vert\\boldsymbol{W}\\Vert_2 \\\\[5pt]\n&\\text{更新稳定性:}\\quad\\max_{\\Vert\\boldsymbol{x}\\Vert_{RMS}=1} \\Vert \\boldsymbol{x}(\\boldsymbol{W} + \\Delta\\boldsymbol{W}) - \\boldsymbol{x}\\boldsymbol{W}\\Vert_{RMS} = \\sqrt{\\frac{d_{in}}{d_{out}}}\\Vert\\Delta\\boldsymbol{W}\\Vert_2\n\\end{align}\n其中对一个矩阵取$\\Vert\\cdot\\Vert_2$表示该矩阵的谱范数，可以看到，三个指标都是谱范数的某个变体，或者更准确地说，笔者所提的这三个指标，本就是从谱范数出发所做的推广。",
+          "startOffset": 2725,
+          "endOffset": 3596,
+          "supportScore": 0.9
+        }
+      ],
+      "reasoning": "Spectral norm is the mathematical basis for defining forward stability."
+    },
+    {
+      "id": "concept-relation:prerequisite:concept-spectral-norm:concept-update-stability",
+      "kind": "prerequisite",
+      "sourceId": "concept-spectral-norm",
+      "targetId": "concept-update-stability",
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "articleId": "kexue-11605",
+          "quote": "\n初始方差 #\n根据上一节的讨论，约定我们只考虑带有In Norm的线性层，那么由谱范数定义可以计算三个指标：\n\\begin{align}\n&\\text{前向稳定性:}\\quad\\max_{\\Vert\\boldsymbol{x}\\Vert_{RMS}=1} \\Vert \\boldsymbol{x}\\boldsymbol{W}\\Vert_{RMS} = \\sqrt{\\frac{d_{in}}{d_{out}}}\\Vert\\boldsymbol{W}\\Vert_2 \\\\[5pt]\n&\\text{依赖稳定性:}\\quad\\max_{\\Vert\\boldsymbol{x}_1\\Vert_{RMS}=\\Vert\\boldsymbol{x}_2\\Vert_{RMS}=1} \\frac{\\Vert \\boldsymbol{x}_1\\boldsymbol{W} - \\boldsymbol{x}_2\\boldsymbol{W}\\Vert_{RMS}}{\\Vert \\boldsymbol{x}_1 - \\boldsymbol{x}_2\\Vert_{RMS}} = \\sqrt{\\frac{d_{in}}{d_{out}}}\\Vert\\boldsymbol{W}\\Vert_2 \\\\[5pt]\n&\\text{更新稳定性:}\\quad\\max_{\\Vert\\boldsymbol{x}\\Vert_{RMS}=1} \\Vert \\boldsymbol{x}(\\boldsymbol{W} + \\Delta\\boldsymbol{W}) - \\boldsymbol{x}\\boldsymbol{W}\\Vert_{RMS} = \\sqrt{\\frac{d_{in}}{d_{out}}}\\Vert\\Delta\\boldsymbol{W}\\Vert_2\n\\end{align}\n其中对一个矩阵取$\\Vert\\cdot\\Vert_2$表示该矩阵的谱范数，可以看到，三个指标都是谱范数的某个变体，或者更准确地说，笔者所提的这三个指标，本就是从谱范数出发所做的推广。",
+          "startOffset": 2725,
+          "endOffset": 3596,
+          "supportScore": 0.9
+        }
+      ],
+      "reasoning": "Spectral norm is the mathematical basis for defining update stability."
+    },
+    {
+      "id": "concept-relation:prerequisite:concept-update-stability:concept-linear-layer",
+      "kind": "prerequisite",
+      "sourceId": "concept-update-stability",
+      "targetId": "concept-linear-layer",
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "articleId": "kexue-11605",
+          "quote": "\n\\begin{align}\n&\\text{前向稳定性:}\\quad\\max_{\\boldsymbol{x}} \\Vert \\boldsymbol{f}(\\boldsymbol{x};\\boldsymbol{\\omega})\\Vert_{RMS} = \\Theta(1) \\label{eq:c1} \\\\[5pt]\n&\\text{依赖稳定性:}\\quad\\max_{\\boldsymbol{x}_1,\\boldsymbol{x}_2} \\frac{\\Vert \\boldsymbol{f}(\\boldsymbol{x}_1;\\boldsymbol{\\omega}) - \\boldsymbol{f}(\\boldsymbol{x}_2;\\boldsymbol{\\omega})\\Vert_{RMS}}{\\Vert\\boldsymbol{x}_1 - \\boldsymbol{x}_2\\Vert_{RMS}} = \\Theta(1) \\label{eq:c2} \\\\[5pt]\n&\\text{更新稳定性:}\\quad\\max_{\\boldsymbol{x}} \\Vert \\boldsymbol{f}(\\boldsymbol{x};\\boldsymbol{\\omega} + \\Delta\\boldsymbol{\\omega}) - \\boldsymbol{f}(\\boldsymbol{x};\\boldsymbol{\\omega})\\Vert_{RMS} = \\Theta(1) \\label{eq:c3}\n\\end{align}\n我们以线性层作为第一个例子，其结果对部分读者来说应该不陌生，它就是去年逐渐兴起的Muon优化器。",
+          "startOffset": 164,
+          "endOffset": 877,
+          "supportScore": 0.9
+        }
+      ],
+      "reasoning": "Update stability is a key metric used to analyze and constrain linear layers."
+    },
+    {
+      "id": "concept-relation:prerequisite:concept-update-stability:concept-steepest-descent",
+      "kind": "prerequisite",
+      "sourceId": "concept-update-stability",
+      "targetId": "concept-steepest-descent",
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "articleId": "kexue-11605",
+          "quote": "\n最速下降 #\n接下来我们主要看“更新稳定性”指标$\\sqrt{d_{in}/d_{out}}\\Vert\\Delta\\boldsymbol{W}\\Vert_2$，这是参数增量$\\Delta\\boldsymbol{W}$的谱范数变体。",
+          "startOffset": 4205,
+          "endOffset": 4321,
+          "supportScore": 0.9
+        }
+      ],
+      "reasoning": "Update stability provides the constraint for solving the steepest descent problem."
+    },
+    {
+      "id": "concept-relation:related:concept-attention-is-all-you-need:concept-convolutional-sequence-to-sequence-learning",
+      "kind": "related",
+      "sourceId": "concept-attention-is-all-you-need",
+      "targetId": "concept-convolutional-sequence-to-sequence-learning",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-4765",
+          "quote": "2017年中，有两篇类似同时也是笔者非常欣赏的论文，分别是FaceBook的《Convolutional Sequence to Sequence Learning》和Google的《Attention is All You Need》，它们都算是Seq2Seq上的创新，本质上来说，都是抛弃了RNN结构来做Seq2Seq任务。",
+          "startOffset": 0,
+          "endOffset": 164,
+          "supportScore": 1
+        }
+      ],
+      "reasoning": "Both papers are cited as parallel innovations in Seq2Seq that abandon RNN structures."
+    },
+    {
+      "id": "concept-relation:related:concept-attention-residuals-attnres:concept-hyper-connections-hc",
+      "kind": "related",
+      "sourceId": "concept-attention-residuals-attnres",
+      "targetId": "concept-hyper-connections-hc",
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "articleId": "kexue-11664",
+          "quote": "\n矩阵视角 #\n值得一提的是，我们还可以通过Attention矩阵，将Residuals、HC/mHC、Full AttnRes、Block AttnRes统一起来，这也是一个比较有趣的理解视角，示例如下。",
+          "startOffset": 5959,
+          "endOffset": 6062,
+          "supportScore": 0.9
+        }
+      ],
+      "reasoning": "HC is shown to be mathematically equivalent to a form of layer-wise attention, linking it to AttnRes."
+    },
+    {
+      "id": "concept-relation:related:concept-cross-entropy:concept-lm-loss",
+      "kind": "related",
+      "sourceId": "concept-cross-entropy",
+      "targetId": "concept-lm-loss",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11854",
+          "quote": "一直以来，交叉熵（Cross Entropy）都是LLM预训练和微调的标准损失函数。",
+          "startOffset": 0,
+          "endOffset": 42,
+          "supportScore": 1
+        }
+      ],
+      "reasoning": "Cross-entropy is the standard instance of LM Loss."
+    },
+    {
+      "id": "concept-relation:related:concept-feature-level-gradient-descent:concept-preconditioner",
+      "kind": "related",
+      "sourceId": "concept-feature-level-gradient-descent",
+      "targetId": "concept-preconditioner",
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "articleId": "kexue-11875",
+          "quote": "事实上，这只不过是一个线性回归问题，可以直接解得\n\\begin{equation}\\boldsymbol{\\Phi}^* = (\\boldsymbol{X}^{\\top}\\boldsymbol{X} + \\lambda \\boldsymbol{I})^{-1} \\boldsymbol{X}^{\\top}\\frac{\\partial \\mathcal{L}}{\\partial\\boldsymbol{Y}}\\end{equation}\n留意到$\\boldsymbol{X}^{\\top}\\frac{\\partial \\mathcal{L}}{\\partial\\boldsymbol{Y}}$正好是$\\boldsymbol{G}=\\frac{\\partial \\mathcal{L}}{\\partial\\boldsymbol{W}}$，$(\\boldsymbol{X}^{\\top}\\boldsymbol{X} + \\lambda \\boldsymbol{I})^{-1}$是基于输入数据的Preconditioner，为了综合不同batch的贡献，我们考虑对$\\boldsymbol{X}^{\\top}\\boldsymbol{X}$和$\\boldsymbol{X}^{\\top}\\frac{\\partial \\mathcal{L}}{\\partial\\boldsymbol{Y}}$都做EMA，这将得到一个SGDM变体：\n\\begin{equation}\\begin{aligned}\n\\boldsymbol{M}_t =&\\, \\beta \\boldsymbol{M}_{t-1} + (1 - \\beta) \\boldsymbol{G}_t \\\\[4pt]\n\\boldsymbol{Z}_t =&\\, \\beta \\boldsymbol{Z}_{t-1} + (1 - \\beta) (\\boldsymbol{X}_t^{\\top}\\boldsymbol{X}_t + \\lambda \\boldsymbol{I}) \\\\[4pt]\n\\boldsymbol{W}_t =&\\, \\boldsymbol{W}_{t-1} - \\eta \\boldsymbol{Z}_t^{-1}\\boldsymbol{M}_t\n\\end{aligned}\\end{equation}\n切换视角 #\n现在我们知道，通过校正的梯度$(\\boldsymbol{X}^{\\top}\\boldsymbol{X} + \\lambda \\boldsymbol{I})^{-1}\\boldsymbol{G}$，可以实现特征层面的梯度下降，那么我们可以将它视为某种“更靠谱的梯度”，同理，相应的$\\boldsymbol{Z}_t^{-1}\\boldsymbol{M}_t$我们可以视为“更靠谱的动量”。",
+          "startOffset": 2104,
+          "endOffset": 3289,
+          "supportScore": 0.95
+        }
+      ],
+      "reasoning": "Preconditioners are used to transform parameter gradients into directions that better match feature-level gradients."
+    },
+    {
+      "id": "concept-relation:related:concept-flash-attention:concept-low-precision-attention",
+      "kind": "related",
+      "sourceId": "concept-flash-attention",
+      "targetId": "concept-low-precision-attention",
+      "confidence": 0.8,
+      "evidence": [
+        {
+          "articleId": "kexue-11371",
+          "quote": "\n结论简述 #\n要指出的是，论文标题虽然点名了“Flash Attention”，但按照论文的描述，即便block_size取到训练长度那么大，相同的问题依然会出现，所以Flash Attention的分块计算并不是引起问题的原因，因此我们可以按照朴素的低精度Attention实现来简化分析。",
+          "startOffset": 293,
+          "endOffset": 440,
+          "supportScore": 0.8
+        }
+      ],
+      "reasoning": "Flash Attention's block-wise computation interacts with low-precision rounding errors in Attention calculations."
+    },
+    {
+      "id": "concept-relation:related:concept-gradtopk:concept-smooth-approximation",
+      "kind": "related",
+      "sourceId": "concept-gradtopk",
+      "targetId": "concept-smooth-approximation",
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "articleId": "kexue-10373",
+          "quote": "所以我们似乎可以改为找$\\sum\\limits_{i\\in\\Omega_k(\\boldsymbol{x})} x_i$的光滑近似，然后求梯度就得到$\\mathcal{T}_k(\\boldsymbol{x})$的光滑近似了，前者是一个标量，它的光滑近似找起来更容易一些，比如利用恒等式\n\\begin{equation}\\sum_{i\\in\\Omega_k(\\boldsymbol{x})} x_i = \\max_{i_1 《寻求一个光滑的最大值函数》），答案是$\\text{logsumexp}$：\n\\begin{equation}\\max_{i_1 单调性、不变性和趋近性，并且$\\mathcal{ST}_1(\\boldsymbol{x})$它就是Softmax，这些特性显示它确实是Softmax对于Top-$k$算子的自然推广，我们暂且称之为“GradTopK（Gradient-guided Soft Top-k operator）”。",
+          "startOffset": 4234,
+          "endOffset": 4655,
+          "supportScore": 0.9
+        }
+      ],
+      "reasoning": "GradTopK is a specific gradient-guided approach to smooth approximation."
+    },
+    {
+      "id": "concept-relation:related:concept-greedy-decision:concept-planned-scenario",
+      "kind": "related",
+      "sourceId": "concept-greedy-decision",
+      "targetId": "concept-planned-scenario",
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "articleId": "kexue-11879",
+          "quote": "\n这里又可以接着分为“意外”和“计划”两种情况：“意外”是指本无计划续训，所以第一阶段会尽可能调到最优，决定续训后，第二阶段则是在现有基础上设法调到最优，这样就得到一个贪心解，缺点是第二阶段不论怎么调，结果都是相对次优的；至于“计划”情形，则是提前做了多阶段训练的规划，理论上我们可以更好地平衡两个阶段的效果。",
+          "startOffset": 1711,
+          "endOffset": 1866,
+          "supportScore": 0.95
+        }
+      ],
+      "reasoning": "These represent two contrasting strategies for setting learning rates in multi-stage training."
+    },
+    {
+      "id": "concept-relation:related:concept-iterative-construction:concept-smooth-approximation",
+      "kind": "related",
+      "sourceId": "concept-iterative-construction",
+      "targetId": "concept-smooth-approximation",
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "articleId": "kexue-10373",
+          "quote": "randn(100)\nThreTopK(x, k)\n文章小结 #\n本文探讨了Top-k算子的光滑近似问题，它是Softmax等Top1的光滑近似的一般推广，提出了迭代构造、梯度指引、待定常数三种构造思路，并分析了它们的优缺点。",
+          "startOffset": 12152,
+          "endOffset": 12265,
+          "supportScore": 0.9
+        }
+      ],
+      "reasoning": "Iterative construction is one method for achieving smooth approximation of Top-k."
+    },
+    {
+      "id": "concept-relation:related:concept-logsumexp:concept-softmax",
+      "kind": "related",
+      "sourceId": "concept-logsumexp",
+      "targetId": "concept-softmax",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11814",
+          "quote": "\n一些记号 #\n首先引入如下记号：\n\\begin{gather}\\newcommand{logsumexp}{\\mathop{\\text{logsumexp}}}\\newcommand{softmax}{\\mathop{\\text{softmax}}}\n\\boldsymbol{x} = (x_1, x_2, \\cdots, x_n) \\in \\mathbb{R}^n,\\qquad\\overline{\\boldsymbol{x}} = \\frac{1}{n}\\sum_{i=1}^n x_i \\\\\n\\logsumexp(\\boldsymbol{x}) = \\log\\sum_{i=1}^n e^{x_i} = \\log n + \\log \\overline{e^{\\boldsymbol{x}}} \\\\\n\\softmax(\\boldsymbol{x}) = \\frac{e^{\\boldsymbol{x}}}{\\sum_{i=1}^n e^{x_i}} = e^{\\boldsymbol{x} - \\logsumexp(\\boldsymbol{x})} \\\\\n\\end{gather}\n并约定向量的函数运算都是Hadamard意义下的，例如\n\\begin{equation}e^{\\boldsymbol{x}} = (e^{x_1},e^{x_2},\\cdots,e^{x_n}),\\qquad\\boldsymbol{x}^2 = (x_1^2,x_2^2,\\cdots,x_n^2)\\end{equation}\n特别地，要仔细留意$\\overline{e^{\\boldsymbol{x}}}$与$e^{\\overline{\\boldsymbol{x}}}$、$\\overline{\\boldsymbol{x}^2}$与$\\overline{\\boldsymbol{x}}^2$的区别：前者是先对每个分量做函数再平均，后者是先平均再做函数，二者一般不相等。",
+          "startOffset": 117,
+          "endOffset": 946,
+          "supportScore": 1
+        }
+      ],
+      "reasoning": "Softmax is defined as the gradient of LogSumExp."
+    },
+    {
+      "id": "concept-relation:related:concept-lr-schedule:concept-step-size-schedule",
+      "kind": "related",
+      "sourceId": "concept-lr-schedule",
+      "targetId": "concept-step-size-schedule",
+      "confidence": 1,
+      "evidence": [
+        {
+          "articleId": "kexue-11804",
+          "quote": "精通炼丹的同学都知道，步长调度，或者说学习率调度（LR Schedule），对模型最终效果来说至关重要。",
+          "startOffset": 0,
+          "endOffset": 52,
+          "supportScore": 1
+        }
+      ],
+      "reasoning": "Step size schedule and LR schedule are synonymous terms for learning rate scheduling."
+    },
+    {
+      "id": "concept-relation:related:concept-lr-schedule:concept-weight-averaging",
+      "kind": "related",
+      "sourceId": "concept-lr-schedule",
+      "targetId": "concept-weight-averaging",
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "articleId": "kexue-11804",
+          "quote": "\n如何从理论上分析学习率调度与权重平均的联系呢？",
+          "startOffset": 172,
+          "endOffset": 196,
+          "supportScore": 0.95
+        }
+      ],
+      "reasoning": "The articles explore the theoretical equivalence and interplay between weight averaging and learning rate decay."
+    },
+    {
+      "id": "concept-relation:related:concept-memory-layer:concept-mixture-of-experts",
+      "kind": "related",
+      "sourceId": "concept-memory-layer",
+      "targetId": "concept-mixture-of-experts",
+      "confidence": 0.85,
+      "evidence": [
+        {
+          "articleId": "kexue-11833",
+          "quote": "从这个角度看，它们的Scaling Law应该跟MoE类似，比如一个Dense模型配上若干Memory层后，Scaling Law应该同样呈现式$\\eqref{eq:arch-law-moe}$的样子。",
+          "startOffset": 15483,
+          "endOffset": 15584,
+          "supportScore": 0.85
+        }
+      ],
+      "reasoning": "Memory layers are discussed as a sparse architecture similar to MoE, often analyzed together in scaling laws."
+    },
+    {
+      "id": "concept-relation:related:concept-smooth-approximation:concept-thretopk",
+      "kind": "related",
+      "sourceId": "concept-smooth-approximation",
+      "targetId": "concept-thretopk",
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "articleId": "kexue-10373",
+          "quote": "randn(100)\nThreTopK(x, k)\n文章小结 #\n本文探讨了Top-k算子的光滑近似问题，它是Softmax等Top1的光滑近似的一般推广，提出了迭代构造、梯度指引、待定常数三种构造思路，并分析了它们的优缺点。",
+          "startOffset": 12152,
+          "endOffset": 12265,
+          "supportScore": 0.9
+        }
+      ],
+      "reasoning": "ThreTopK is a threshold-based approach to smooth approximation."
+    }
+  ],
+  "readingPaths": [
+    {
+      "id": "path-llm-foundations",
+      "title": "理解 LLM 的骨架",
+      "summary": "从模型整体进入 Transformer、Attention 与位置表示。",
+      "level": "beginner",
+      "domains": [
+        "模型基础",
+        "注意力机制"
+      ],
+      "conceptIds": [
+        "concept-attention-is-all-you-need",
+        "concept-attention-mechanism",
+        "concept-bf16",
+        "concept-residuals",
+        "concept-seq2seq",
+        "concept-architecture-error",
+        "concept-convolutional-sequence-to-sequence-learning",
+        "concept-gau",
+        "concept-hyper-connections-hc",
+        "concept-in-norm",
+        "concept-linear-attention",
+        "concept-loss-free-load-balancing",
+        "concept-maxlogit-explosion",
+        "concept-mhc",
+        "concept-multi-head-attention",
+        "concept-multi-head-latent-attention",
+        "concept-no-positional-encoding",
+        "concept-out-norm",
+        "concept-roformerv2",
+        "concept-self-attention",
+        "concept-short-conv",
+        "concept-sliding-window-attention-swa",
+        "concept-vanilla-linear-attention",
+        "concept-anisotropy",
+        "concept-attention-residuals-attnres",
+        "concept-block-attnres",
+        "concept-dsv4-attention-design",
+        "concept-effective-parameter-count",
+        "concept-entmax",
+        "concept-entropy-invariant-softmax",
+        "concept-full-attnres",
+        "concept-gated-deltanet",
+        "concept-gau-alpha",
+        "concept-key-value-homogeneity",
+        "concept-kimia-linear-attention",
+        "concept-low-precision-attention",
+        "concept-memory-layer",
+        "concept-mixture-of-experts",
+        "concept-performer",
+        "concept-restricted-self-attention",
+        "concept-linear-layer",
+        "concept-stable-latent-moe"
+      ],
+      "articleIds": [
+        "kexue-4765",
+        "kexue-7921",
+        "kexue-9052",
+        "kexue-11320",
+        "kexue-11371",
+        "kexue-11605",
+        "kexue-11664",
+        "kexue-11782",
+        "kexue-11814",
+        "kexue-11823",
+        "kexue-11833",
+        "kexue-11848",
+        "kexue-11854"
+      ]
+    },
+    {
+      "id": "path-inference-systems",
+      "title": "高吞吐推理工程",
+      "summary": "沿着服务、缓存、调度与优化理解推理系统。",
+      "level": "intermediate",
+      "domains": [
+        "推理系统"
+      ],
+      "conceptIds": [
+        "concept-flash-attention",
+        "concept-muon-optimizer",
+        "concept-optimal-batch-size",
+        "concept-optimal-learning-rate",
+        "concept-quadratic-complexity-rnn"
+      ],
+      "articleIds": [
+        "kexue-11371",
+        "kexue-11605",
+        "kexue-11823",
+        "kexue-11833"
+      ]
+    },
+    {
+      "id": "path-long-context",
+      "title": "走向长上下文",
+      "summary": "从窗口边界进入位置外推、缓存成本与检索互补。",
+      "level": "advanced",
+      "domains": [
+        "长上下文"
+      ],
+      "conceptIds": [
+        "concept-position-embedding"
+      ],
+      "articleIds": [
+        "kexue-4765"
+      ]
+    }
+  ]
+}

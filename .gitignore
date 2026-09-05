@@ -5,3 +5,5 @@ out/
 *.tsbuildinfo
 .env*
 !.env.example
+# Office 临时锁文件
+~$*

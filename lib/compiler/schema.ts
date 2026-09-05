@@ -54,7 +54,7 @@ function evidence(value: unknown, path: string, articles: Map<string, RawArticle
   confidence(item.supportScore, `${path}.supportScore`);
 }
 
-function mentions(value: string, terms: string[]) {
+export function mentions(value: string, terms: string[]) {
   return terms.some((term) => {
     if (/\p{Script=Han}/u.test(term)) return value.includes(term);
     const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+");

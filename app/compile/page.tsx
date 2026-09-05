@@ -82,7 +82,7 @@ export default function CompilePage() {
   return (
     <main className="min-h-screen px-4 py-8 md:px-8">
       <div className="mx-auto max-w-4xl">
-        <header className="flex items-center justify-between border-b border-ink/15 pb-4">
+        <header className="glass-bar -mx-4 mb-2 flex items-center justify-between px-4 py-3 md:-mx-8 md:px-8">
           <Link className="font-display text-xl font-semibold" href="/">Knowledge Compiler</Link>
           <span className="text-[10px] font-bold tracking-[0.18em] text-ink/45 uppercase">Compile MVP</span>
         </header>
@@ -96,7 +96,7 @@ export default function CompilePage() {
             使用仓库中的 Demo Articles，运行当前配置的真实 Compiler pipeline。
           </p>
           <button
-            className="mt-8 rounded-full bg-ink px-6 py-3 text-sm font-bold text-paper shadow-[4px_4px_0_#ff6b52] transition hover:-translate-y-0.5 disabled:cursor-wait disabled:opacity-60"
+            className="mt-8 rounded-full bg-coral px-6 py-3 text-sm font-bold text-white shadow-md transition hover:bg-[#004bbb] disabled:cursor-wait disabled:opacity-60"
             disabled={running}
             onClick={compileDemo}
             type="button"
@@ -119,7 +119,7 @@ export default function CompilePage() {
               const complete = completedStages.includes(stage.id);
               const active = activeStage === stage.id;
               return (
-                <li className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm ${active ? "bg-lime/55 font-bold" : "bg-white/35 text-ink/60"}`} key={stage.id}>
+                <li className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm ${active ? "bg-lime/55 font-bold" : "bg-white text-ink/60"}`} key={stage.id}>
                   <span className={`grid size-6 place-items-center rounded-full font-mono text-[10px] font-bold ${complete ? "bg-ink text-paper" : active ? "bg-coral text-white" : "border border-ink/15"}`}>
                     {complete ? "✓" : index + 1}
                   </span>
@@ -142,7 +142,7 @@ export default function CompilePage() {
               <p className="mt-4 text-center font-mono text-[11px] text-ink/45">
                 {result.compiler.provider} · {result.compiler.mode}
               </p>
-              <Link className="mt-5 block rounded-full bg-coral px-5 py-3 text-center text-sm font-bold text-white hover:bg-ink" href="/?source=compiled">
+              <Link className="mt-5 block rounded-full bg-coral px-5 py-3 text-center text-sm font-bold text-white transition hover:bg-[#004bbb]" href="/?source=compiled">
                 Explore Knowledge World →
               </Link>
             </div>
@@ -155,7 +155,7 @@ export default function CompilePage() {
 
 function ResultStat({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-xl border border-ink/10 bg-white/45 p-3 text-center">
+    <div className="rounded-xl border border-ink/10 bg-white p-3 text-center">
       <strong className="font-display text-2xl">{value}</strong>
       <p className="text-[9px] font-bold tracking-wider text-ink/40 uppercase">{label}</p>
     </div>
