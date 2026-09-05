@@ -31,6 +31,7 @@ const domainColors: Record<string, string> = {
   注意力机制: "#7c6cff",
   推理系统: "#12a182",
   长上下文: "#f07b3f",
+  通用方法: "#9aa0a6",
 };
 
 const relationLabels: Record<Relation["kind"], string> = {
