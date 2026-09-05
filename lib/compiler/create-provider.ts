@@ -21,5 +21,6 @@ export function createCompilerProvider(
     baseUrl: environment.LLM_BASE_URL!,
     apiKey: environment.LLM_API_KEY!,
     model: environment.LLM_MODEL!,
+    ...(environment.LLM_EMBEDDING_MODEL ? { embeddingModel: environment.LLM_EMBEDDING_MODEL } : {}),
   });
 }

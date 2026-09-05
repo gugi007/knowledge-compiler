@@ -13,7 +13,8 @@ import type {
   ExtractionProvider,
   SynthesizedConceptRelation,
 } from "./provider.ts";
-import { normalizeCanonicalSlug } from "./normalize-concepts.ts";
+import { normalizeCanonicalSlug, normalizeConceptName } from "./normalize-concepts.ts";
+import { extractKeyphrases } from "./keyphrase.ts";
 
 type JsonRecord = Record<string, unknown>;
 
@@ -187,6 +188,7 @@ export interface OpenAICompatibleLLMProviderConfig {
   baseUrl: string;
   apiKey: string;
   model: string;
+  embeddingModel?: string;
   fetchImpl?: typeof fetch;
 }
 
@@ -223,29 +225,55 @@ export class OpenAICompatibleLLMProvider implements ExtractionProvider {
   private readonly endpoint: string;
   private readonly apiKey: string;
   private readonly model: string;
+  private readonly embeddingModel: string;
   private readonly fetchImpl: typeof fetch;
 
-  constructor({ baseUrl, apiKey, model, fetchImpl = fetch }: OpenAICompatibleLLMProviderConfig) {
+  constructor({ baseUrl, apiKey, model, embeddingModel = "text-embedding-v3", fetchImpl = fetch }: OpenAICompatibleLLMProviderConfig) {
     if (!baseUrl.trim() || !apiKey.trim() || !model.trim()) {
       throw new Error("LLM provider requires baseUrl, apiKey, and model");
     }
     this.endpoint = `${baseUrl.replace(/\/+$/, "")}/chat/completions`;
     this.apiKey = apiKey;
     this.model = model;
+    this.embeddingModel = embeddingModel;
     this.fetchImpl = fetchImpl;
     this.name = `openai-compatible:${model}`;
   }
 
   async extract(article: RawArticle): Promise<ArticleExtraction> {
+    // KeyBERT-style candidate extraction: the embedding model ranks phrases
+    // from the title + opening, and the LLM may only pick names from that
+    // list. Falls back to free naming if the embedding call fails.
+    const keyphrases = await extractKeyphrases(article, {
+      baseUrl: this.endpoint.replace(/\/chat\/completions$/, ""),
+      apiKey: this.apiKey,
+      model: this.embeddingModel,
+      fetchImpl: this.fetchImpl,
+    });
+    const allowedNames = new Set(keyphrases.map(normalizeConceptName));
+
+    const baseInstruction = "Also list local relations between them supported within this same article. Use stable kebab-case English slugs. Assign each concept exactly one domain from the schema enum (模型基础 = model fundamentals/architecture, 注意力机制 = attention, 推理系统 = inference/serving, 长上下文 = long context, 通用方法 = general math/training methods). For every concept, put the exact surface forms that occur in the article text into aliases (the name and aliases must appear verbatim so they can be located in the article). Do NOT output evidence quotes, offsets, or support scores — only concept and relation metadata.";
+    const instruction = keyphrases.length
+      ? `List the AT MOST 5 most central concepts this article teaches. CRITICAL: every concept name MUST be copied verbatim from this candidate list — do not invent, paraphrase, or translate names: ${JSON.stringify(keyphrases)}. Pick the ones most central to the article's thesis. ${baseInstruction}`
+      : `List the AT MOST 5 most central, high-signal concepts this article teaches (prefer concepts named in the title or introduced in the opening paragraphs). Quality over quantity — do not list minor mentions or tangential terms. ${baseInstruction} Omit a concept whose name never appears in the article.`;
+
     const raw = await this.complete(
-      "List the key concepts this article teaches and the local relations between them (only relations supported within this same article). Use stable kebab-case English slugs. Assign each concept exactly one domain from the schema enum (模型基础 = model fundamentals/architecture, 注意力机制 = attention, 推理系统 = inference/serving, 长上下文 = long context, 通用方法 = general math/training methods). For every concept, put the exact surface forms that occur in the article text into aliases (the name and aliases must appear verbatim so they can be located in the article). Do NOT output evidence quotes, offsets, or support scores — only concept and relation metadata. Omit a concept whose name never appears in the article.",
+      instruction,
       extractionSchema,
       { article },
     ) as { articleId: string; concepts: RawConcept[]; relations: RawRelation[] };
 
+    // Defensive cap: keep only the top 5 concepts by confidence even if the
+    // model ignored the "at most 5" instruction.
+    const topConcepts = [...raw.concepts]
+      .sort((a, b) => b.confidence - a.confidence)
+      .slice(0, 5);
+
     const termsBySlug = new Map<string, string[]>();
     const concepts: ArticleExtraction["concepts"] = [];
-    for (const c of raw.concepts) {
+    for (const c of topConcepts) {
+      // When candidates were available, reject any name the model invented.
+      if (keyphrases.length && !allowedNames.has(normalizeConceptName(c.name))) continue;
       const slug = normalizeCanonicalSlug(c.slug);
       if (!slug || termsBySlug.has(slug)) continue;
       const parentSlug = c.parentSlug ? normalizeCanonicalSlug(c.parentSlug) : undefined;

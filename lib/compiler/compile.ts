@@ -11,7 +11,26 @@ import {
   inferRelations,
 } from "./infer-relations.ts";
 import { normalizeConcepts } from "./normalize-concepts.ts";
+import type { ConceptResolutionResult } from "./normalize-concepts.ts";
 import type { ExtractionProvider } from "./provider.ts";
+
+/** Hard cap on how many first-class concepts the knowledge graph shows.
+ * Concepts are ranked by how many articles surface them, then confidence. */
+const MAX_TOP_LEVEL_CONCEPTS = 10;
+
+function selectTopConcepts(resolution: ConceptResolutionResult, limit: number) {
+  const ranked = [...resolution.concepts].sort(
+    (a, b) =>
+      b.evidenceArticleIds.length - a.evidenceArticleIds.length ||
+      b.confidence - a.confidence ||
+      a.id.localeCompare(b.id),
+  );
+  const keepIds = new Set(ranked.slice(0, limit).map(({ id }) => id));
+  resolution.concepts = ranked.slice(0, limit);
+  for (const [slug, id] of resolution.conceptIdByCandidateSlug) {
+    if (!keepIds.has(id)) resolution.conceptIdByCandidateSlug.delete(slug);
+  }
+}
 
 export type CompileStage =
   | "parsing-articles"
@@ -50,6 +69,7 @@ export async function compileKnowledge({
   const extractions = await extractConcepts(articles, provider);
   await onProgress?.("resolving-concepts");
   const resolution = await normalizeConcepts(extractions, provider);
+  selectTopConcepts(resolution, MAX_TOP_LEVEL_CONCEPTS);
   const articleConceptRelations = inferArticleConceptRelations(resolution, extractions);
   await onProgress?.("synthesizing-relations");
   const corpusRelations = provider.synthesizeCorpus
