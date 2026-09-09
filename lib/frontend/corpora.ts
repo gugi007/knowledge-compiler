@@ -10,6 +10,9 @@ import type { CompiledKnowledgeDataset } from "@/data/models";
  * server component 与 client component 都能直接读，不需要 fetch。
  * 语料数量增长后如果 bundle 体积成为问题，再提 contract change 换成按需加载。
  */
+/** 可编译的语料 id，与 app/api/compile/route.ts 的 CORPUS_IDS 对齐。 */
+export type CorpusId = "demo" | "sujianlin" | "imported";
+
 export interface CorpusEntry {
   id: string;
   label: string;

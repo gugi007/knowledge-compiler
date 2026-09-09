@@ -13,6 +13,7 @@ import {
   type StageCounts,
 } from "@/lib/frontend/compile-stream";
 import { saveHandoffDataset } from "@/lib/frontend/handoff";
+import type { CorpusId } from "@/lib/frontend/corpora";
 
 /**
  * 驱动 `/api/compile` 的唯一一份客户端逻辑。
@@ -49,10 +50,25 @@ const IDLE: CompileState = {
   completedStages: [],
 };
 
-export function useCompile() {
+/** 编译模式。与 app/api/compile/route.ts 的 MODES 对齐；replay 服务端尚未实现（会 501）。 */
+export type CompileMode = "compile" | "replay";
+
+export interface UseCompileOptions {
+  /** 要编译的语料，对应 POST body 的 corpus。缺省 "demo"。imported = 当前知乎会话导入的文章。 */
+  corpus?: CorpusId;
+  /** 编译模式，对应 POST body 的 mode。缺省 "compile"。 */
+  mode?: CompileMode;
+}
+
+export function useCompile(options: UseCompileOptions = {}) {
+  const { corpus = "demo", mode = "compile" } = options;
   const [state, setState] = useState<CompileState>(IDLE);
   // 防重入：按钮连点或 effect 重复触发时，只跑一条流。
   const runningRef = useRef(false);
+  // 始终持有最新的 corpus/mode：start 是稳定回调（[] deps），但 URL 上的 corpus
+  // 在 hydration 后才解析出来，用 ref 避免闭包读到旧值。body 直接取 ref.current。
+  const optionsRef = useRef({ corpus, mode });
+  optionsRef.current = { corpus, mode };
 
   const reset = useCallback(() => {
     if (runningRef.current) return;
@@ -130,7 +146,11 @@ export function useCompile() {
     };
 
     try {
-      const response = await fetch("/api/compile", { method: "POST" });
+      const response = await fetch("/api/compile", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(optionsRef.current),
+      });
       // handleCompileResponse 已把流外 400/501 JSON 与流内 error 归一化成 error 事件。
       await handleCompileResponse(response, onEvent);
       if (failure) throw new Error(failure);
