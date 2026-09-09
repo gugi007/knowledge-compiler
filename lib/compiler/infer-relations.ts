@@ -8,7 +8,8 @@ import type {
   SynthesizedConceptRelation,
 } from "./provider.ts";
 
-function uniqueEvidence(evidence: Evidence[]) {
+// overlay 折叠关系端点时要合并证据，必须与编译器同一份去重逻辑，故导出复用。
+export function uniqueEvidence(evidence: Evidence[]) {
   return [...new Map(evidence.map((item) => [
     `${item.articleId}:${item.startOffset ?? ""}:${item.endOffset ?? ""}:${item.quote}`,
     item,

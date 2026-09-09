@@ -9,3 +9,6 @@ out/
 ~$*
 # 第三方/本地测试语料不进仓库（与 main 口径一致）
 data/sujianlin-zhihu-sample18/
+# Overlay 运行时修改落盘不进仓库；*.seed.json（演示种子）仍然提交
+data/overlays/*.json
+!data/overlays/*.seed.json
