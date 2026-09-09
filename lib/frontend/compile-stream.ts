@@ -1,40 +1,57 @@
 import type { CompiledKnowledgeDataset } from "@/data/models";
+import {
+  EMPTY_STAGE_COUNTS,
+  STAGE_ORDER,
+  computeProgress,
+  type CompileProgressEvent,
+  type CompileStage,
+  type ConceptNode,
+  type ProvisionalNode,
+  type RelationEdge,
+  type StageCounts,
+} from "@/lib/compiler/progress.ts";
 
 /**
  * `/api/compile` 的 NDJSON 流契约。
  *
- * 当前 API（app/api/compile/route.ts）只发三种事件：stage / complete / error，
- * 每行一个 JSON。这里的类型是对那份实现的镜像，不是许愿单——
- * 改这里之前先确认 API 真的发了对应事件。
+ * 类型唯一来源是 lib/compiler/progress.ts——这里只 re-export，绝不重复定义，
+ * 否则编译器加字段后前端镜像会静默漂移。
  *
- * 已知缺口：没有 tick / counts / 增量节点事件，所以编译台的迷你图谱
- * 在编译过程中拿不到逐步长出来的概念，只能在 complete 时一次性拿到全量产物。
- * 若要做「星体逐个出现」，需要走 CCR 扩流（见 docs/frontend-v2-architecture.md）。
+ * 线上传输事件 = 编译进度事件（stage / tick / snapshot）+ 终结事件（complete / error）：
+ * - stage：阶段开始，带当前 counts 与估算 progress（0..1）。
+ * - tick：增量信号，客户端**追加**（incremental）其 nodes（若带）。
+ *   当前服务端不发，接入前不得依赖。
+ * - snapshot：阶段末全量集合，客户端**整体替换**（replace）本地累积。
+ *   当前服务端不发，接入前不得依赖。
+ * - complete：终态，消费方应将 progress 视为 1。
+ * - error：流内错误（服务端编译失败）；非流响应错误见 handleCompileResponse。
  */
 
-export type CompileStage =
-  | "parsing-articles"
-  | "extracting-concepts"
-  | "resolving-concepts"
-  | "synthesizing-relations"
-  | "building-reading-paths";
+export type {
+  ConceptNode,
+  CompileProgressEvent,
+  CompileProgressHandler,
+  ProvisionalNode,
+  RelationEdge,
+  StageCounts,
+} from "@/lib/compiler/progress.ts";
+export {
+  computeProgress,
+  EMPTY_STAGE_COUNTS,
+  STAGE_WEIGHTS,
+} from "@/lib/compiler/progress.ts";
 
 export type CompileStreamEvent =
-  | { type: "stage"; stage: CompileStage }
+  | CompileProgressEvent
   | { type: "complete"; dataset: CompiledKnowledgeDataset }
   | { type: "error"; message: string };
 
-/** 编译器内部阶段，顺序与 compileKnowledge 的 onProgress 调用一致。 */
-export const COMPILE_STAGES: readonly CompileStage[] = [
-  "parsing-articles",
-  "extracting-concepts",
-  "resolving-concepts",
-  "synthesizing-relations",
-  "building-reading-paths",
-] as const;
+/** 编译器内部阶段，顺序与 compileKnowledge 的派发一致。re-export 统一来源。 */
+export type { CompileStage } from "@/lib/compiler/progress.ts";
+export const COMPILE_STAGES: readonly CompileStage[] = STAGE_ORDER;
 
 function isCompileStage(value: unknown): value is CompileStage {
-  return typeof value === "string" && (COMPILE_STAGES as readonly string[]).includes(value);
+  return typeof value === "string" && (STAGE_ORDER as readonly string[]).includes(value);
 }
 
 /**
@@ -72,17 +89,46 @@ export const PRODUCT_STAGE_COPY: Record<ProductStage, { active: string; done: st
 };
 
 /**
- * 按阶段权重估算的整体进度 [0,1]。
- *
- * 这是估算，不是精确进度：抽取阶段实际耗时远超其余四段之和，
- * 但当前流事件不带「已完成第几篇」，所以只能按阶段位置线性推。
- * UI 必须把它呈现为估算，不要写成精确百分比。
+ * 旧服务端（stage 不带 progress / counts）的兼容估算：按阶段位置线性推。
+ * 新契约一律优先用事件自带的 progress；这个函数只是兜底，UI 必须标注为估算。
  */
 export function estimateProgress(stage: CompileStage): number {
-  const index = COMPILE_STAGES.indexOf(stage);
+  const index = STAGE_ORDER.indexOf(stage);
   if (index < 0) return 0;
-  // 阶段刚开始时算该段的一半，下一个 stage 事件到达时推进到下一段。
-  return Math.min(1, (index + 0.5) / COMPILE_STAGES.length);
+  return Math.min(1, (index + 0.5) / STAGE_ORDER.length);
+}
+
+/** counts 必须七个字段全是有限数字才接受，否则视为缺失（旧服务端）。 */
+function parseCounts(value: unknown): StageCounts | undefined {
+  if (typeof value !== "object" || value === null) return undefined;
+  const candidate = value as Record<string, unknown>;
+  for (const key of Object.keys(EMPTY_STAGE_COUNTS) as (keyof StageCounts)[]) {
+    const count = candidate[key];
+    if (typeof count !== "number" || !Number.isFinite(count)) return undefined;
+  }
+  // 逐字段重建：校验已保证七项都是有限数字，重建顺带挡掉脏字段外泄。
+  return {
+    articlesTotal: candidate.articlesTotal as number,
+    articlesDone: candidate.articlesDone as number,
+    conceptCandidates: candidate.conceptCandidates as number,
+    concepts: candidate.concepts as number,
+    coMentionCandidates: candidate.coMentionCandidates as number,
+    conceptRelations: candidate.conceptRelations as number,
+    articleConceptRelations: candidate.articleConceptRelations as number,
+  };
+}
+
+function parseProgress(value: unknown, stage: CompileStage, counts: StageCounts, hadCounts: boolean): number {
+  if (typeof value === "number" && Number.isFinite(value) && value >= 0 && value <= 1) return value;
+  return hadCounts ? computeProgress(stage, counts) : estimateProgress(stage);
+}
+
+/** tick 的 nodes / snapshot 的集合：形状不符就当没带，不让坏数组打崩客户端。 */
+function objectArray<T>(value: unknown): T[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+  return value.every((item) => typeof item === "object" && item !== null)
+    ? (value as T[])
+    : undefined;
 }
 
 function parseEvent(line: string): CompileStreamEvent | undefined {
@@ -95,9 +141,31 @@ function parseEvent(line: string): CompileStreamEvent | undefined {
   if (typeof value !== "object" || value === null) return undefined;
   const event = value as Record<string, unknown>;
 
-  if (event.type === "stage" && isCompileStage(event.stage)) {
-    return { type: "stage", stage: event.stage };
+  if (isCompileStage(event.stage)) {
+    const stage = event.stage;
+    if (event.type === "stage" || event.type === "tick" || event.type === "snapshot") {
+      const parsedCounts = parseCounts(event.counts);
+      const counts = parsedCounts ?? { ...EMPTY_STAGE_COUNTS };
+      const progress = parseProgress(event.progress, stage, counts, parsedCounts !== undefined);
+      const base = { type: event.type, stage, counts, progress } as const;
+      if (event.type === "tick") {
+        const nodes = objectArray<ProvisionalNode>(event.nodes);
+        return nodes ? { ...base, type: "tick", nodes } : base;
+      }
+      if (event.type === "snapshot") {
+        const nodes = objectArray<ConceptNode>(event.nodes);
+        const edges = objectArray<RelationEdge>(event.edges);
+        return {
+          ...base,
+          type: "snapshot",
+          ...(nodes ? { nodes } : {}),
+          ...(edges ? { edges } : {}),
+        };
+      }
+      return base;
+    }
   }
+
   if (event.type === "complete" && typeof event.dataset === "object" && event.dataset !== null) {
     return { type: "complete", dataset: event.dataset as CompiledKnowledgeDataset };
   }
@@ -145,4 +213,34 @@ export async function readCompileStream(
     const event = parseEvent(buffer);
     if (event) await onEvent(event);
   }
+}
+
+/**
+ * /api/compile 的统一入口：先分诊 HTTP 层，再进流。
+ *
+ * 两类错误必须都处理：
+ * - 流外：参数校验（如 corpus/imported 无文章）返回 HTTP 400 的 JSON
+ *   `{ error }`，不是 NDJSON；mode=replay 返回 501。
+ * - 流内：编译中途失败走 error 事件。
+ * 两者都归一化成 onEvent 收到一个 error 事件，消费方只有一条错误路径。
+ */
+export async function handleCompileResponse(
+  response: Response,
+  onEvent: (event: CompileStreamEvent) => void | Promise<void>,
+): Promise<void> {
+  const contentType = response.headers.get("content-type") ?? "";
+  if (!response.ok || !contentType.includes("application/x-ndjson")) {
+    let message = `编译请求失败（HTTP ${response.status}）`;
+    if (contentType.includes("application/json")) {
+      const body = (await response.json().catch(() => null)) as { error?: unknown } | null;
+      if (typeof body?.error === "string" && body.error) message = body.error;
+    }
+    await onEvent({ type: "error", message });
+    return;
+  }
+  if (!response.body) {
+    await onEvent({ type: "error", message: "编译响应没有 body" });
+    return;
+  }
+  await readCompileStream(response.body, onEvent);
 }
