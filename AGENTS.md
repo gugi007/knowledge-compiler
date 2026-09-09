@@ -50,6 +50,24 @@ The following files are read-only to feature agents unless the task explicitly a
 - `next.config.ts`
 - `app/api/compile/route.ts`
 - `lib/compiler/**`
+- `lib/frontend/**` — shared frontend contracts (architect-owned)
+- `app/_shared/**` — shared hooks and UI primitives (architect-owned)
+- `app/page.tsx` — one-line handoff to `app/login/**`, frozen
+- `app/knowledge-garden.tsx`, `app/legacy/**` — legacy reference, frozen
+
+## Frontend V2 structure
+
+Routes and contracts are specified in `docs/frontend-v2-architecture.md`. Read it before writing frontend code.
+
+| Act | Route | Implementation | Owner |
+|---|---|---|---|
+| 1 · login | `/` | `app/login/**` | login-agent |
+| 2 · compiler workspace | `/compile` | `app/compile/**` | compiler-ui-agent |
+| 3 · knowledge space | `/space` | `app/space/**` | knowledge-space-agent |
+
+`app/page.tsx` only re-exports the login screen, so act 1 stays inside `app/login/**`.
+
+Consume shared contracts from `lib/frontend/**` (dataset projections, graph canvas props, compile stream events, dataset handoff) and shared hooks from `app/_shared/**`. Do not re-implement dataset traversal, `/api/compile` fetching, or `sessionStorage` access locally — duplicated implementations drift.
 
 ## Ownership
 

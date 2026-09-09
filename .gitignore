@@ -7,3 +7,5 @@ out/
 !.env.example
 # Office 临时锁文件
 ~$*
+# 第三方/本地测试语料不进仓库（与 main 口径一致）
+data/sujianlin-zhihu-sample18/
