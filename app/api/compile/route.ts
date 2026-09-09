@@ -4,11 +4,7 @@ import demoArticles from "@/data/demo/articles/articles.json";
 import sujianlinCreator from "@/data/sujianlin/creator.json";
 import sujianlinArticles from "@/data/sujianlin/articles/articles.json";
 import type { Creator, RawArticle } from "@/data/models";
-import {
-  compileKnowledge,
-  createCompilerProvider,
-  type CompileStage,
-} from "@/lib/compiler";
+import { compileKnowledge, createCompilerProvider } from "@/lib/compiler";
 import {
   assertCompiledKnowledgeDataset,
   assertRawArticle,
@@ -111,7 +107,9 @@ export async function POST(request: NextRequest) {
             creator,
             articles,
             provider: createCompilerProvider(),
-            onProgress: (stage: CompileStage) => send({ type: "stage", stage }),
+            // 事件对象原样转发：stage 带 counts 与 progress；
+            // 将来管线接上 tick / snapshot 也不需要再改这里。
+            onProgress: (event) => send(event),
           });
           assertCompiledKnowledgeDataset(dataset);
           // 只在成功时替换上次结果：编译失败要保留旧产物，展示页才不会空掉。
