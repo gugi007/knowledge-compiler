@@ -6,28 +6,12 @@ import { RELATION_LABELS } from "@/lib/frontend/dataset";
 import { domainColorMap, DOMAIN_FALLBACK } from "./_lib/domain-colors";
 import { CANVAS_HEIGHT, CANVAS_WIDTH, computeLayout } from "./_lib/layout";
 
-/**
- * 图谱画布：手写 SVG，零新依赖。
- *
- * OWNER: knowledge-space-agent
- *
- * 契约边界：布局坐标在内部由 layout.ts 计算（确定性分簇圆环），
- * 缩放平移状态也在内部，GraphCanvasProps 不外泄任何渲染细节。
- *
- * 交互：
- * - 点击节点 → onNodeSelect；点击边 → onEdgeSelect（展开证据）
- * - 选中某节点后，其余节点与无关边降透明度聚焦
- * - highlightedNodeIds 以描边光圈标出（增量编译新增）
- * - 拖空白处平移，滚轮缩放（内部 state，不入契约）
- */
-
 const EDGE_CLASS: Record<string, string> = {
   prerequisite: "graph-edge-prerequisite",
   related: "graph-edge-related",
   extends: "graph-edge-related",
 };
 
-/** 边的颜色统一走 CSS 类，但箭头 marker 需要按颜色区分的简化处理。 */
 function edgeStroke(kind: string, active: boolean): string {
   if (kind === "prerequisite") return active ? "#0066ff" : "rgb(0 102 255 / 35%)";
   if (kind === "extends") return active ? "#f07b3f" : "rgb(240 123 63 / 35%)";
@@ -35,7 +19,6 @@ function edgeStroke(kind: string, active: boolean): string {
 }
 
 function nodeRadius(node: GraphNode): number {
-  // 分量（证据文章数）映射到半径，16~30。
   return Math.min(30, 16 + node.articleCount * 2);
 }
 
@@ -48,7 +31,6 @@ export function GraphCanvas({
   onEdgeSelect,
 }: GraphCanvasProps) {
   const [selectedEdgeId, setSelectedEdgeId] = useState<string>();
-  // 平移缩放：画布内部状态，调用方不知道也不该知道。
   const [view, setView] = useState({ x: 0, y: 0, k: 1 });
   const [drag, setDrag] = useState<{ px: number; py: number } | null>(null);
 
@@ -64,18 +46,14 @@ export function GraphCanvas({
   const edges = data.edges.filter(
     (edge) => visibleIds.has(edge.sourceId) && visibleIds.has(edge.targetId),
   );
-
   const layout = useMemo(() => computeLayout(visible), [visible]);
   const highlighted = useMemo(() => new Set(highlightedNodeIds ?? []), [highlightedNodeIds]);
 
-  // 选中节点时：邻接边保持高亮，其余淡出。
   const focusEdgeIds = useMemo(() => {
     if (!selectedNodeId) return undefined;
     const ids = new Set<string>();
     for (const edge of edges) {
-      if (edge.sourceId === selectedNodeId || edge.targetId === selectedNodeId) {
-        ids.add(edge.id);
-      }
+      if (edge.sourceId === selectedNodeId || edge.targetId === selectedNodeId) ids.add(edge.id);
     }
     return ids;
   }, [edges, selectedNodeId]);
@@ -95,10 +73,7 @@ export function GraphCanvas({
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-ink/10 px-4 py-2.5">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
           {domainLegend.map(([domain, count]) => (
-            <span
-              className="flex items-center gap-1 text-[10px] font-bold text-ink/45"
-              key={domain}
-            >
+            <span className="flex items-center gap-1 text-[10px] font-bold text-ink/45" key={domain}>
               <i
                 aria-hidden
                 className="inline-block size-2 rounded-full"
@@ -110,6 +85,7 @@ export function GraphCanvas({
           ))}
         </div>
         <div className="flex items-center gap-1">
+          <span className="mr-1 hidden text-[9px] font-medium text-ink/35 xl:inline">Ctrl/⌘ + 滚轮缩放</span>
           <button
             aria-label="缩小"
             className="grid size-7 place-items-center rounded-md border border-ink/10 text-xs font-bold text-ink/55 hover:border-coral hover:text-coral"
@@ -139,9 +115,8 @@ export function GraphCanvas({
 
       <svg
         aria-label="知识图谱画布"
-        className="block h-[420px] w-full touch-none select-none md:h-[520px]"
+        className="block h-[58vh] min-h-[500px] w-full select-none md:h-[66vh] xl:h-[72vh]"
         onMouseDown={(event) => {
-          // 点在节点/边上时不进入平移。
           if ((event.target as Element).closest(".graph-node, .graph-edge-hit")) return;
           setDrag({ px: event.clientX - view.x, py: event.clientY - view.y });
         }}
@@ -152,16 +127,16 @@ export function GraphCanvas({
         }}
         onMouseUp={() => setDrag(null)}
         onWheel={(event) => {
+          if (!event.ctrlKey && !event.metaKey) return;
           event.preventDefault();
-          const next = Math.min(2.5, Math.max(0.5, view.k * (event.deltaY > 0 ? 1 / 1.12 : 1.12)));
-          setView((v) => ({ ...v, k: next }));
+          const factor = event.deltaY > 0 ? 1 / 1.12 : 1.12;
+          setView((v) => ({ ...v, k: Math.min(2.5, Math.max(0.5, v.k * factor)) }));
         }}
         role="application"
         style={{ cursor: drag ? "grabbing" : "grab" }}
         viewBox={`0 0 ${CANVAS_WIDTH} ${CANVAS_HEIGHT}`}
       >
         <g transform={`translate(${view.x} ${view.y}) scale(${view.k})`}>
-          {/* 簇标签：领域名悬浮在簇上方。 */}
           {layout.clusters.map(({ domain, label }) => (
             <text
               className="fill-ink/35 font-mono text-[11px] font-bold tracking-widest uppercase"
@@ -174,7 +149,6 @@ export function GraphCanvas({
             </text>
           ))}
 
-          {/* 边。 */}
           {edges.map((edge) => {
             const source = layout.positions.get(edge.sourceId);
             const target = layout.positions.get(edge.targetId);
@@ -194,7 +168,6 @@ export function GraphCanvas({
                   y1={source.y}
                   y2={target.y}
                 />
-                {/* 加宽的透明命中区，细边不好点。 */}
                 <line
                   className="graph-edge-hit"
                   onClick={() => {
@@ -213,7 +186,6 @@ export function GraphCanvas({
             );
           })}
 
-          {/* 节点。 */}
           {visible.map((node) => {
             const point = layout.positions.get(node.id);
             if (!point) return null;
@@ -270,13 +242,7 @@ export function GraphCanvas({
                   {node.name.length > 8 ? `${node.name.slice(0, 8)}…` : node.name}
                 </text>
                 {isNew && (
-                  <text
-                    fill="#b26a2e"
-                    fontSize={8}
-                    fontWeight={800}
-                    textAnchor="middle"
-                    y={-radius - 8}
-                  >
+                  <text fill="#b26a2e" fontSize={8} fontWeight={800} textAnchor="middle" y={-radius - 8}>
                     NEW
                   </text>
                 )}
@@ -286,7 +252,6 @@ export function GraphCanvas({
         </g>
       </svg>
 
-      {/* 选中边：在画布底部展开证据引文。 */}
       {selectedEdge && (
         <div className="border-t border-ink/10 bg-paper/60 px-4 py-3">
           <div className="flex items-center justify-between gap-3">
@@ -306,10 +271,7 @@ export function GraphCanvas({
           {selectedEdge.evidenceQuotes.length ? (
             <ul className="mt-2 grid gap-1.5">
               {selectedEdge.evidenceQuotes.map((quote, index) => (
-                <li
-                  className="rounded-lg bg-white px-3 py-2 text-xs leading-5 text-ink/65"
-                  key={index}
-                >
+                <li className="rounded-lg bg-white px-3 py-2 text-xs leading-5 text-ink/65" key={index}>
                   “{quote}”
                 </li>
               ))}
