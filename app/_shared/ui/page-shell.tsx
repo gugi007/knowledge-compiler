@@ -20,8 +20,8 @@ export function PageShell({
   children: ReactNode;
 }) {
   return (
-    <main className="min-h-screen px-4 py-8 md:px-8">
-      <div className="mx-auto max-w-6xl">
+    <main className="min-h-screen px-4 py-4 md:px-8 md:py-5">
+      <div className="mx-auto max-w-[1500px]">
         <header className="glass-bar -mx-4 mb-2 flex items-center justify-between gap-4 px-4 py-3 md:-mx-8 md:px-8">
           <Link className="font-display text-xl font-semibold" href={ROUTES.login}>
             Knowledge Compiler
