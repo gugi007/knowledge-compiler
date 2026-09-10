@@ -1,0 +1,904 @@
+/*
+ * 第一幕（登录页）本地样式。
+ *
+ * OWNER: login-agent
+ *
+ * 版式骨架照搬参考页 login.html：白底、54px 顶栏、居中登录面板、
+ * 淡蓝知识图谱装饰背景、768px 断点；配色已迁移为知乎（Zhihu）蓝灰体系
+ * （品牌亮蓝 #0084FF + 知乎灰 #8590A6，方正扁平：小圆角、无彩色柔光）。
+ * 这套蓝色调色板刻意不进 globals.css（共享主题仍归 architect），
+ * 以 CSS Module 局部作用于 app/login/**。
+ *
+ * 参考页没有的类（actions / notice / card / stats 等）是真实状态机
+ * （loading、已连接、offline、auth 失败）的展示件，风格向同一套蓝色收敛。
+ */
+
+.page {
+  --primary: #0084ff;
+  --primary-hover: #0070e0;
+  --text-main: #1a1a1a;
+  --text-secondary: #8590a6;
+  --text-light: #b9bec4;
+  --border: #ebebeb;
+  --graph: rgba(0, 132, 255, 0.12);
+
+  position: relative;
+
+  width: 100%;
+  min-height: 100vh;
+
+  background: #ffffff;
+  color: var(--text-main);
+  font-family: "PingFang SC", "Microsoft YaHei", "Segoe UI", Arial, sans-serif;
+}
+
+/* =========================
+   顶部导航
+========================== */
+.header {
+  position: relative;
+  z-index: 10;
+
+  height: 54px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  /* 桌面端 logo / nav 贴最左右边缘（仅留 2px 呼吸位），border-bottom 满宽不变 */
+  padding: 0 2px;
+
+  border-bottom: 1px solid var(--border);
+
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+/* 品牌图标从中央面板上移到顶栏；按 54px 顶栏缩小，不撑高 header */
+.headerIcon {
+  width: 30px;
+  height: 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  border-radius: 6px;
+
+  /* 知乎品牌纯亮蓝底，去蓝紫渐变与彩色柔光（扁平） */
+  background: #0084ff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.headerIcon svg {
+  width: 17px;
+  height: 17px;
+}
+
+.headerLogo {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.headerNav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.headerLink {
+  /* 用户调整：「概念说明」从贴右边缘往左移 5px（桌面端 header 内缩仅 2px） */
+  margin-right: 5px;
+
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.headerLink:hover {
+  color: var(--primary);
+}
+
+.headerLink:focus-visible {
+  outline: 2px solid rgba(0, 132, 255, 0.3);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* =========================
+   主体 + 背景装饰图谱
+   overflow 只裁装饰 SVG；内容超高时主区随文档自然滚动，不裁真实内容。
+   align-items 纵向居中：main 高度 = max(min-height, 面板高 + padding)，
+   面板永不高于自身容器，故 connected（挂 ImportPanel）/error 多段提示时
+   只会被撑高、随文档滚动，不存在裁顶。
+========================== */
+.main {
+  position: relative;
+  overflow: hidden;
+
+  min-height: calc(100vh - 54px);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 56px 24px;
+}
+
+.graph {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  pointer-events: none;
+  opacity: 0.75;
+}
+
+.graphLine {
+  stroke: var(--graph);
+  stroke-width: 1.8;
+}
+
+.graphLineDash {
+  stroke: var(--graph);
+  stroke-width: 1.6;
+  stroke-dasharray: 5 6;
+}
+
+.graphNode {
+  fill: #e8f3ff;
+}
+
+/* ---- 动态背景新增件（仅 knowledge-graph-background.tsx 使用；
+   上方 .graph/.graphLine/.graphLineDash/.graphNode 的既有视觉定义未改动） ---- */
+
+/* 整体极慢漂移：约 10px、24s 往返，第一眼察觉不到、但背景是「活的」。
+   节点漂移与连线跟随由 rAF 负责（纯 CSS 做不到端点同步），两者叠加。 */
+.graphDriftWrap {
+  animation: graphDrift 24s ease-in-out infinite alternate;
+}
+
+@keyframes graphDrift {
+  from {
+    transform: translate(0, 0);
+  }
+
+  to {
+    transform: translate(-10px, 6px);
+  }
+}
+
+/* 信息流光点：短划 + 大间隔（2 + 418，大于最长连线 ≈370），
+   单条线任一时刻至多 1 个小光点；dashoffset 走完一个完整周期无缝循环。
+   端点由 rAF 逐帧跟随节点，流动本身交给 CSS。opacity 刻意低（叠加 .graph 的
+   .75 后实际约 0.3），不霓虹、不抢登录区。时长/延迟由内联 style 逐线错开。 */
+.graphFlow {
+  stroke: var(--primary);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 2 418;
+  stroke-opacity: 0.4;
+  animation: graphFlow 22s linear infinite;
+}
+
+@keyframes graphFlow {
+  to {
+    stroke-dashoffset: -420;
+  }
+}
+
+/* reduced-motion：关掉背景全部 CSS 动画（rAF 侧由组件 matchMedia 停帧，
+   JSX 基准坐标即静态图谱）。 */
+@media (prefers-reduced-motion: reduce) {
+  .graphDriftWrap,
+  .graphFlow {
+    animation: none;
+  }
+}
+
+/* =========================
+   登录面板
+========================== */
+.panel {
+  position: relative;
+  z-index: 2;
+
+  width: min(100%, 980px);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-align: center;
+}
+
+/* 标题（品牌行已并入顶栏，面板从主标题开始） */
+.title {
+  font-size: clamp(26px, 3vw, 32px);
+  line-height: 1.35;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--text-main);
+}
+
+.subtitle {
+  margin-top: 12px;
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+/* =========================
+   状态机组件区（LoginConnector 的容器）
+   按钮与主按钮同规格；间距由容器统一提供（32px = 参考页按钮 margin-top）。
+========================== */
+.actions {
+  width: 100%;
+  margin-top: 32px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 容器内多件堆叠（banner + 按钮 + 说明）统一节奏；首个元素贴容器边 */
+.actions > *:not(:first-child) {
+  margin-top: 14px;
+}
+
+.loginButton {
+  min-width: 266px;
+  height: 48px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  padding: 0 28px;
+
+  border: none;
+  border-radius: 6px;
+
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: 600;
+  text-decoration: none;
+
+  background: var(--primary);
+  cursor: pointer;
+
+  /* 知乎按钮扁平：无彩色柔光、几乎不上浮 */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+  transition: background 0.2s ease;
+}
+
+.loginButton:hover {
+  background: var(--primary-hover);
+}
+
+.loginButton:focus-visible {
+  outline: 3px solid rgba(0, 132, 255, 0.3);
+  outline-offset: 3px;
+}
+
+.loginButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+  box-shadow: none;
+  transform: none;
+}
+
+/* loading 态：可看不可点，但别灰成「永久禁用」 */
+.loginButtonBusy:disabled {
+  cursor: wait;
+  opacity: 0.75;
+}
+
+.zhihuIcon {
+  width: 22px;
+  height: 22px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  background: #ffffff;
+  color: var(--primary);
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* =========================
+   真实状态提示（参考页没有，功能保留，风格收敛）
+========================== */
+.notice {
+  max-width: 420px;
+  margin-top: 14px;
+
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--text-secondary);
+}
+
+.noticeError {
+  width: min(100%, 460px);
+
+  padding: 12px 14px;
+
+  border: 1px solid #f0d6d6;
+  border-radius: 8px;
+  background: #fdf5f5;
+
+  font-size: 13px;
+  line-height: 1.7;
+  color: #a85454;
+}
+
+.noticeWarn {
+  width: min(100%, 460px);
+
+  padding: 10px 14px;
+
+  border: 1px solid #ecdfbd;
+  border-radius: 8px;
+  background: #fbf7ec;
+
+  font-size: 12px;
+  line-height: 1.7;
+  color: #8a6d1f;
+}
+
+.noticeOk {
+  padding: 10px 14px;
+  margin-bottom: 12px;
+
+  border: 1px solid #cfe7d6;
+  border-radius: 8px;
+  background: #eef7f1;
+
+  font-size: 13px;
+  font-weight: 600;
+  color: #2f7d4f;
+}
+
+.mono {
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 11px;
+  color: var(--text-light);
+}
+
+.monoBlock {
+  display: block;
+  margin-top: 4px;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 11px;
+  opacity: 0.85;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  margin-top: 14px;
+}
+
+.primarySmall {
+  height: 40px;
+  padding: 0 20px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+  border-radius: 6px;
+
+  background: var(--primary);
+  color: #ffffff;
+
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: background 0.2s ease;
+}
+
+.primarySmall:hover {
+  background: var(--primary-hover);
+}
+
+.ghostButton {
+  height: 40px;
+  padding: 0 18px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #ffffff;
+
+  color: var(--text-secondary);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.ghostButton:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.ghostButton:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+/* =========================
+   已连接：状态卡 + 导入面板容器
+========================== */
+.connectedWrap {
+  width: min(100%, 480px);
+  text-align: center;
+}
+
+.card {
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  background: #ffffff;
+  box-shadow: 0 4px 14px rgba(34, 36, 38, 0.04);
+  text-align: left;
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #1f9d6b;
+  box-shadow: 0 0 0 4px rgba(31, 157, 107, 0.12);
+  flex-shrink: 0;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+  text-align: center;
+}
+
+.statsDt {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-light);
+}
+
+.statsDd {
+  margin-top: 2px;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.cardFoot {
+  margin-top: 10px;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 11px;
+  color: var(--text-light);
+}
+
+.hint {
+  margin-top: 10px;
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--text-light);
+}
+
+.hintLink {
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.2s ease;
+}
+
+.hintLink:hover {
+  color: var(--primary);
+}
+
+/* =========================
+   分隔线 / Demo 入口 / 权限说明
+========================== */
+.divider {
+  width: 100%;
+  margin-top: 39px;
+
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.dividerLine {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.dividerText {
+  font-size: 13px;
+  color: var(--text-light);
+}
+
+/* 演示入口：「或」下方两张并排卡（桌面两列，≤768px 堆叠），均为真实路由链接。
+   知乎白卡细边语言：白底 + #EBEBEB 描边 + 8px 小圆角 + 近无阴影；
+   深色标题、灰副标题、蓝箭头，hover 转蓝并给极淡中性阴影（不上浮、不铺蓝底）。 */
+.demoCards {
+  width: min(100%, 560px);
+  margin-top: 23px;
+
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.demoCard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+
+  padding: 15px 18px;
+
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+
+  text-align: left;
+  text-decoration: none;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.demoCard:hover {
+  border-color: var(--primary);
+  background: #f6f6f6;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.demoCard:focus-visible {
+  outline: 3px solid rgba(0, 132, 255, 0.3);
+  outline-offset: 3px;
+}
+
+.demoCardHead {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.demoCardTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-main);
+
+  transition: color 0.2s ease;
+}
+
+/* 知乎式悬停转蓝 */
+.demoCard:hover .demoCardTitle {
+  color: var(--primary);
+}
+
+.demoCardArrow {
+  color: var(--primary);
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.demoCard:hover .demoCardArrow {
+  color: var(--primary-hover);
+  transform: translateX(3px);
+}
+
+.demoCardSub {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.trustInfo {
+  margin-top: 30px;
+
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--text-light);
+}
+
+/* =========================
+   「概念说明」独立页（concepts-page.tsx；app/concepts 路由壳由 architect 建）
+   复用 .page 的知乎变量：顶栏细边、方正扁平、居中阅读列。
+   正文内容类自弹层方案平移（modal* → concepts*），措辞与排版规格不变。
+========================== */
+.conceptsTopbar {
+  height: 54px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 18px;
+
+  border-bottom: 1px solid var(--border);
+
+  background: #ffffff;
+}
+
+/* 返回首页：ghost 细边小按钮，hover 转知乎蓝 */
+.conceptsBack {
+  height: 34px;
+  padding: 0 14px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  border: 1px solid var(--border);
+  border-radius: 6px;
+
+  color: var(--text-secondary);
+  font-size: 14px;
+  text-decoration: none;
+
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.conceptsBack:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.conceptsBack:focus-visible {
+  outline: 2px solid rgba(0, 132, 255, 0.3);
+  outline-offset: 2px;
+}
+
+.conceptsBrand {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.conceptsPage {
+  min-height: calc(100vh - 54px);
+
+  display: flex;
+  justify-content: center;
+
+  padding: 56px 20px 80px;
+}
+
+.conceptsCol {
+  width: min(100%, 760px);
+
+  text-align: left;
+}
+
+.conceptsTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+/* 长文走 --text-main 保证阅读对比度（15px/#8590A6 灰达不到 WCAG AA 正文标准） */
+.conceptsLead {
+  margin-top: 14px;
+  font-size: 15px;
+  line-height: 1.85;
+  color: var(--text-main);
+}
+
+.conceptsPara {
+  margin-top: 14px;
+  font-size: 15px;
+  line-height: 1.85;
+  color: var(--text-main);
+}
+
+/* 5 个术语：浅知乎蓝 tint 小 pill，英文蓝粗体 + 中文全称，醒目但不花哨 */
+.conceptsTerms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  margin-top: 14px;
+  padding: 0;
+
+  list-style: none;
+}
+
+.conceptsTerms li {
+  padding: 6px 12px;
+
+  border: 1px solid rgba(0, 132, 255, 0.22);
+  border-radius: 6px;
+  background: rgba(0, 132, 255, 0.06);
+
+  font-size: 13.5px;
+  color: var(--text-main);
+}
+
+.conceptsTerm {
+  font-weight: 600;
+  color: var(--primary);
+}
+
+/* 「写过什么 → 知道什么」上下两行对比，中间蓝箭头 */
+.conceptsBeforeAfter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+
+  margin-top: 18px;
+  padding: 16px;
+
+  border: 1px solid var(--border);
+  border-radius: 8px;
+
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+  color: var(--text-main);
+}
+
+.conceptsBeforeAfterArrow {
+  font-weight: 700;
+  color: var(--primary);
+}
+
+/* 结尾两句：左 3px 知乎蓝竖条 + 极浅蓝底 */
+.conceptsHighlight {
+  margin-top: 18px;
+  padding: 14px 16px;
+
+  border-left: 3px solid var(--primary);
+  border-radius: 0 8px 8px 0;
+  background: rgba(0, 132, 255, 0.06);
+
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.9;
+  color: var(--text-main);
+}
+
+.conceptsHighlight p + p {
+  margin-top: 2px;
+}
+
+/* =========================
+   响应式（照搬参考页 768px 断点）
+========================== */
+@media (max-width: 768px) {
+  .header {
+    height: 50px;
+    /* 移动端贴边显挤，保留小内缩；桌面贴边的主诉求见 .header 本体 */
+    padding: 0 8px;
+  }
+
+  .headerLogo {
+    font-size: 14px;
+  }
+
+  .headerNav {
+    font-size: 12px;
+  }
+
+  .main {
+    min-height: calc(100vh - 50px);
+    padding: 48px 20px;
+  }
+
+  .demoCards {
+    width: min(100%, 320px);
+    grid-template-columns: 1fr;
+  }
+
+  .title {
+    font-size: 26px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+  }
+
+  .loginButton {
+    width: 100%;
+    max-width: 290px;
+    min-width: 0;
+    font-size: 16px;
+  }
+
+  .divider {
+    margin-top: 34px;
+  }
+
+  .trustInfo {
+    max-width: 320px;
+    font-size: 12px;
+  }
+
+  .graph {
+    transform: scale(1.15);
+  }
+
+  /* 动态背景移动端降级：只留核心 8 节点 / 5 连线，光点全关
+     （鼠标交互在组件内按 pointer:fine + 宽度条件本就不启用）。 */
+  .graphExt,
+  .graphFlow {
+    display: none;
+  }
+
+  /* 概念说明独立页移动端：顶栏收高、返回按钮易点、阅读列近全宽留 16px 边 */
+  .conceptsTopbar {
+    height: 50px;
+    padding: 0 12px;
+  }
+
+  .conceptsBack {
+    height: 38px;
+  }
+
+  .conceptsPage {
+    min-height: calc(100vh - 50px);
+    padding: 36px 16px 56px;
+  }
+}

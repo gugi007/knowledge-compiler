@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { ROUTES } from "@/lib/frontend/routes";
 import { ImportPanel } from "./import-panel";
+import styles from "./login.module.css";
 
 /**
  * /api/zhihu/status 响应里前端需要消费的字段子集。
@@ -79,16 +80,18 @@ function formatRemaining(sec: number): string {
 /**
  * 第一幕的交互核心：状态机 + OAuth 跳转 + 演示退路。
  *
- * 承诺文案留在 server component（login-screen.tsx）里不进客户端 bundle，
- * 这里只管「连了没、连得上吗、连了之后干什么」。
+ * 版式归属：本组件渲染在 login-screen 主标题/副标题之下、分隔线之上，
+ * 即参考页里「登录按钮」所在的槽位（.actions）。按钮/提示的视觉全部走
+ * login.module.css 的蓝色体系；真实行为与上一版完全一致。
  *
  * 状态流转：
- * - loading：首帧查 status
+ * - loading：首帧查 status（禁用态主按钮 + 等待文案）
  * - connected：status.connected===true（已授权），下面挂 ImportPanel
  *   （读创作列表 → 勾选 → 导入 → 摘要 → 去编译），细节见 import-panel.tsx
- * - ready：status.ready===true 且未连接（OAuth 已配置，可跳转授权）
- * - offline：status.ready===false（missing 非空，降级演示模式）
- * - error：fetch status 失败（网络断 / 500），给重试 + 演示入口
+ * - ready：status.ready===true 且未连接（OAuth 已配置，可跳转授权）→ 主登录按钮
+ * - offline：status.ready===false（missing 非空，降级演示模式）→ 禁用按钮 + 离线说明
+ *   （演示退路由 login-screen 常驻的两张演示卡兜底）
+ * - error：fetch status 失败（网络断 / 500），给重试（演示退路同上）
  */
 export function LoginConnector() {
   const [state, setState] = useState<LoginState>("loading");
@@ -183,7 +186,7 @@ export function LoginConnector() {
     void (async () => {
       const data = await loadStatus();
       if (cancelled) return;
-      // 网络断 / 500 / 响应非 JSON：不得空屏，降级到 error 态给重试 + 演示入口。
+      // 网络断 / 500 / 响应非 JSON：不得空屏，降级到 error 态给重试（演示卡在面板下方常驻）。
       if (!data) {
         setStatus(null);
         setState("error");
@@ -216,13 +219,13 @@ export function LoginConnector() {
     status?.ready === true && status.originMatchesRedirect === false;
 
   return (
-    <div className="mt-8 flex flex-col items-center gap-4">
+    <div className={styles.actions}>
       {/* 失败回跳提示 */}
       {authErrorReason && (
-        <p className="w-full max-w-md rounded-xl border border-red-500/25 bg-red-50 p-3 text-sm leading-6 text-red-700">
+        <p className={styles.noticeError}>
           {describeAuthError(authErrorReason)}
           {status && status.missing.length > 0 && (
-            <span className="mt-1 block font-mono text-[11px] text-red-500/80">
+            <span className={styles.monoBlock}>
               未配置：{status.missing.join("、")}
             </span>
           )}
@@ -231,61 +234,58 @@ export function LoginConnector() {
 
       {/* origin 不一致诊断 */}
       {originMismatch && (
-        <p className="w-full max-w-md rounded-xl border border-amber-400/40 bg-amber-50 p-3 text-[12px] leading-5 text-amber-800">
+        <p className={styles.noticeWarn}>
           本机调试 origin 与登记的 redirect_uri 不一致——跳转知乎授权会被拒绝。
           请检查 ZHIHU_OAUTH_REDIRECT_URI 是否指向当前页面地址。
         </p>
       )}
 
-      {/* loading：首帧查 status */}
+      {/* loading：首帧查 status。主按钮原位换成等待态，不打断版式。 */}
       {state === "loading" && (
         <button
-          className="w-full max-w-xs cursor-wait rounded-full bg-coral px-6 py-3 text-sm font-bold text-white opacity-60 sm:w-auto"
+          className={`${styles.loginButton} ${styles.loginButtonBusy}`}
           disabled
           type="button"
         >
-          正在检查连接状态…
+          <span className={styles.zhihuIcon}>知</span>
+          <span>正在检查连接状态…</span>
         </button>
       )}
 
-      {/* ready：未连接但 OAuth 已配置，给主操作 */}
+      {/* ready：未连接但 OAuth 已配置，主操作直连知乎授权（真实跳转，非 mockup 的 alert） */}
       {state === "ready" && (
-        <a
-          className="w-full max-w-xs rounded-full bg-coral px-6 py-3 text-sm font-bold text-white shadow-md transition hover:bg-[#004bbb] sm:w-auto"
-          href={ZHIHU_LOGIN_HREF}
-        >
-          登录并编译我的知识
+        <a className={styles.loginButton} href={ZHIHU_LOGIN_HREF}>
+          <span className={styles.zhihuIcon}>知</span>
+          <span>登录并编译知识</span>
         </a>
       )}
 
-      {/* connected：已授权，展示状态 + 去编译 / 看空间 + 断开 */}
+      {/* connected：已授权，展示状态 + 导入闭环 + 去编译 / 看空间 + 断开 */}
       {state === "connected" && status && (
-        <div className="w-full max-w-md">
+        <div className={styles.connectedWrap}>
           {justConnected && (
-            <p className="mb-3 rounded-xl border border-emerald-300/50 bg-emerald-50 p-3 text-sm font-bold text-emerald-700">
-              ✓ 知乎已连接
-            </p>
+            <p className={styles.noticeOk}>✓ 知乎已连接</p>
           )}
-          <div className="rounded-xl border border-ink/10 bg-white p-4 text-left">
-            <div className="flex items-center gap-2">
-              <span className="status-dot" />
-              <span className="text-sm font-bold">已连接知乎</span>
+          <div className={styles.card}>
+            <div className={styles.cardHead}>
+              <span className={styles.dot} />
+              <span>已连接知乎</span>
             </div>
-            <dl className="mt-3 grid grid-cols-3 gap-2 text-center">
+            <dl className={styles.stats}>
               <div>
-                <dt className="text-[9px] font-bold tracking-wider text-ink/40 uppercase">创作</dt>
-                <dd className="font-display text-lg">{status.contentsCount}</dd>
+                <dt className={styles.statsDt}>创作</dt>
+                <dd className={styles.statsDd}>{status.contentsCount}</dd>
               </div>
               <div>
-                <dt className="text-[9px] font-bold tracking-wider text-ink/40 uppercase">已导入</dt>
-                <dd className="font-display text-lg">{status.importedCount}</dd>
+                <dt className={styles.statsDt}>已导入</dt>
+                <dd className={styles.statsDd}>{status.importedCount}</dd>
               </div>
               <div>
-                <dt className="text-[9px] font-bold tracking-wider text-ink/40 uppercase">产物</dt>
-                <dd className="font-display text-lg">{status.hasDataset ? "有" : "—"}</dd>
+                <dt className={styles.statsDt}>产物</dt>
+                <dd className={styles.statsDd}>{status.hasDataset ? "有" : "—"}</dd>
               </div>
             </dl>
-            <p className="mt-2 font-mono text-[10px] text-ink/35">
+            <p className={styles.cardFoot}>
               会话剩余 {formatRemaining(status.sessionExpiresInSec)}
             </p>
           </div>
@@ -301,10 +301,10 @@ export function LoginConnector() {
             reconnectHref={ZHIHU_LOGIN_HREF}
           />
 
-          <div className="mt-3 flex flex-wrap items-center justify-center gap-3">
+          <div className={styles.row}>
             {status.hasDataset ? (
               <Link
-                className="rounded-full bg-coral px-6 py-3 text-sm font-bold text-white transition hover:bg-[#004bbb]"
+                className={styles.primarySmall}
                 href={`${ROUTES.space}?source=compiled`}
               >
                 查看我的知识空间 →
@@ -316,14 +316,14 @@ export function LoginConnector() {
                 body，第二幕收到这个 query 也会照编 demo。缺口见交接报告 CCR-1。
               */
               <Link
-                className="rounded-full bg-coral px-6 py-3 text-sm font-bold text-white transition hover:bg-[#004bbb]"
+                className={styles.primarySmall}
                 href={`${ROUTES.compile}?corpus=imported`}
               >
                 去编译我的知识 →
               </Link>
             ) : null}
             <button
-              className="rounded-full border border-ink/15 bg-white px-5 py-3 text-sm font-bold text-ink/60 transition hover:border-ink/30 hover:text-ink/80 disabled:opacity-50"
+              className={styles.ghostButton}
               disabled={logoutPending}
               onClick={() => void handleLogout()}
               type="button"
@@ -337,12 +337,13 @@ export function LoginConnector() {
             给它挂这个名字是假承诺。想看编译台就走这条明确标了示例语料的退路。
           */}
           {status.importedCount === 0 && (
-            <p className="mt-2 text-center text-[11px] leading-5 text-ink/40">
+            <p className={styles.hint}>
               也可以
               <Link
-                className="font-bold text-ink/55 underline underline-offset-2 transition hover:text-coral"
+                className={styles.hintLink}
                 href={ROUTES.compile}
               >
+                {" "}
                 用示例语料先看编译台 →
               </Link>
             </p>
@@ -350,41 +351,34 @@ export function LoginConnector() {
         </div>
       )}
 
-      {/* offline：OAuth 未配置全，降级演示模式 */}
+      {/* offline：OAuth 未配置全，禁用按钮 + 未配置说明（演示卡常驻下方兜底） */}
       {state === "offline" && status && (
-        <div className="w-full max-w-md">
+        <>
           <button
-            className="w-full cursor-not-allowed rounded-full bg-coral px-6 py-3 text-sm font-bold text-white opacity-45"
+            className={styles.loginButton}
             disabled
             type="button"
           >
-            登录并编译我的知识
+            <span className={styles.zhihuIcon}>知</span>
+            <span>登录并编译知识</span>
           </button>
-          <p className="mt-3 text-[12px] leading-5 text-ink/50">
+          <p className={styles.notice}>
             知乎 OAuth 未配置完成，暂无法连接。缺少：
-            <span className="font-mono text-ink/70">
-              {" "}{status.missing.join("、")}
-            </span>
-            。可先进入演示模式体验完整流程。
+            <span className={styles.mono}> {status.missing.join("、")} </span>。
+            你仍可通过下方两张演示卡，免登录体验示例空间与演示编译。
           </p>
-          <Link
-            className="mt-3 inline-block rounded-full bg-coral px-6 py-3 text-sm font-bold text-white transition hover:bg-[#004bbb]"
-            href={ROUTES.compile}
-          >
-            进入演示模式 →
-          </Link>
-        </div>
+        </>
       )}
 
-      {/* error：查 status 失败，给重试 + 演示入口 */}
+      {/* error：查 status 失败（网络断 / 服务端未起），给重试（演示卡常驻下方兜底） */}
       {state === "error" && (
-        <div className="w-full max-w-md">
-          <p className="rounded-xl border border-red-500/25 bg-red-50 p-3 text-sm leading-6 text-red-700">
+        <>
+          <p className={styles.noticeError}>
             无法读取连接状态。请检查网络或服务端是否运行后重试。
           </p>
-          <div className="mt-3 flex flex-wrap items-center justify-center gap-3">
+          <div className={styles.row}>
             <button
-              className="rounded-full border border-ink/15 bg-white px-5 py-3 text-sm font-bold text-ink/70 transition hover:border-ink/30 hover:text-ink"
+              className={styles.ghostButton}
               onClick={() => {
                 setState("loading");
                 void fetchStatus();
@@ -393,14 +387,8 @@ export function LoginConnector() {
             >
               重试
             </button>
-            <Link
-              className="rounded-full bg-coral px-6 py-3 text-sm font-bold text-white transition hover:bg-[#004bbb]"
-              href={ROUTES.compile}
-            >
-              进入演示模式 →
-            </Link>
           </div>
-        </div>
+        </>
       )}
     </div>
   );

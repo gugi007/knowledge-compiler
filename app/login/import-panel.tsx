@@ -303,7 +303,7 @@ export function ImportPanel({
           知乎会话已过期，读不到你的创作列表。
           <span className="mt-2 flex flex-wrap items-center gap-2">
             <a
-              className="rounded-full bg-coral px-4 py-1.5 text-[12px] font-bold text-white transition hover:bg-[#004bbb]"
+              className="rounded-full bg-[#0084FF] px-4 py-1.5 text-[12px] font-bold text-white transition hover:bg-[#0070E0]"
               href={reconnectHref}
             >
               重新连接
@@ -377,10 +377,10 @@ export function ImportPanel({
               const checked = selected.has(item.url);
               return (
                 <li key={item.url}>
-                  <label className="flex cursor-pointer items-start gap-2 rounded-lg px-2 py-1.5 text-[13px] leading-5 transition hover:bg-lime/60">
+                  <label className="flex cursor-pointer items-start gap-2 rounded-lg px-2 py-1.5 text-[13px] leading-5 transition hover:bg-[#F6F6F6]">
                     <input
                       checked={checked}
-                      className="mt-0.5 size-3.5 shrink-0 accent-coral"
+                      className="mt-0.5 size-3.5 shrink-0 accent-[#0084FF]"
                       onChange={() => toggleOne(item.url)}
                       type="checkbox"
                     />
@@ -421,7 +421,7 @@ export function ImportPanel({
 
           <div className="mt-3 flex flex-wrap items-center gap-3">
             <button
-              className="rounded-full bg-coral px-5 py-2.5 text-sm font-bold text-white transition hover:bg-[#004bbb] disabled:cursor-wait disabled:opacity-55"
+              className="rounded-full bg-[#0084FF] px-5 py-2.5 text-sm font-bold text-white transition hover:bg-[#0070E0] disabled:cursor-wait disabled:opacity-55"
               disabled={selected.size === 0 || importing}
               onClick={() => void handleImport()}
               type="button"
