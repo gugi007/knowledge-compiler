@@ -1,8 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
 import demoCreator from "@/data/demo/creator.json";
 import demoArticles from "@/data/demo/articles/articles.json";
-import sujianlinCreator from "@/data/sujianlin/creator.json";
-import sujianlinArticles from "@/data/sujianlin/articles/articles.json";
+import bayesCreator from "@/data/bayes/creator.json";
+import bayesArticles from "@/data/bayes/articles/articles.json";
 import type { Creator, RawArticle } from "@/data/models";
 import { compileKnowledge, createCompilerProvider } from "@/lib/compiler";
 import {
@@ -17,13 +17,13 @@ export const runtime = "nodejs";
 // zhihu-gugi / zhihu-gugi-fulltext 不进这里（第三方抓取数据不随仓库走）。
 const CORPORA = {
   demo: { creator: demoCreator, articles: demoArticles },
-  sujianlin: { creator: sujianlinCreator, articles: sujianlinArticles },
+  bayes: { creator: bayesCreator, articles: bayesArticles },
 } as const;
 
 type CorpusId = keyof typeof CORPORA | "imported";
 type CompileMode = "compile" | "replay";
 
-const CORPUS_IDS: readonly string[] = ["demo", "sujianlin", "imported"];
+const CORPUS_IDS: readonly string[] = ["demo", "bayes", "imported"];
 const MODES: readonly string[] = ["compile", "replay"];
 
 // 用户内容接口不返回作者资料，所以导入语料的 Creator 只能这样合成。
@@ -41,7 +41,7 @@ const importedCreator: Creator = {
  * POST /api/compile
  *
  * JSON body：`{ corpus?, mode? }`。
- * - corpus：demo（默认）| sujianlin | imported（当前 Zhihu 会话的导入文章）
+ * - corpus：demo（默认）| bayes | imported（当前 Zhihu 会话的导入文章）
  * - mode：compile（默认）| replay。replay 只是契约占位，服务端尚未实现，
  *   传 replay 会得到 501，不会假装重放。
  *

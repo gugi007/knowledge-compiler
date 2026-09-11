@@ -1,6 +1,6 @@
 # Frontend V2 · 架构与并行开发边界
 
-> 版本：2026-09-08 · 分支：`frontend-v2` · 责任人：architect
+> 版本：2026-09-11 · 分支：`frontend-v2` · 责任人：architect
 > 配套：`AGENTS.md`（所有权与协作规则）、`docs/页面流与UX设计.md`（三幕 UX 规格）
 
 这份文档只讲**结构与契约**，不讲视觉与文案。UX 规格以 `docs/页面流与UX设计.md` 为准。
@@ -35,7 +35,7 @@
 | 文件 | 职责 | 主要导出 |
 |---|---|---|
 | `routes.ts` | 路由常量，避免三个 agent 各自硬编码 | `ROUTES` |
-| `corpora.ts` | 内置预编译语料注册表，id 与旧 `?source=` 一致 | `CORPORA`、`corpusOrDefault`、`findCorpus` |
+| `corpora.ts` | 内置预编译语料注册表，id 与 `app/api/compile/route.ts` 的 `CORPUS_IDS` 对齐 | `CORPORA`、`CORPUS_IDS`、`CorpusId`、`isCorpusId`、`corpusOrDefault`、`findCorpus` |
 | `dataset.ts` | `CompiledKnowledgeDataset` 的只读投影层 | 见下表 |
 | `graph.ts` | 图谱画布的输入输出契约（**不含实现**） | `GraphData`、`GraphCanvasProps` |
 | `compile-stream.ts` | `/api/compile` 的 NDJSON 事件契约 + 阶段映射 | `CompileStreamEvent`、`readCompileStream`、`STAGE_TO_PRODUCT` |
@@ -138,12 +138,12 @@ interface GraphCanvasProps {
 
 | # | 缺口 | 影响 | 建议 |
 |---|---|---|---|
-| C1 | `/api/compile` 只发 `stage`/`complete`/`error`，无增量节点与计数事件 | 编译台做不了「星体逐个出现」与阶段实时数字；迷你图谱只能在 `complete` 时一次性拿全量 | compiler-ui-agent 提 CCR，由 compiler-core-agent 扩流（`main` 分支已有类似的 `tick`/`snapshot`/`counts` 设计可参考） |
-| C2 | `/api/compile` 的 `POST` 不接受 body，语料硬编码为 `data/demo` | 无法编译 `sujianlin` 语料，也无法编译用户导入的文章 | 需要时提 CCR 加 `{ corpus }` 参数 |
-| C3 | 本分支无 `app/api/auth/**` 与知乎 OAuth 路由 | 第一幕登录按钮无法接真实授权，当前 disabled | login-agent 提 CCR，由 compiler-core-agent 提供回调路由 |
-| C4 | 没有作者修改的持久层（overlay） | 校对视图与编辑模式的修改无处存 | 设计校对写回时提 CCR |
+| C1 | ~~`/api/compile` 只发 `stage`/`complete`/`error`，无增量节点与计数事件~~ **部分解决**（2026-09-11 复核） | 现状：`stage` 事件已带 `counts` 与 `progress`（`lib/compiler/progress.ts` 的 `CompileProgressEvent`，`app/api/compile/route.ts` 用 `onProgress` 原样转发），阶段实时数字已可用。**仍未实现**：`tick` / `snapshot` 目前只是 `progress.ts` 里的纯类型契约，`compileKnowledge` 只发 `stage`（抽取是一次性 `Promise.all`，没有逐篇信号），所以「星体逐个出现」仍做不到，迷你图谱仍只能在 `complete` 时一次性拿全量 | 剩余部分由 compiler-ui-agent 提 CCR，compiler-core-agent 补 `tick`/`snapshot`（`main` 分支已有类似设计可参考）；`counts`/`progress` 已到位，无需再提 |
+| C2 | ~~`/api/compile` 的 `POST` 不接受 body，语料硬编码为 `data/demo`~~ **已解决**（2026-09-11 复核） | 现状：`POST` 已接受 `{ corpus?, mode? }`，`CORPUS_IDS = ["demo", "bayes", "imported"]`，语料不再硬编码；缺省 body 等价 `corpus=demo`。`mode: "replay"` 仍是契约占位，服务端返回 501 | 无需 CCR，本条已关闭 |
+| C3 | ~~本分支无 `app/api/auth/**` 与知乎 OAuth 路由~~ **已解决**（2026-09-11 复核） | 现状：`app/api/auth/zhihu/{login,callback,logout}/route.ts`、`lib/zhihu/oauth.ts`、`lib/zhihu/session.ts` 均已存在，另有 `app/api/zhihu/{status,contents}/route.ts` 供前端读连接状态。回跳契约冻结为成功 `/?auth=connected`、失败 `/?authError=<reason>`；第一幕已由 `app/login/login-connector.tsx` 消费 `/api/zhihu/status` 接真实授权，登录按钮不再是 disabled 占位 | 无需 CCR，本条已关闭 |
+| C4 | ~~没有作者修改的持久层（overlay）~~ **已解决**（2026-09-11 复核） | 现状：模型在 `data/overlay.ts`，落盘读写与校验在 `lib/overlay/{store,schema,apply-overlay}.ts`，API 在 `app/api/overlay/route.ts`（GET/POST），client-safe adapter 在 `lib/frontend/overlay.ts`。修改写 `data/overlays/<corpusKey>.json`（gitignore），`<corpusKey>.seed.json` 作为入库种子；`compiled.json` 仍是纯编译产物、不被改写 | 无需 CCR，本条已关闭 |
 
-C1–C4 都**不阻塞**当前三个 feature agent 启动：各自都有可先做完的部分。
+上表中**仍未收口**的条目都不阻塞三个 feature agent 启动：各自都有可先做完的部分。
 
 ---
 

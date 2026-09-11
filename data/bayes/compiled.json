@@ -1,0 +1,1536 @@
+{
+  "schemaVersion": "1.0",
+  "compiler": {
+    "mode": "curated",
+    "provider": "hand-authored"
+  },
+  "creator": {
+    "id": "creator-shen-yizhou",
+    "name": "沈亦舟",
+    "handle": "@bayes-lab",
+    "bio": "从概率论基础写到统计推断的连续写作者，习惯用一条公式把直觉说清楚。",
+    "focus": [
+      "基础工具",
+      "随机变量与分布",
+      "联合与极限",
+      "统计推断"
+    ],
+    "articleIds": [
+      "a01",
+      "a02",
+      "a03",
+      "a04",
+      "a05",
+      "a06",
+      "a07",
+      "a08",
+      "a09",
+      "a10",
+      "a11",
+      "a12",
+      "a13",
+      "a14",
+      "a15",
+      "a16",
+      "a17"
+    ]
+  },
+  "articles": [
+    {
+      "id": "a01",
+      "title": "样本空间：概率的地基",
+      "slug": "sample-space",
+      "summary": "概率论的第一件事，是把随机试验所有可能的结果写成一个集合，这就是样本空间 $\\Omega$。",
+      "publishedAt": "2022-03-12",
+      "readingTimeMinutes": 1,
+      "sourceUrl": "https://example.com/bayes-lab/sample-space"
+    },
+    {
+      "id": "a02",
+      "title": "条件概率：信息如何改变判断",
+      "slug": "conditional-probability",
+      "summary": "条件概率 $P(A\\mid B)$ 回答的是：当已知 $B$ 发生，$A$ 的可能性该如何重估，它的定义是 $P(A\\mid B)=\\frac{P(A\\cap B)}{P(B)}$。",
+      "publishedAt": "2022-05-08",
+      "readingTimeMinutes": 1,
+      "sourceUrl": "https://example.com/bayes-lab/conditional-probability"
+    },
+    {
+      "id": "a03",
+      "title": "独立性：当条件不再改变概率",
+      "slug": "independence",
+      "summary": "如果知道 $B$ 是否发生，都不会改变 $A$ 的概率，我们就说 $A$ 与 $B$ 独立，记作 $P(A\\mid B)=P(A)$。",
+      "publishedAt": "2022-06-26",
+      "readingTimeMinutes": 1,
+      "sourceUrl": "https://example.com/bayes-lab/independence"
+    },
+    {
+      "id": "a04",
+      "title": "贝叶斯定理：从结果反推原因",
+      "slug": "bayes-theorem",
+      "summary": "贝叶斯定理把 $P(A\\mid B)$ 与 $P(B\\mid A)$ 联系起来：$P(A\\mid B)=\\frac{P(B\\mid A)P(A)}{P(B)}$。",
+      "publishedAt": "2022-08-30",
+      "readingTimeMinutes": 1,
+      "sourceUrl": "https://example.com/bayes-lab/bayes-theorem"
+    },
+    {
+      "id": "a05",
+      "title": "随机变量：把结果映射成数",
+      "slug": "random-variable",
+      "summary": "随机变量 $X$ 是一个从样本空间到实数的函数，它把语言描述的结果翻译成可以计算的数。",
+      "publishedAt": "2022-11-13",
+      "readingTimeMinutes": 1,
+      "sourceUrl": "https://example.com/bayes-lab/random-variable"
+    },
+    {
+      "id": "a06",
+      "title": "期望：概率加权的平均值",
+      "slug": "expectation",
+      "summary": "期望是随机变量取值的概率加权平均：$\\mathbb{E}[X]=\\sum_x x\\,p(x)$，连续情形则写成积分 $\\int x f(x)\\,dx$。",
+      "publishedAt": "2023-01-07",
+      "readingTimeMinutes": 1,
+      "sourceUrl": "https://example.com/bayes-lab/expectation"
+    },
+    {
+      "id": "a07",
+      "title": "方差：不确定性的度量",
+      "slug": "variance",
+      "summary": "方差刻画随机变量偏离期望的程度：$\\operatorname{Var}(X)=\\mathbb{E}[(X-\\mathbb{E}[X])^2]$，它的平方根是标准差，与原变量同量纲。",
+      "publishedAt": "2023-03-19",
+      "readingTimeMinutes": 1,
+      "sourceUrl": "https://example.com/bayes-lab/variance"
+    },
+    {
+      "id": "a08",
+      "title": "常见分布：从伯努利到正态",
+      "slug": "common-distributions",
+      "summary": "常见分布是概率论留给统计推断的工具箱，它们把随机变量的取值规律压缩成少数几个参数。",
+      "publishedAt": "2023-05-28",
+      "readingTimeMinutes": 1,
+      "sourceUrl": "https://example.com/bayes-lab/common-distributions"
+    },
+    {
+      "id": "a09",
+      "title": "联合分布：两个变量一起看",
+      "slug": "joint-distribution",
+      "summary": "联合分布描述多个随机变量同时取值的方式：$F(x,y)=P(X\\le x,\\,Y\\le y)$。",
+      "publishedAt": "2023-08-06",
+      "readingTimeMinutes": 1,
+      "sourceUrl": "https://example.com/bayes-lab/joint-distribution"
+    },
+    {
+      "id": "a10",
+      "title": "协方差与相关：变量之间的联动",
+      "slug": "covariance-and-correlation",
+      "summary": "协方差定义为 $\\operatorname{Cov}(X,Y)=\\mathbb{E}[(X-\\mathbb{E}[X])(Y-\\mathbb{E}[Y])]$，它衡量两个变量是否同向偏离各自的期望。",
+      "publishedAt": "2023-10-22",
+      "readingTimeMinutes": 1,
+      "sourceUrl": "https://example.com/bayes-lab/covariance-and-correlation"
+    },
+    {
+      "id": "a11",
+      "title": "大数定律：频率为什么稳定",
+      "slug": "law-of-large-numbers",
+      "summary": "大数定律说明，当样本量 $n$ 增大时，样本均值 $\\bar{X}_n=\\frac{1}{n}\\sum_{i=1}^n X_i$ 会依概率收敛到总体期望 $\\mu$。",
+      "publishedAt": "2023-12-30",
+      "readingTimeMinutes": 1,
+      "sourceUrl": "https://example.com/bayes-lab/law-of-large-numbers"
+    },
+    {
+      "id": "a12",
+      "title": "中心极限定理：正态性的来源",
+      "slug": "central-limit-theorem",
+      "summary": "中心极限定理指出，大量独立同分布随机变量之和经过标准化后趋近标准正态分布：$\\frac{\\bar{X}_n-\\mu}{\\sigma/\\sqrt{n}}\\Rightarrow N(0,1)$。",
+      "publishedAt": "2024-03-16",
+      "readingTimeMinutes": 1,
+      "sourceUrl": "https://example.com/bayes-lab/central-limit-theorem"
+    },
+    {
+      "id": "a13",
+      "title": "似然函数：数据反过来评价参数",
+      "slug": "likelihood-function",
+      "summary": "似然函数把观测数据的联合概率看成参数的函数：$L(\\theta;x)=P(x\\mid\\theta)$，数据已经固定，变化的是 $\\theta$。",
+      "publishedAt": "2024-05-25",
+      "readingTimeMinutes": 1,
+      "sourceUrl": "https://example.com/bayes-lab/likelihood-function"
+    },
+    {
+      "id": "a14",
+      "title": "最大似然估计：让数据最可能的参数",
+      "slug": "maximum-likelihood-estimation",
+      "summary": "最大似然估计选择让观测数据出现概率最大的参数：$\\hat{\\theta}=\\arg\\max_\\theta L(\\theta)$。",
+      "publishedAt": "2024-08-04",
+      "readingTimeMinutes": 1,
+      "sourceUrl": "https://example.com/bayes-lab/maximum-likelihood-estimation"
+    },
+    {
+      "id": "a15",
+      "title": "置信区间：估计的不确定性范围",
+      "slug": "confidence-interval",
+      "summary": "置信区间把点估计扩展成一个范围：$\\hat{\\theta}\\pm z_{1-\\alpha/2}\\cdot\\operatorname{SE}(\\hat{\\theta})$。",
+      "publishedAt": "2024-10-19",
+      "readingTimeMinutes": 1,
+      "sourceUrl": "https://example.com/bayes-lab/confidence-interval"
+    },
+    {
+      "id": "a16",
+      "title": "假设检验：判断差异是否真实",
+      "slug": "hypothesis-testing",
+      "summary": "假设检验先设定原假设 $H_0$，再计算在 $H_0$ 成立时观测到当前数据（或更极端数据）的概率，也就是 p 值。",
+      "publishedAt": "2024-12-08",
+      "readingTimeMinutes": 1,
+      "sourceUrl": "https://example.com/bayes-lab/hypothesis-testing"
+    },
+    {
+      "id": "a17",
+      "title": "贝叶斯推断：先验与后验的更新",
+      "slug": "bayesian-inference",
+      "summary": "贝叶斯推断把参数也看作随机变量，用先验 $p(\\theta)$ 表达初始判断，再用数据通过贝叶斯定理得到后验 $p(\\theta\\mid x)\\propto p(x\\mid\\theta)p(\\theta)$。",
+      "publishedAt": "2025-01-18",
+      "readingTimeMinutes": 1,
+      "sourceUrl": "https://example.com/bayes-lab/bayesian-inference"
+    }
+  ],
+  "concepts": [
+    {
+      "id": "concept-sample-space",
+      "name": "样本空间",
+      "slug": "sample-space",
+      "summary": "一次随机试验所有可能结果构成的集合 $\\Omega$，事件是它的子集，概率 $P$ 定义在这些子集之上。",
+      "domain": "基础工具",
+      "level": "foundation",
+      "aliases": [
+        "Sample Space"
+      ],
+      "evidenceArticleIds": [
+        "a01",
+        "a02",
+        "a05"
+      ],
+      "confidence": 0.94
+    },
+    {
+      "id": "concept-conditional-probability",
+      "name": "条件概率",
+      "slug": "conditional-probability",
+      "summary": "在已知事件 $B$ 发生的条件下 $A$ 发生的概率：$P(A\\mid B)=\\frac{P(A\\cap B)}{P(B)}$，是信息进入判断的入口。",
+      "domain": "基础工具",
+      "level": "foundation",
+      "parentId": "concept-sample-space",
+      "aliases": [
+        "Conditional Probability"
+      ],
+      "evidenceArticleIds": [
+        "a01",
+        "a02",
+        "a04"
+      ],
+      "confidence": 0.93
+    },
+    {
+      "id": "concept-independence",
+      "name": "独立性",
+      "slug": "independence",
+      "summary": "事件之间信息互不改变的属性，定义为 $P(A\\cap B)=P(A)P(B)$，等价于 $P(A\\mid B)=P(A)$。",
+      "domain": "基础工具",
+      "level": "foundation",
+      "parentId": "concept-conditional-probability",
+      "aliases": [
+        "Independence",
+        "统计独立"
+      ],
+      "evidenceArticleIds": [
+        "a02",
+        "a03"
+      ],
+      "confidence": 0.88
+    },
+    {
+      "id": "concept-bayes-theorem",
+      "name": "贝叶斯定理",
+      "slug": "bayes-theorem",
+      "summary": "互换条件与结果的公式 $P(A\\mid B)=\\frac{P(B\\mid A)P(A)}{P(B)}$，把先验 $P(A)$ 更新为后验 $P(A\\mid B)$。",
+      "domain": "基础工具",
+      "level": "intermediate",
+      "parentId": "concept-conditional-probability",
+      "aliases": [
+        "Bayes Theorem",
+        "贝叶斯公式"
+      ],
+      "evidenceArticleIds": [
+        "a02",
+        "a04",
+        "a17"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "id": "concept-random-variable",
+      "name": "随机变量",
+      "slug": "random-variable",
+      "summary": "把样本空间中的每个结果映射为实数的函数 $X:\\Omega\\to\\mathbb{R}$，让期望与方差可以被计算。",
+      "domain": "随机变量与分布",
+      "level": "foundation",
+      "parentId": "concept-sample-space",
+      "aliases": [
+        "Random Variable"
+      ],
+      "evidenceArticleIds": [
+        "a01",
+        "a05",
+        "a06",
+        "a08",
+        "a09",
+        "a17"
+      ],
+      "confidence": 0.93
+    },
+    {
+      "id": "concept-expectation",
+      "name": "期望",
+      "slug": "expectation",
+      "summary": "随机变量取值的概率加权平均 $\\mathbb{E}[X]=\\sum_x x\\,p(x)$，衡量长期重复试验下的平均水平，且具有线性性。",
+      "domain": "随机变量与分布",
+      "level": "foundation",
+      "parentId": "concept-random-variable",
+      "aliases": [
+        "Expectation",
+        "Expected Value",
+        "数学期望"
+      ],
+      "evidenceArticleIds": [
+        "a05",
+        "a06",
+        "a07",
+        "a10",
+        "a11",
+        "a12"
+      ],
+      "confidence": 0.92
+    },
+    {
+      "id": "concept-variance",
+      "name": "方差",
+      "slug": "variance",
+      "summary": "衡量随机变量围绕期望波动程度的量：$\\operatorname{Var}(X)=\\mathbb{E}[(X-\\mathbb{E}[X])^2]$，其平方根为标准差。",
+      "domain": "随机变量与分布",
+      "level": "foundation",
+      "parentId": "concept-random-variable",
+      "aliases": [
+        "Variance"
+      ],
+      "evidenceArticleIds": [
+        "a05",
+        "a07",
+        "a08",
+        "a10"
+      ],
+      "confidence": 0.92
+    },
+    {
+      "id": "concept-common-distributions",
+      "name": "常见分布",
+      "slug": "common-distributions",
+      "summary": "描述常见随机现象的分布族，例如二项分布 $\\mathrm{Binomial}(n,p)$ 与正态分布 $\\mathcal{N}(\\mu,\\sigma^2)$，是建模的基本积木。",
+      "domain": "随机变量与分布",
+      "level": "intermediate",
+      "parentId": "concept-random-variable",
+      "aliases": [
+        "Probability Distribution",
+        "常见概率分布"
+      ],
+      "evidenceArticleIds": [
+        "a08",
+        "a14"
+      ],
+      "confidence": 0.87
+    },
+    {
+      "id": "concept-joint-distribution",
+      "name": "联合分布",
+      "slug": "joint-distribution",
+      "summary": "多个随机变量同时取值的概率规律 $F(x,y)=P(X\\le x,\\,Y\\le y)$，包含变量之间是否关联的信息。",
+      "domain": "联合与极限",
+      "level": "intermediate",
+      "parentId": "concept-random-variable",
+      "aliases": [
+        "Joint Distribution"
+      ],
+      "evidenceArticleIds": [
+        "a09",
+        "a13"
+      ],
+      "confidence": 0.89
+    },
+    {
+      "id": "concept-covariance",
+      "name": "协方差",
+      "slug": "covariance",
+      "summary": "两个变量同向偏离期望的程度：$\\operatorname{Cov}(X,Y)=\\mathbb{E}[(X-\\mathbb{E}[X])(Y-\\mathbb{E}[Y])]$，相关系数 $\\rho$ 由它归一化而来。",
+      "domain": "联合与极限",
+      "level": "intermediate",
+      "parentId": "concept-joint-distribution",
+      "aliases": [
+        "Covariance"
+      ],
+      "evidenceArticleIds": [
+        "a09",
+        "a10"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "id": "concept-law-of-large-numbers",
+      "name": "大数定律",
+      "slug": "law-of-large-numbers",
+      "summary": "样本量增大时样本均值收敛到期望的保证：$\\bar{X}_n\\xrightarrow{P}\\mu$，是频率稳定性的严格依据。",
+      "domain": "联合与极限",
+      "level": "intermediate",
+      "parentId": "concept-expectation",
+      "aliases": [
+        "Law of Large Numbers",
+        "LLN"
+      ],
+      "evidenceArticleIds": [
+        "a11",
+        "a12"
+      ],
+      "confidence": 0.93
+    },
+    {
+      "id": "concept-central-limit-theorem",
+      "name": "中心极限定理",
+      "slug": "central-limit-theorem",
+      "summary": "独立同分布变量之和标准化后趋近标准正态：$\\frac{\\bar{X}_n-\\mu}{\\sigma/\\sqrt{n}}\\Rightarrow N(0,1)$，是正态近似的来源。",
+      "domain": "联合与极限",
+      "level": "intermediate",
+      "parentId": "concept-law-of-large-numbers",
+      "aliases": [
+        "Central Limit Theorem",
+        "CLT"
+      ],
+      "evidenceArticleIds": [
+        "a08",
+        "a12",
+        "a14"
+      ],
+      "confidence": 0.94
+    },
+    {
+      "id": "concept-likelihood-function",
+      "name": "似然函数",
+      "slug": "likelihood-function",
+      "summary": "把观测数据的联合概率视为参数的函数 $L(\\theta;x)=P(x\\mid\\theta)$，用于反过来评价参数。",
+      "domain": "统计推断",
+      "level": "intermediate",
+      "parentId": "concept-joint-distribution",
+      "aliases": [
+        "Likelihood",
+        "似然"
+      ],
+      "evidenceArticleIds": [
+        "a13",
+        "a14"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "id": "concept-maximum-likelihood-estimation",
+      "name": "最大似然估计",
+      "slug": "maximum-likelihood-estimation",
+      "summary": "选择让观测数据最可能的参数 $\\hat{\\theta}=\\arg\\max_\\theta L(\\theta)$，实践中通常等价于最大化对数似然。",
+      "domain": "统计推断",
+      "level": "intermediate",
+      "parentId": "concept-likelihood-function",
+      "aliases": [
+        "Maximum Likelihood Estimation",
+        "MLE",
+        "极大似然估计"
+      ],
+      "evidenceArticleIds": [
+        "a14",
+        "a17"
+      ],
+      "confidence": 0.92
+    },
+    {
+      "id": "concept-confidence-interval",
+      "name": "置信区间",
+      "slug": "confidence-interval",
+      "summary": "由样本构造的区间 $\\hat{\\theta}\\pm z_{1-\\alpha/2}\\operatorname{SE}(\\hat{\\theta})$，以给定频率覆盖参数真值。",
+      "domain": "统计推断",
+      "level": "advanced",
+      "parentId": "concept-maximum-likelihood-estimation",
+      "aliases": [
+        "Confidence Interval"
+      ],
+      "evidenceArticleIds": [
+        "a12",
+        "a14",
+        "a15",
+        "a16",
+        "a17"
+      ],
+      "confidence": 0.89
+    },
+    {
+      "id": "concept-hypothesis-testing",
+      "name": "假设检验",
+      "slug": "hypothesis-testing",
+      "summary": "在 $H_0$ 成立的前提下计算观测数据出现的概率（p 值），据此判断差异是否超出随机波动。",
+      "domain": "统计推断",
+      "level": "advanced",
+      "parentId": "concept-confidence-interval",
+      "aliases": [
+        "Hypothesis Testing",
+        "显著性检验"
+      ],
+      "evidenceArticleIds": [
+        "a12",
+        "a14",
+        "a16"
+      ],
+      "confidence": 0.88
+    },
+    {
+      "id": "concept-bayesian-inference",
+      "name": "贝叶斯推断",
+      "slug": "bayesian-inference",
+      "summary": "用先验与似然经贝叶斯定理得到后验 $p(\\theta\\mid x)\\propto p(x\\mid\\theta)p(\\theta)$ 的推断范式。",
+      "domain": "统计推断",
+      "level": "advanced",
+      "parentId": "concept-bayes-theorem",
+      "aliases": [
+        "Bayesian Inference",
+        "后验推断"
+      ],
+      "evidenceArticleIds": [
+        "a04",
+        "a13",
+        "a17"
+      ],
+      "confidence": 0.91
+    }
+  ],
+  "relations": [
+    {
+      "id": "article-concept:a01:concept-sample-space",
+      "kind": "article-concept",
+      "sourceId": "a01",
+      "targetId": "concept-sample-space",
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "articleId": "a01",
+          "quote": "概率论的第一件事，是把随机试验所有可能的结果写成一个集合，这就是样本空间 $\\Omega$。",
+          "startOffset": 0,
+          "endOffset": 46,
+          "supportScore": 0.95
+        }
+      ]
+    },
+    {
+      "id": "article-concept:a02:concept-conditional-probability",
+      "kind": "article-concept",
+      "sourceId": "a02",
+      "targetId": "concept-conditional-probability",
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "articleId": "a02",
+          "quote": "条件概率 $P(A\\mid B)$ 回答的是：当已知 $B$ 发生，$A$ 的可能性该如何重估",
+          "startOffset": 0,
+          "endOffset": 47,
+          "supportScore": 0.95
+        }
+      ]
+    },
+    {
+      "id": "article-concept:a03:concept-independence",
+      "kind": "article-concept",
+      "sourceId": "a03",
+      "targetId": "concept-independence",
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "articleId": "a03",
+          "quote": "独立性是对条件概率的一次坍缩：信息不再有价值。",
+          "startOffset": 67,
+          "endOffset": 90,
+          "supportScore": 0.95
+        }
+      ]
+    },
+    {
+      "id": "article-concept:a04:concept-bayes-theorem",
+      "kind": "article-concept",
+      "sourceId": "a04",
+      "targetId": "concept-bayes-theorem",
+      "confidence": 0.96,
+      "evidence": [
+        {
+          "articleId": "a04",
+          "quote": "贝叶斯定理把 $P(A\\mid B)$ 与 $P(B\\mid A)$ 联系起来：$P(A\\mid B)=\\frac{P(B\\mid A)P(A)}{P(B)}$。",
+          "startOffset": 0,
+          "endOffset": 81,
+          "supportScore": 0.96
+        }
+      ]
+    },
+    {
+      "id": "article-concept:a05:concept-random-variable",
+      "kind": "article-concept",
+      "sourceId": "a05",
+      "targetId": "concept-random-variable",
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "articleId": "a05",
+          "quote": "随机变量 $X$ 是一个从样本空间到实数的函数",
+          "startOffset": 0,
+          "endOffset": 23,
+          "supportScore": 0.95
+        }
+      ]
+    },
+    {
+      "id": "article-concept:a06:concept-expectation",
+      "kind": "article-concept",
+      "sourceId": "a06",
+      "targetId": "concept-expectation",
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "articleId": "a06",
+          "quote": "期望是随机变量取值的概率加权平均：$\\mathbb{E}[X]=\\sum_x x\\,p(x)$",
+          "startOffset": 0,
+          "endOffset": 47,
+          "supportScore": 0.95
+        }
+      ]
+    },
+    {
+      "id": "article-concept:a07:concept-variance",
+      "kind": "article-concept",
+      "sourceId": "a07",
+      "targetId": "concept-variance",
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "articleId": "a07",
+          "quote": "方差刻画随机变量偏离期望的程度：$\\operatorname{Var}(X)=\\mathbb{E}[(X-\\mathbb{E}[X])^2]$",
+          "startOffset": 0,
+          "endOffset": 71,
+          "supportScore": 0.95
+        }
+      ]
+    },
+    {
+      "id": "article-concept:a08:concept-common-distributions",
+      "kind": "article-concept",
+      "sourceId": "a08",
+      "targetId": "concept-common-distributions",
+      "confidence": 0.94,
+      "evidence": [
+        {
+          "articleId": "a08",
+          "quote": "常见分布是概率论留给统计推断的工具箱，它们把随机变量的取值规律压缩成少数几个参数。",
+          "startOffset": 0,
+          "endOffset": 41,
+          "supportScore": 0.94
+        }
+      ]
+    },
+    {
+      "id": "article-concept:a09:concept-joint-distribution",
+      "kind": "article-concept",
+      "sourceId": "a09",
+      "targetId": "concept-joint-distribution",
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "articleId": "a09",
+          "quote": "联合分布描述多个随机变量同时取值的方式：$F(x,y)=P(X\\le x,\\,Y\\le y)$。",
+          "startOffset": 0,
+          "endOffset": 48,
+          "supportScore": 0.95
+        }
+      ]
+    },
+    {
+      "id": "article-concept:a10:concept-covariance",
+      "kind": "article-concept",
+      "sourceId": "a10",
+      "targetId": "concept-covariance",
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "articleId": "a10",
+          "quote": "协方差定义为 $\\operatorname{Cov}(X,Y)=\\mathbb{E}[(X-\\mathbb{E}[X])(Y-\\mathbb{E}[Y])]$",
+          "startOffset": 0,
+          "endOffset": 79,
+          "supportScore": 0.95
+        }
+      ]
+    },
+    {
+      "id": "article-concept:a11:concept-law-of-large-numbers",
+      "kind": "article-concept",
+      "sourceId": "a11",
+      "targetId": "concept-law-of-large-numbers",
+      "confidence": 0.96,
+      "evidence": [
+        {
+          "articleId": "a11",
+          "quote": "大数定律说明，当样本量 $n$ 增大时，样本均值 $\\bar{X}_n=\\frac{1}{n}\\sum_{i=1}^n X_i$ 会依概率收敛到总体期望 $\\mu$。",
+          "startOffset": 0,
+          "endOffset": 83,
+          "supportScore": 0.96
+        }
+      ]
+    },
+    {
+      "id": "article-concept:a12:concept-central-limit-theorem",
+      "kind": "article-concept",
+      "sourceId": "a12",
+      "targetId": "concept-central-limit-theorem",
+      "confidence": 0.96,
+      "evidence": [
+        {
+          "articleId": "a12",
+          "quote": "中心极限定理指出，大量独立同分布随机变量之和经过标准化后趋近标准正态分布：$\\frac{\\bar{X}_n-\\mu}{\\sigma/\\sqrt{n}}\\Rightarrow N(0,1)$。",
+          "startOffset": 0,
+          "endOffset": 95,
+          "supportScore": 0.96
+        }
+      ]
+    },
+    {
+      "id": "article-concept:a13:concept-likelihood-function",
+      "kind": "article-concept",
+      "sourceId": "a13",
+      "targetId": "concept-likelihood-function",
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "articleId": "a13",
+          "quote": "似然函数把观测数据的联合概率看成参数的函数：$L(\\theta;x)=P(x\\mid\\theta)$",
+          "startOffset": 0,
+          "endOffset": 50,
+          "supportScore": 0.95
+        }
+      ]
+    },
+    {
+      "id": "article-concept:a14:concept-maximum-likelihood-estimation",
+      "kind": "article-concept",
+      "sourceId": "a14",
+      "targetId": "concept-maximum-likelihood-estimation",
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "articleId": "a14",
+          "quote": "最大似然估计选择让观测数据出现概率最大的参数：$\\hat{\\theta}=\\arg\\max_\\theta L(\\theta)$。",
+          "startOffset": 0,
+          "endOffset": 64,
+          "supportScore": 0.95
+        }
+      ]
+    },
+    {
+      "id": "article-concept:a15:concept-confidence-interval",
+      "kind": "article-concept",
+      "sourceId": "a15",
+      "targetId": "concept-confidence-interval",
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "articleId": "a15",
+          "quote": "置信区间把点估计扩展成一个范围：$\\hat{\\theta}\\pm z_{1-\\alpha/2}\\cdot\\operatorname{SE}(\\hat{\\theta})$。",
+          "startOffset": 0,
+          "endOffset": 85,
+          "supportScore": 0.95
+        }
+      ]
+    },
+    {
+      "id": "article-concept:a16:concept-hypothesis-testing",
+      "kind": "article-concept",
+      "sourceId": "a16",
+      "targetId": "concept-hypothesis-testing",
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "articleId": "a16",
+          "quote": "假设检验先设定原假设 $H_0$，再计算在 $H_0$ 成立时观测到当前数据（或更极端数据）的概率，也就是 p 值。",
+          "startOffset": 0,
+          "endOffset": 58,
+          "supportScore": 0.95
+        }
+      ]
+    },
+    {
+      "id": "article-concept:a17:concept-bayesian-inference",
+      "kind": "article-concept",
+      "sourceId": "a17",
+      "targetId": "concept-bayesian-inference",
+      "confidence": 0.96,
+      "evidence": [
+        {
+          "articleId": "a17",
+          "quote": "贝叶斯推断把参数也看作随机变量，用先验 $p(\\theta)$ 表达初始判断，再用数据通过贝叶斯定理得到后验 $p(\\theta\\mid x)\\propto p(x\\mid\\theta)p(\\theta)$。",
+          "startOffset": 0,
+          "endOffset": 104,
+          "supportScore": 0.96
+        }
+      ]
+    },
+    {
+      "id": "article-concept:a02:concept-sample-space",
+      "kind": "article-concept",
+      "sourceId": "a02",
+      "targetId": "concept-sample-space",
+      "confidence": 0.86,
+      "evidence": [
+        {
+          "articleId": "a02",
+          "quote": "它把样本空间从整个 $\\Omega$ 收缩到 $B$，再在收缩后的范围内重新计算比例。",
+          "startOffset": 91,
+          "endOffset": 134,
+          "supportScore": 0.86
+        }
+      ]
+    },
+    {
+      "id": "article-concept:a02:concept-bayes-theorem",
+      "kind": "article-concept",
+      "sourceId": "a02",
+      "targetId": "concept-bayes-theorem",
+      "confidence": 0.86,
+      "evidence": [
+        {
+          "articleId": "a02",
+          "quote": "这个动作看起来只是除法，却是贝叶斯定理和独立性共同的定义基础。",
+          "startOffset": 134,
+          "endOffset": 165,
+          "supportScore": 0.86
+        }
+      ]
+    },
+    {
+      "id": "article-concept:a02:concept-independence",
+      "kind": "article-concept",
+      "sourceId": "a02",
+      "targetId": "concept-independence",
+      "confidence": 0.84,
+      "evidence": [
+        {
+          "articleId": "a02",
+          "quote": "这个动作看起来只是除法，却是贝叶斯定理和独立性共同的定义基础。",
+          "startOffset": 134,
+          "endOffset": 165,
+          "supportScore": 0.84
+        }
+      ]
+    },
+    {
+      "id": "article-concept:a04:concept-conditional-probability",
+      "kind": "article-concept",
+      "sourceId": "a04",
+      "targetId": "concept-conditional-probability",
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "articleId": "a04",
+          "quote": "这条公式只是条件概率定义的直接推论，却给出了从结果反推原因的通用方法。",
+          "startOffset": 81,
+          "endOffset": 116,
+          "supportScore": 0.9
+        }
+      ]
+    },
+    {
+      "id": "article-concept:a05:concept-sample-space",
+      "kind": "article-concept",
+      "sourceId": "a05",
+      "targetId": "concept-sample-space",
+      "confidence": 0.88,
+      "evidence": [
+        {
+          "articleId": "a05",
+          "quote": "随机变量 $X$ 是一个从样本空间到实数的函数",
+          "startOffset": 0,
+          "endOffset": 23,
+          "supportScore": 0.88
+        }
+      ]
+    },
+    {
+      "id": "article-concept:a05:concept-expectation",
+      "kind": "article-concept",
+      "sourceId": "a05",
+      "targetId": "concept-expectation",
+      "confidence": 0.84,
+      "evidence": [
+        {
+          "articleId": "a05",
+          "quote": "有了这层映射，我们才能谈论期望、方差与分布函数，而不是对着一堆文字结果无从下手。",
+          "startOffset": 43,
+          "endOffset": 83,
+          "supportScore": 0.84
+        }
+      ]
+    },
+    {
+      "id": "article-concept:a06:concept-random-variable",
+      "kind": "article-concept",
+      "sourceId": "a06",
+      "targetId": "concept-random-variable",
+      "confidence": 0.88,
+      "evidence": [
+        {
+          "articleId": "a06",
+          "quote": "期望是随机变量取值的概率加权平均：$\\mathbb{E}[X]=\\sum_x x\\,p(x)$",
+          "startOffset": 0,
+          "endOffset": 47,
+          "supportScore": 0.88
+        }
+      ]
+    },
+    {
+      "id": "article-concept:a07:concept-expectation",
+      "kind": "article-concept",
+      "sourceId": "a07",
+      "targetId": "concept-expectation",
+      "confidence": 0.86,
+      "evidence": [
+        {
+          "articleId": "a07",
+          "quote": "期望告诉我们中心在哪里，方差告诉我们这个中心有多可信。",
+          "startOffset": 90,
+          "endOffset": 117,
+          "supportScore": 0.86
+        }
+      ]
+    },
+    {
+      "id": "article-concept:a07:concept-central-limit-theorem",
+      "kind": "article-concept",
+      "sourceId": "a07",
+      "targetId": "concept-central-limit-theorem",
+      "confidence": 0.82,
+      "evidence": [
+        {
+          "articleId": "a07",
+          "quote": "这条规则是后面大数定律和中心极限定理的起点",
+          "startOffset": 204,
+          "endOffset": 225,
+          "supportScore": 0.82
+        }
+      ]
+    },
+    {
+      "id": "article-concept:a09:concept-covariance",
+      "kind": "article-concept",
+      "sourceId": "a09",
+      "targetId": "concept-covariance",
+      "confidence": 0.88,
+      "evidence": [
+        {
+          "articleId": "a09",
+          "quote": "协方差和相关，正是从联合分布里提取出来的两个数字摘要。",
+          "startOffset": 110,
+          "endOffset": 137,
+          "supportScore": 0.88
+        }
+      ]
+    },
+    {
+      "id": "article-concept:a11:concept-expectation",
+      "kind": "article-concept",
+      "sourceId": "a11",
+      "targetId": "concept-expectation",
+      "confidence": 0.86,
+      "evidence": [
+        {
+          "articleId": "a11",
+          "quote": "会依概率收敛到总体期望 $\\mu$",
+          "startOffset": 65,
+          "endOffset": 82,
+          "supportScore": 0.86
+        }
+      ]
+    },
+    {
+      "id": "article-concept:a12:concept-law-of-large-numbers",
+      "kind": "article-concept",
+      "sourceId": "a12",
+      "targetId": "concept-law-of-large-numbers",
+      "confidence": 0.88,
+      "evidence": [
+        {
+          "articleId": "a12",
+          "quote": "大数定律告诉我们均值会稳定到期望，中心极限定理进一步说明波动有多大",
+          "startOffset": 95,
+          "endOffset": 128,
+          "supportScore": 0.88
+        }
+      ]
+    },
+    {
+      "id": "article-concept:a14:concept-confidence-interval",
+      "kind": "article-concept",
+      "sourceId": "a14",
+      "targetId": "concept-confidence-interval",
+      "confidence": 0.84,
+      "evidence": [
+        {
+          "articleId": "a14",
+          "quote": "置信区间和假设检验都建立在这条性质上",
+          "startOffset": 201,
+          "endOffset": 219,
+          "supportScore": 0.84
+        }
+      ]
+    },
+    {
+      "id": "article-concept:a16:concept-confidence-interval",
+      "kind": "article-concept",
+      "sourceId": "a16",
+      "targetId": "concept-confidence-interval",
+      "confidence": 0.88,
+      "evidence": [
+        {
+          "articleId": "a16",
+          "quote": "假设检验与置信区间其实是一枚硬币的两面：区间不覆盖原假设给出的取值，检验就会在同样的显著性水平下拒绝它。",
+          "startOffset": 84,
+          "endOffset": 136,
+          "supportScore": 0.88
+        }
+      ]
+    },
+    {
+      "id": "article-concept:a17:concept-random-variable",
+      "kind": "article-concept",
+      "sourceId": "a17",
+      "targetId": "concept-random-variable",
+      "confidence": 0.84,
+      "evidence": [
+        {
+          "articleId": "a17",
+          "quote": "贝叶斯推断把参数也看作随机变量",
+          "startOffset": 0,
+          "endOffset": 15,
+          "supportScore": 0.84
+        }
+      ]
+    },
+    {
+      "id": "concept-relation:prerequisite:concept-sample-space:concept-conditional-probability",
+      "kind": "prerequisite",
+      "sourceId": "concept-sample-space",
+      "targetId": "concept-conditional-probability",
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "articleId": "a01",
+          "quote": "条件概率要在这个集合上重新划定范围",
+          "startOffset": 112,
+          "endOffset": 129,
+          "supportScore": 0.88
+        },
+        {
+          "articleId": "a02",
+          "quote": "条件概率 $P(A\\mid B)$ 回答的是：当已知 $B$ 发生，$A$ 的可能性该如何重估，它的定义是 $P(A\\mid B)=\\frac{P(A\\cap B)}{P(B)}$。它把样本空间从整个 $\\Omega$ 收缩到 $B$，再在收缩后的范围内重新计算比例。",
+          "startOffset": 0,
+          "endOffset": 134,
+          "supportScore": 0.9
+        }
+      ],
+      "reasoning": "条件概率定义在样本空间之上，先划定结果集合才能收缩范围。"
+    },
+    {
+      "id": "concept-relation:prerequisite:concept-conditional-probability:concept-independence",
+      "kind": "prerequisite",
+      "sourceId": "concept-conditional-probability",
+      "targetId": "concept-independence",
+      "confidence": 0.92,
+      "evidence": [
+        {
+          "articleId": "a03",
+          "quote": "独立性是对条件概率的一次坍缩：信息不再有价值。",
+          "startOffset": 67,
+          "endOffset": 90,
+          "supportScore": 0.92
+        }
+      ],
+      "reasoning": "独立性由条件概率是否改变来判断。"
+    },
+    {
+      "id": "concept-relation:prerequisite:concept-conditional-probability:concept-bayes-theorem",
+      "kind": "prerequisite",
+      "sourceId": "concept-conditional-probability",
+      "targetId": "concept-bayes-theorem",
+      "confidence": 0.94,
+      "evidence": [
+        {
+          "articleId": "a04",
+          "quote": "贝叶斯定理把 $P(A\\mid B)$ 与 $P(B\\mid A)$ 联系起来：$P(A\\mid B)=\\frac{P(B\\mid A)P(A)}{P(B)}$。这条公式只是条件概率定义的直接推论，却给出了从结果反推原因的通用方法。",
+          "startOffset": 0,
+          "endOffset": 116,
+          "supportScore": 0.94
+        }
+      ],
+      "reasoning": "贝叶斯定理是条件概率定义的直接推论。"
+    },
+    {
+      "id": "concept-relation:prerequisite:concept-sample-space:concept-random-variable",
+      "kind": "prerequisite",
+      "sourceId": "concept-sample-space",
+      "targetId": "concept-random-variable",
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "articleId": "a05",
+          "quote": "随机变量 $X$ 是一个从样本空间到实数的函数",
+          "startOffset": 0,
+          "endOffset": 23,
+          "supportScore": 0.9
+        }
+      ],
+      "reasoning": "随机变量以样本空间为定义域。"
+    },
+    {
+      "id": "concept-relation:prerequisite:concept-random-variable:concept-expectation",
+      "kind": "prerequisite",
+      "sourceId": "concept-random-variable",
+      "targetId": "concept-expectation",
+      "confidence": 0.93,
+      "evidence": [
+        {
+          "articleId": "a06",
+          "quote": "期望是随机变量取值的概率加权平均：$\\mathbb{E}[X]=\\sum_x x\\,p(x)$",
+          "startOffset": 0,
+          "endOffset": 47,
+          "supportScore": 0.93
+        }
+      ],
+      "reasoning": "期望是随机变量取值的加权平均。"
+    },
+    {
+      "id": "concept-relation:prerequisite:concept-expectation:concept-variance",
+      "kind": "prerequisite",
+      "sourceId": "concept-expectation",
+      "targetId": "concept-variance",
+      "confidence": 0.94,
+      "evidence": [
+        {
+          "articleId": "a07",
+          "quote": "方差刻画随机变量偏离期望的程度：$\\operatorname{Var}(X)=\\mathbb{E}[(X-\\mathbb{E}[X])^2]$",
+          "startOffset": 0,
+          "endOffset": 71,
+          "supportScore": 0.94
+        }
+      ],
+      "reasoning": "方差以期望为中心定义。"
+    },
+    {
+      "id": "concept-relation:prerequisite:concept-variance:concept-covariance",
+      "kind": "prerequisite",
+      "sourceId": "concept-variance",
+      "targetId": "concept-covariance",
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "articleId": "a10",
+          "quote": "把其中一个变量换成它自己，协方差就退化成方差。",
+          "startOffset": 178,
+          "endOffset": 201,
+          "supportScore": 0.9
+        }
+      ],
+      "reasoning": "协方差是方差在两个变量上的推广。"
+    },
+    {
+      "id": "concept-relation:prerequisite:concept-expectation:concept-covariance",
+      "kind": "prerequisite",
+      "sourceId": "concept-expectation",
+      "targetId": "concept-covariance",
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "articleId": "a10",
+          "quote": "协方差定义为 $\\operatorname{Cov}(X,Y)=\\mathbb{E}[(X-\\mathbb{E}[X])(Y-\\mathbb{E}[Y])]$，它衡量两个变量是否同向偏离各自的期望。",
+          "startOffset": 0,
+          "endOffset": 99,
+          "supportScore": 0.9
+        }
+      ],
+      "reasoning": "协方差的定义依赖期望。"
+    },
+    {
+      "id": "concept-relation:prerequisite:concept-joint-distribution:concept-covariance",
+      "kind": "prerequisite",
+      "sourceId": "concept-joint-distribution",
+      "targetId": "concept-covariance",
+      "confidence": 0.92,
+      "evidence": [
+        {
+          "articleId": "a09",
+          "quote": "协方差和相关，正是从联合分布里提取出来的两个数字摘要。",
+          "startOffset": 110,
+          "endOffset": 137,
+          "supportScore": 0.92
+        }
+      ],
+      "reasoning": "协方差是联合分布的数字摘要。"
+    },
+    {
+      "id": "concept-relation:prerequisite:concept-expectation:concept-law-of-large-numbers",
+      "kind": "prerequisite",
+      "sourceId": "concept-expectation",
+      "targetId": "concept-law-of-large-numbers",
+      "confidence": 0.93,
+      "evidence": [
+        {
+          "articleId": "a11",
+          "quote": "大数定律说明，当样本量 $n$ 增大时，样本均值 $\\bar{X}_n=\\frac{1}{n}\\sum_{i=1}^n X_i$ 会依概率收敛到总体期望 $\\mu$。",
+          "startOffset": 0,
+          "endOffset": 83,
+          "supportScore": 0.93
+        }
+      ],
+      "reasoning": "大数定律说明样本均值收敛到期望。"
+    },
+    {
+      "id": "concept-relation:prerequisite:concept-random-variable:concept-common-distributions",
+      "kind": "prerequisite",
+      "sourceId": "concept-random-variable",
+      "targetId": "concept-common-distributions",
+      "confidence": 0.88,
+      "evidence": [
+        {
+          "articleId": "a08",
+          "quote": "常见分布是概率论留给统计推断的工具箱，它们把随机变量的取值规律压缩成少数几个参数。",
+          "startOffset": 0,
+          "endOffset": 41,
+          "supportScore": 0.88
+        }
+      ],
+      "reasoning": "分布描述随机变量的取值规律。"
+    },
+    {
+      "id": "concept-relation:prerequisite:concept-expectation:concept-common-distributions",
+      "kind": "prerequisite",
+      "sourceId": "concept-expectation",
+      "targetId": "concept-common-distributions",
+      "confidence": 0.86,
+      "evidence": [
+        {
+          "articleId": "a08",
+          "quote": "常见分布的期望与方差各有含义，记住参数代表什么比背公式更有用",
+          "startOffset": 41,
+          "endOffset": 71,
+          "supportScore": 0.86
+        }
+      ],
+      "reasoning": "分布的参数通常就是期望与方差。"
+    },
+    {
+      "id": "concept-relation:prerequisite:concept-common-distributions:concept-maximum-likelihood-estimation",
+      "kind": "prerequisite",
+      "sourceId": "concept-common-distributions",
+      "targetId": "concept-maximum-likelihood-estimation",
+      "confidence": 0.88,
+      "evidence": [
+        {
+          "articleId": "a14",
+          "quote": "只要写得出常见分布的似然函数，最大似然估计就退化成一次求导。",
+          "startOffset": 64,
+          "endOffset": 94,
+          "supportScore": 0.88
+        }
+      ],
+      "reasoning": "写出分布的似然函数是最大似然估计的第一步。"
+    },
+    {
+      "id": "concept-relation:prerequisite:concept-maximum-likelihood-estimation:concept-confidence-interval",
+      "kind": "prerequisite",
+      "sourceId": "concept-maximum-likelihood-estimation",
+      "targetId": "concept-confidence-interval",
+      "confidence": 0.88,
+      "evidence": [
+        {
+          "articleId": "a14",
+          "quote": "最大似然估计在小样本下可能略有偏差，但样本量增大时会趋于无偏且渐近正态，置信区间和假设检验都建立在这条性质上。",
+          "startOffset": 165,
+          "endOffset": 220,
+          "supportScore": 0.88
+        }
+      ],
+      "reasoning": "渐近正态性让区间估计可用。"
+    },
+    {
+      "id": "concept-relation:prerequisite:concept-maximum-likelihood-estimation:concept-hypothesis-testing",
+      "kind": "prerequisite",
+      "sourceId": "concept-maximum-likelihood-estimation",
+      "targetId": "concept-hypothesis-testing",
+      "confidence": 0.86,
+      "evidence": [
+        {
+          "articleId": "a14",
+          "quote": "最大似然估计在小样本下可能略有偏差，但样本量增大时会趋于无偏且渐近正态，置信区间和假设检验都建立在这条性质上。",
+          "startOffset": 165,
+          "endOffset": 220,
+          "supportScore": 0.86
+        }
+      ],
+      "reasoning": "检验统计量的构造依赖估计量的渐近性质。"
+    },
+    {
+      "id": "concept-relation:prerequisite:concept-central-limit-theorem:concept-confidence-interval",
+      "kind": "prerequisite",
+      "sourceId": "concept-central-limit-theorem",
+      "targetId": "concept-confidence-interval",
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "articleId": "a12",
+          "quote": "大数定律告诉我们均值会稳定到期望，中心极限定理进一步说明波动有多大，它也是置信区间与假设检验采用正态近似的依据。",
+          "startOffset": 95,
+          "endOffset": 151,
+          "supportScore": 0.9
+        }
+      ],
+      "reasoning": "区间估计的正态近似来自中心极限定理。"
+    },
+    {
+      "id": "concept-relation:prerequisite:concept-central-limit-theorem:concept-hypothesis-testing",
+      "kind": "prerequisite",
+      "sourceId": "concept-central-limit-theorem",
+      "targetId": "concept-hypothesis-testing",
+      "confidence": 0.87,
+      "evidence": [
+        {
+          "articleId": "a12",
+          "quote": "大数定律告诉我们均值会稳定到期望，中心极限定理进一步说明波动有多大，它也是置信区间与假设检验采用正态近似的依据。",
+          "startOffset": 95,
+          "endOffset": 151,
+          "supportScore": 0.87
+        }
+      ],
+      "reasoning": "检验的正态近似同样来自中心极限定理。"
+    },
+    {
+      "id": "concept-relation:extends:concept-joint-distribution:concept-random-variable",
+      "kind": "extends",
+      "sourceId": "concept-joint-distribution",
+      "targetId": "concept-random-variable",
+      "confidence": 0.88,
+      "evidence": [
+        {
+          "articleId": "a09",
+          "quote": "联合分布描述多个随机变量同时取值的方式：$F(x,y)=P(X\\le x,\\,Y\\le y)$。",
+          "startOffset": 0,
+          "endOffset": 48,
+          "supportScore": 0.88
+        }
+      ],
+      "reasoning": "联合分布把单变量的分布推广到多个变量。"
+    },
+    {
+      "id": "concept-relation:extends:concept-maximum-likelihood-estimation:concept-likelihood-function",
+      "kind": "extends",
+      "sourceId": "concept-maximum-likelihood-estimation",
+      "targetId": "concept-likelihood-function",
+      "confidence": 0.92,
+      "evidence": [
+        {
+          "articleId": "a14",
+          "quote": "只要写得出常见分布的似然函数，最大似然估计就退化成一次求导。",
+          "startOffset": 64,
+          "endOffset": 94,
+          "supportScore": 0.92
+        }
+      ],
+      "reasoning": "最大似然估计在似然函数之上加了一步最优化。"
+    },
+    {
+      "id": "concept-relation:extends:concept-hypothesis-testing:concept-confidence-interval",
+      "kind": "extends",
+      "sourceId": "concept-hypothesis-testing",
+      "targetId": "concept-confidence-interval",
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "articleId": "a16",
+          "quote": "假设检验与置信区间其实是一枚硬币的两面：区间不覆盖原假设给出的取值，检验就会在同样的显著性水平下拒绝它。",
+          "startOffset": 84,
+          "endOffset": 136,
+          "supportScore": 0.9
+        }
+      ],
+      "reasoning": "检验在区间估计的基础上给出二元判断。"
+    },
+    {
+      "id": "concept-relation:extends:concept-bayesian-inference:concept-bayes-theorem",
+      "kind": "extends",
+      "sourceId": "concept-bayesian-inference",
+      "targetId": "concept-bayes-theorem",
+      "confidence": 0.93,
+      "evidence": [
+        {
+          "articleId": "a17",
+          "quote": "贝叶斯推断把参数也看作随机变量，用先验 $p(\\theta)$ 表达初始判断，再用数据通过贝叶斯定理得到后验 $p(\\theta\\mid x)\\propto p(x\\mid\\theta)p(\\theta)$。",
+          "startOffset": 0,
+          "endOffset": 104,
+          "supportScore": 0.93
+        }
+      ],
+      "reasoning": "贝叶斯推断把贝叶斯定理用在参数上。"
+    },
+    {
+      "id": "concept-relation:related:concept-central-limit-theorem:concept-common-distributions",
+      "kind": "related",
+      "sourceId": "concept-central-limit-theorem",
+      "targetId": "concept-common-distributions",
+      "confidence": 0.85,
+      "evidence": [
+        {
+          "articleId": "a08",
+          "quote": "在这些常见分布中，正态分布的地位尤其特殊，因为中心极限定理为它兜底",
+          "startOffset": 164,
+          "endOffset": 197,
+          "supportScore": 0.85
+        }
+      ],
+      "reasoning": "中心极限定理解释了正态分布为何普遍。"
+    },
+    {
+      "id": "concept-relation:related:concept-central-limit-theorem:concept-law-of-large-numbers",
+      "kind": "related",
+      "sourceId": "concept-central-limit-theorem",
+      "targetId": "concept-law-of-large-numbers",
+      "confidence": 0.91,
+      "evidence": [
+        {
+          "articleId": "a12",
+          "quote": "大数定律告诉我们均值会稳定到期望，中心极限定理进一步说明波动有多大",
+          "startOffset": 95,
+          "endOffset": 128,
+          "supportScore": 0.91
+        }
+      ],
+      "reasoning": "两者描述同一收敛过程的位置与波动。"
+    },
+    {
+      "id": "concept-relation:related:concept-bayesian-inference:concept-likelihood-function",
+      "kind": "related",
+      "sourceId": "concept-bayesian-inference",
+      "targetId": "concept-likelihood-function",
+      "confidence": 0.88,
+      "evidence": [
+        {
+          "articleId": "a13",
+          "quote": "似然函数也是贝叶斯推断的起点，后验正比于似然乘以先验。",
+          "startOffset": 104,
+          "endOffset": 131,
+          "supportScore": 0.88
+        }
+      ],
+      "reasoning": "似然是后验更新的组成部分。"
+    },
+    {
+      "id": "concept-relation:related:concept-bayesian-inference:concept-maximum-likelihood-estimation",
+      "kind": "related",
+      "sourceId": "concept-bayesian-inference",
+      "targetId": "concept-maximum-likelihood-estimation",
+      "confidence": 0.87,
+      "evidence": [
+        {
+          "articleId": "a17",
+          "quote": "贝叶斯推断并不否定最大似然估计，只是把参数的不确定性也写进模型。",
+          "startOffset": 104,
+          "endOffset": 136,
+          "supportScore": 0.87
+        }
+      ],
+      "reasoning": "两者都用似然，区别在是否给参数加先验。"
+    }
+  ],
+  "readingPaths": [
+    {
+      "id": "path-probability-foundations",
+      "title": "概率的地基",
+      "summary": "从样本空间 $\\Omega$ 出发，依次建立条件概率 $P(A\\mid B)$、独立性与贝叶斯定理。",
+      "level": "beginner",
+      "domains": [
+        "基础工具"
+      ],
+      "conceptIds": [
+        "concept-sample-space",
+        "concept-conditional-probability",
+        "concept-independence",
+        "concept-bayes-theorem"
+      ],
+      "articleIds": [
+        "a01",
+        "a02",
+        "a03",
+        "a04"
+      ]
+    },
+    {
+      "id": "path-random-variables-to-limits",
+      "title": "从随机变量到极限定理",
+      "summary": "从随机变量 $X$ 与它的数字特征 $\\mathbb{E}[X]$、$\\operatorname{Var}(X)$ 出发，走到大数定律与中心极限定理。",
+      "level": "intermediate",
+      "domains": [
+        "随机变量与分布",
+        "联合与极限"
+      ],
+      "conceptIds": [
+        "concept-random-variable",
+        "concept-expectation",
+        "concept-variance",
+        "concept-common-distributions",
+        "concept-joint-distribution",
+        "concept-covariance",
+        "concept-law-of-large-numbers",
+        "concept-central-limit-theorem"
+      ],
+      "articleIds": [
+        "a05",
+        "a06",
+        "a07",
+        "a08",
+        "a09",
+        "a10",
+        "a11",
+        "a12"
+      ]
+    },
+    {
+      "id": "path-two-roads-to-inference",
+      "title": "统计推断的两条路",
+      "summary": "沿着似然 $L(\\theta;x)$ 与后验 $p(\\theta\\mid x)$ 两条路线理解统计推断。",
+      "level": "advanced",
+      "domains": [
+        "统计推断"
+      ],
+      "conceptIds": [
+        "concept-likelihood-function",
+        "concept-maximum-likelihood-estimation",
+        "concept-confidence-interval",
+        "concept-hypothesis-testing",
+        "concept-bayesian-inference"
+      ],
+      "articleIds": [
+        "a13",
+        "a14",
+        "a15",
+        "a16",
+        "a17"
+      ]
+    }
+  ]
+}

@@ -18,7 +18,7 @@ import styles from "./login.module.css";
  *   弹层方案废弃；页面内容组件在 concepts-page.tsx，路由壳归 architect）；
  * - 「或」分隔线下方放两张并排演示卡（≤768px 堆叠），替掉原单链接：
  *   卡一演示编译（compile + 默认语料，首次编译放左），卡二成熟作者空间
- *   （space + sujianlin 语料）。
+ *   （space + bayes 语料）。
  *   「二次编译 / 首次编译 / 新文章」只是入口文案意图，目标页的真实行为
  *   属 app/space、app/compile 的范围，不归本文件。
  *
@@ -30,8 +30,12 @@ import styles from "./login.module.css";
  * 背景图谱动画在独立客户端 leaf KnowledgeGraphBackground。
  */
 
-/** 「成熟的作者空间」指向的公开演示语料（科学空间，一位成熟作者）。 */
-const MATURE_AUTHOR_CORPUS_ID = "sujianlin";
+/**
+ * 「成熟的作者空间」指向的公开演示语料：`data/bayes/`（概率论与统计推断，
+ * 作者沈亦舟 @bayes-lab，17 篇文章 / 17 概念 / 57 关系 / 3 条阅读路径，正文含 LaTeX），
+ * 由 curated provider 预编译，已在 `lib/frontend/corpora.ts` 与 `app/api/compile/route.ts` 注册。
+ */
+const MATURE_AUTHOR_CORPUS_ID = "bayes";
 /** 「演示编译空间」首次编译用的语料：默认演示语料（LLM 综述样例）。 */
 const DEMO_COMPILE_CORPUS_ID = DEFAULT_CORPUS_ID;
 

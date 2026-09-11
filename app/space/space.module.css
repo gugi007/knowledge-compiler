@@ -1,0 +1,1432 @@
+/* ============================================================================
+ * 知识空间（第三幕）样式底座 —— 批次 1/5
+ *
+ * 视觉语言移植自 space-redesign.html 的 <style> 块。
+ * 设计 token 是「局部」的：只在下面列出的根类上定义，靠 CSS 变量继承向下传递，
+ * 不会写入 app/globals.css，也不会污染全局。
+ *
+ * 用法（后续批次照抄）：
+ *   import s from "@/app/space/space.module.css";
+ *   状态类需要「组合」使用，例如：
+ *     className={`${s.domainRow} ${active ? s.active : ""}`}
+ *     className={`${s.stage} ${compiling ? s.compiling : ""}`}
+ *   两段式选择器（如 .domainRow.active / .stage.compiling）在 CSS Module 里会被
+ *   同时哈希，所以宿主元素必须同时带上两个类名。
+ * ==========================================================================*/
+
+/* ---------------------------------------------------------------- tokens */
+.shell,
+.topbar,
+.authorStrip,
+.recompileBar,
+.workspace,
+.wsCol,
+.canvasCol,
+.stage,
+.evoFab,
+.editBar,
+.editCard {
+  --blue: #1772F6;
+  --blue-hover: #0F65D8;
+  --paper: #F6F6F6;
+  --canvas: #FCFCFD;
+  --ink: #121212;
+  --body: #444444;
+  --muted: #646464;
+  --faint: #8590A6;
+  --line: #EBEBEB;
+  --line-soft: #F0F2F5;
+  --btn-line: #D3D3D3;
+  --brand-blue: #0084ff;
+  --updated: #1E7E34;
+  --d-model: #1772F6;
+  --d-attn: #796FDB;
+  --d-infer: #2A9D8F;
+  --d-long: #C58A55;
+}
+
+/* ------------------------------------------------------------ 页面骨架 */
+.shell {
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 0 24px;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+.shell *,
+.shell *::before,
+.shell *::after {
+  box-sizing: border-box;
+}
+
+/* ------------------------------------------------------- 顶栏（56 毛玻璃） */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  background: rgba(246, 246, 246, 0.78);
+  backdrop-filter: saturate(180%) blur(14px);
+  -webkit-backdrop-filter: saturate(180%) blur(14px);
+  border-bottom: 1px solid rgba(18, 18, 18, 0.06);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.brandIcon {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 6px;
+  background: var(--brand-blue);
+  box-shadow: 0 1px 2px rgba(18, 18, 18, 0.08);
+}
+.brandIcon svg {
+  width: 17px;
+  height: 17px;
+  display: block;
+}
+.topbarTitle {
+  font-size: 15px;
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+}
+.topbarRight {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.actTag {
+  font-size: 12px;
+  color: var(--faint);
+}
+.editBtn {
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--body);
+  cursor: pointer;
+  transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+.editBtn:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+.editBtn[aria-pressed="true"] {
+  border-color: var(--blue);
+  color: var(--blue);
+  background: rgba(23, 114, 246, 0.06);
+}
+
+/* ---------------------------------------------------------- 作者信息条 */
+.authorStrip {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 14px;
+}
+.authorLeft {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+.authorName {
+  font-size: 15px;
+  font-weight: 600;
+}
+.authorHandle {
+  font-size: 12px;
+  color: var(--faint);
+}
+.authorBio {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 6px 0 0;
+  width: 100%;
+}
+.authorMeta {
+  font-size: 12px;
+  color: var(--faint);
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  white-space: nowrap;
+}
+.authorMeta b {
+  color: var(--body);
+  font-weight: 600;
+}
+.authorRight {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+/* -------------------------------------- 三栏工作区（每栏各自独立滚动） */
+.workspace {
+  margin-top: 14px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr) 320px;
+  height: calc(100vh - 140px);
+}
+.wsCol {
+  padding: 18px;
+}
+.wsLeft {
+  border-right: 1px solid var(--line);
+  height: 100%;
+  min-height: 0;
+  overflow-y: auto;
+}
+.wsRight {
+  border-left: 1px solid var(--line);
+  padding: 22px;
+  height: 100%;
+  min-height: 0;
+  overflow-y: auto;
+}
+.canvasCol {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+.colLabel {
+  font-size: 12px;
+  color: var(--faint);
+  font-weight: 500;
+  margin: 0 0 10px;
+}
+.sectionGap {
+  margin-top: 22px;
+}
+
+/* ------------------------------------------------- 左栏：领域筛选行 */
+.domainRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--body);
+  cursor: pointer;
+  margin-bottom: 2px;
+  position: relative;
+  transition: background 150ms ease, color 150ms ease;
+}
+.domainRow:hover {
+  background: var(--line-soft);
+}
+.domainRow.active {
+  background: rgba(23, 114, 246, 0.08);
+  color: var(--blue);
+  font-weight: 500;
+}
+.domainRow.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  background: var(--blue);
+  border-radius: 1px;
+}
+.domainLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.domainDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.domainNum {
+  font-size: 11px;
+  color: var(--faint);
+  font-weight: 400;
+}
+.domainRow.active .domainNum {
+  color: var(--blue);
+}
+
+/* ------------------------------------------------ 左栏：阅读路径 + 进度 */
+.pathItem {
+  padding: 10px 2px;
+  border-bottom: 1px solid var(--line-soft);
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+.pathItem:hover {
+  background: var(--line-soft);
+}
+.pathItem:last-child {
+  border-bottom: none;
+}
+.pathHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.pathTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.pathLevel {
+  font-size: 10px;
+  color: var(--faint);
+  font-weight: 400;
+}
+.pathSummary {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 4px 0 8px;
+}
+.pathMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--faint);
+}
+.pathGo {
+  color: var(--faint);
+}
+.pathProgress {
+  margin-top: 6px;
+  height: 2px;
+  background: var(--line-soft);
+  border-radius: 1px;
+  overflow: hidden;
+}
+.pathProgressBar {
+  display: block;
+  height: 100%;
+  background: var(--blue);
+  border-radius: 1px;
+  transition: width 300ms ease;
+}
+
+/* ------------------------------------------- 图谱画布：工具条 / 图例 / 缩放 */
+.canvasToolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--line-soft);
+  gap: 16px;
+}
+.legend {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--muted);
+  transition: opacity 150ms ease;
+}
+.legendItem.dim {
+  opacity: 0.4;
+}
+.legendDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.zoom {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.zoomBtn {
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 4px;
+  font-size: 12px;
+  color: var(--muted);
+  cursor: pointer;
+  line-height: 1;
+  transition: border-color 150ms ease, color 150ms ease;
+}
+.zoomBtn:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+.zoomPct {
+  font-size: 11px;
+  color: var(--faint);
+  padding: 0 6px;
+  min-width: 38px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.stage {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: var(--canvas);
+  background-image: radial-gradient(
+      ellipse 70% 55% at 50% 40%,
+      rgba(23, 114, 246, 0.022),
+      transparent 70%
+    ),
+    radial-gradient(ellipse 50% 40% at 80% 90%, rgba(121, 111, 219, 0.02), transparent 70%);
+}
+.stageSvg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* --------------------------------------------------------- 图谱节点/边 */
+.gNode {
+  cursor: pointer;
+}
+.gBody {
+  transition: opacity 180ms ease, stroke-width 180ms ease;
+}
+.gNode:hover .gBody {
+  stroke-width: 2.2;
+}
+.gLabel {
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  fill: #444;
+  pointer-events: none;
+}
+.gLabel.sel {
+  fill: var(--ink);
+  font-weight: 600;
+}
+.clusterLabel {
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  fill: #8590A6;
+}
+
+/* NEW / UPDATED 角标 */
+.newTag {
+  opacity: 0;
+  transition: opacity 300ms ease;
+  font-size: 9px;
+  font-weight: 500;
+}
+.gNode.newNode.on .newTag {
+  opacity: 1;
+}
+.newTag.updated {
+  fill: var(--updated);
+}
+.updatedTag {
+  font-size: 9px;
+  font-weight: 500;
+  fill: var(--updated);
+  opacity: 0.85;
+}
+
+/* 二次编译：新节点 / 新边 / 光环脉冲 */
+.gNode.newNode {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 450ms ease;
+}
+.gNode.newNode.on {
+  opacity: 1;
+  pointer-events: auto;
+}
+.edgeNew {
+  opacity: 0;
+  transition: opacity 450ms ease;
+}
+.edgeNew.on {
+  opacity: 1;
+}
+.halo {
+  opacity: 0;
+}
+.gNode.newNode.on .halo {
+  opacity: 1;
+  animation: halo-pulse 1.9s ease-out 1 forwards;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+@keyframes halo-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.65;
+  }
+  75% {
+    transform: scale(1.65);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.65);
+    opacity: 0;
+  }
+}
+
+/* ------------------------------------------- 编译期 / 聚焦期氛围态 */
+.stage.compiling .gNode:not(.newNode) {
+  opacity: 0.5;
+}
+.stage.compiling .clusterLabel {
+  opacity: 0.5;
+}
+.stage.focusNew .gNode:not(.newNode) {
+  opacity: 0.18;
+}
+.stage.focusNew .clusterLabel {
+  opacity: 0.3;
+}
+
+/* ------------------------------------------------------ 轻呼吸动画 */
+@keyframes node-breath {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  40% {
+    transform: scale(1.01);
+    opacity: 0.96;
+  }
+  70% {
+    transform: scale(0.995);
+    opacity: 0.94;
+  }
+}
+@keyframes node-breath-hover {
+  0%,
+  100% {
+    transform: scale(1.0025);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.008);
+    opacity: 0.95;
+  }
+}
+@keyframes edge-breath {
+  0%,
+  100% {
+    opacity: 0.68;
+  }
+  50% {
+    opacity: 0.78;
+  }
+}
+.gNode .gBody {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: node-breath 5.5s ease-in-out infinite;
+}
+.gNode:hover .gBody {
+  animation-name: node-breath-hover;
+}
+.stage line:not(.edgeNew) {
+  animation: edge-breath 7s ease-in-out infinite;
+}
+.edgeNew.on {
+  animation: edge-breath 7s ease-in-out 3.2s infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .gNode .gBody,
+  .stage line:not(.edgeNew),
+  .edgeNew.on,
+  .gNode.newNode.on .halo {
+    animation: none;
+  }
+}
+
+/* -------------------------------------- 画布左下角 evo-fab 药丸胶囊 */
+/* 参考稿的 .evo-fab 是 10px 极淡药丸；此处按用户要求放大加亮，
+   属有意偏离，不是回归参考稿的 bug。 */
+.evoFab {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  z-index: 5;
+  background: #fff;
+  border: 1px solid rgba(23, 114, 246, 0.35);
+  border-radius: 999px;
+  padding: 7px 13px;
+  font-size: 12px;
+  color: var(--body);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(23, 114, 246, 0.1);
+  transition: border-color 150ms ease, color 150ms ease;
+}
+.evoFab:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+.evoIco {
+  font-size: 13px;
+}
+/* 胶囊主文案「知识演变」：比两侧的区间/图标更重，形成主次层级。 */
+.evoLabel {
+  color: var(--ink);
+  font-weight: 600;
+}
+.evoRange {
+  color: var(--faint);
+}
+
+/* ------------------------------------------------ 右栏：概念详情卡 */
+.insBreadcrumb {
+  font-size: 12px;
+  color: var(--faint);
+}
+.insTitle {
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 6px 0 0;
+  letter-spacing: -0.01em;
+}
+.insSummary {
+  margin-top: 16px;
+  background: #f8fafd;
+  border-left: 2px solid var(--blue);
+  border-radius: 0 6px 6px 0;
+  padding: 10px 14px;
+}
+.insSummaryLabel {
+  font-size: 11px;
+  color: var(--blue);
+  font-weight: 500;
+  display: block;
+  margin-bottom: 6px;
+}
+.insSummaryText {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--body);
+}
+.insBlock {
+  margin-top: 24px;
+}
+.insBlockHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 12px;
+}
+.insBlockTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.insBlockCount {
+  font-size: 11px;
+  color: var(--faint);
+}
+
+/* 观点演变时间线 */
+.tl {
+  margin-left: 2px;
+  border-left: 1px solid var(--line);
+  padding-left: 14px;
+}
+.tlItem {
+  position: relative;
+  padding: 6px 0 12px;
+}
+.tlItem::before {
+  content: "";
+  position: absolute;
+  left: -17.5px;
+  top: 11px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #d8dce3;
+}
+.tlItem.hot::before {
+  background: var(--blue);
+}
+.tlDate {
+  font-size: 11px;
+  color: var(--faint);
+}
+.tlTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 3px 0;
+}
+.tlSummary {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+/* 关系网络 */
+.relRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 2px;
+  border-bottom: 1px solid var(--line-soft);
+  font-size: 13px;
+  color: var(--body);
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+.relRow:hover {
+  background: #f8fafd;
+}
+.relRow b {
+  color: var(--ink);
+  font-weight: 600;
+}
+.relKind {
+  font-size: 11px;
+  color: var(--faint);
+  font-weight: 400;
+}
+
+/* 原文证据 */
+.ev {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+.evSrc {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+.evGo {
+  font-size: 11px;
+  color: var(--blue);
+  font-weight: 400;
+  opacity: 0;
+  transition: opacity 150ms ease;
+  white-space: nowrap;
+}
+.ev:hover .evGo {
+  opacity: 1;
+}
+.evQuote {
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--body);
+}
+
+/* ------------------------------------------------ 二次编译状态条 */
+.recompileBar {
+  margin-top: 14px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px 18px;
+  min-height: 54px;
+  box-sizing: border-box;
+}
+.rcIdle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+.rcDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--blue);
+  flex-shrink: 0;
+  box-shadow: 0 0 0 4px rgba(23, 114, 246, 0.12);
+}
+.rcIdleText {
+  font-size: 13px;
+  color: var(--body);
+}
+.rcIdleText b {
+  color: var(--ink);
+}
+.rcBtn {
+  margin-left: auto;
+  border: none;
+  background: var(--blue);
+  color: #fff;
+  border-radius: 6px;
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+.rcBtn:hover {
+  background: var(--blue-hover);
+}
+.rcBtn:disabled {
+  background: var(--btn-line);
+  cursor: default;
+}
+
+.rcRunning {
+  width: 100%;
+}
+.rcStages {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.rcStage {
+  font-size: 12px;
+  color: var(--faint);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+.rcStageNum {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 500;
+  font-style: normal;
+  transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+.rcStage.on {
+  color: var(--ink);
+  font-weight: 600;
+}
+.rcStage.on .rcStageNum {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: #fff;
+}
+.rcStage.done {
+  color: var(--updated);
+}
+.rcStage.done .rcStageNum {
+  background: #e6f4e6;
+  border-color: #b7dfb7;
+  color: var(--updated);
+}
+.rcStageLink {
+  width: 20px;
+  height: 1px;
+  background: var(--line);
+  flex-shrink: 0;
+}
+.rcStageLink.done {
+  background: #b7dfb7;
+}
+.rcCounts {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.rcProgress {
+  margin-top: 10px;
+  height: 3px;
+  background: var(--line-soft);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.rcProgressBar {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--blue);
+  border-radius: 2px;
+  transition: width 500ms ease;
+}
+
+.rcDone {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.rcDoneOk {
+  color: var(--updated);
+  font-weight: 700;
+  font-size: 15px;
+}
+.rcDoneSum {
+  font-size: 13px;
+  color: var(--ink);
+}
+.rcDoneSum b {
+  color: var(--blue);
+  font-weight: 700;
+}
+.rcDoneTitles {
+  font-size: 11px;
+  color: var(--faint);
+  width: 100%;
+  line-height: 1.65;
+  margin-top: 2px;
+}
+.rcDoneTitles b {
+  color: var(--body);
+  font-weight: 500;
+}
+.rcGhost {
+  margin-left: auto;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--body);
+  border-radius: 6px;
+  padding: 7px 14px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color 150ms ease, color 150ms ease;
+}
+.rcGhost:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+.rcGhost.primary {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: #fff;
+}
+.rcGhost.primary:hover {
+  background: var(--blue-hover);
+}
+
+/* ------------------------------------------------------------ 编辑模式 */
+.editBar {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  background: rgba(23, 114, 246, 0.06);
+  border: 1px solid rgba(23, 114, 246, 0.18);
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 13px;
+  color: var(--body);
+}
+.editBarLabel {
+  font-weight: 600;
+  color: var(--ink);
+}
+.editBarHint {
+  font-size: 12px;
+  color: var(--muted);
+}
+.editActions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.editPrimary {
+  border: 1px solid var(--blue);
+  background: var(--blue);
+  color: #fff;
+  border-radius: 6px;
+  padding: 7px 16px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 150ms ease, border-color 150ms ease;
+}
+.editPrimary:hover {
+  background: var(--blue-hover);
+  border-color: var(--blue-hover);
+}
+.editPrimary:disabled {
+  background: var(--btn-line);
+  border-color: var(--btn-line);
+  cursor: default;
+}
+.editGhost {
+  border: 1px solid var(--btn-line);
+  background: #fff;
+  color: var(--body);
+  border-radius: 6px;
+  padding: 7px 16px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color 150ms ease, color 150ms ease;
+}
+.editGhost:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+.editCard {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  padding: 16px 18px;
+}
+.editField + .editField {
+  margin-top: 14px;
+}
+.editFieldLabel {
+  display: block;
+  font-size: 11px;
+  color: var(--faint);
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+.editInput,
+.editTextarea,
+.editSelect {
+  width: 100%;
+  border: 1px solid var(--btn-line);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 13px;
+  color: var(--ink);
+  font-family: inherit;
+  background: #fff;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+.editTextarea {
+  min-height: 84px;
+  line-height: 1.7;
+  resize: vertical;
+}
+.editInput:focus,
+.editTextarea:focus,
+.editSelect:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(23, 114, 246, 0.12);
+}
+.editDirty {
+  font-size: 11px;
+  color: #b5893a;
+}
+.editSaved {
+  font-size: 11px;
+  color: var(--updated);
+}
+
+/* ------------------------------------------------- <lg（1024）堆叠降级 */
+@media (max-width: 1023px) {
+  .shell {
+    padding: 0 16px;
+  }
+  .workspace {
+    grid-template-columns: minmax(0, 1fr);
+    height: auto;
+  }
+  .wsLeft,
+  .wsRight {
+    height: auto;
+    max-height: none;
+    overflow-y: visible;
+  }
+  .wsLeft {
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+  }
+  .wsRight {
+    border-left: none;
+    border-top: 1px solid var(--line);
+  }
+  .canvasCol {
+    height: auto;
+  }
+  .stage {
+    height: 60vh;
+    min-height: 360px;
+    flex: none;
+  }
+  .authorStrip {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .authorMeta {
+    white-space: normal;
+  }
+  .rcCounts {
+    margin-left: 0;
+  }
+}
+
+/* ------------------------------------------------------------ 移动端 */
+@media (max-width: 640px) {
+  .shell {
+    padding: 0 12px;
+  }
+  .topbar {
+    height: 52px;
+    gap: 10px;
+  }
+  .topbarRight {
+    gap: 10px;
+  }
+  .actTag {
+    display: none;
+  }
+  .authorStrip {
+    padding: 12px 14px;
+  }
+  .workspace {
+    border-radius: 8px;
+  }
+  .wsCol {
+    padding: 14px;
+  }
+  .wsRight {
+    padding: 16px;
+  }
+  .insTitle {
+    font-size: 22px;
+  }
+  .canvasToolbar {
+    padding: 10px 12px;
+    flex-wrap: wrap;
+  }
+  .legend {
+    gap: 10px;
+  }
+  .stage {
+    height: 52vh;
+    min-height: 300px;
+  }
+  .recompileBar {
+    padding: 10px 12px;
+  }
+  .rcBtn {
+    margin-left: 0;
+  }
+  .rcStages {
+    gap: 6px;
+  }
+  .rcStageLink {
+    width: 10px;
+  }
+  .rcGhost {
+    margin-left: 0;
+  }
+  .editBar {
+    padding: 10px 12px;
+  }
+  .editActions {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+/* ============================================================================
+ * 批次 6：非后端交互对齐参考稿时新增的局部类。
+ *
+ * 只做「补参考稿没有对应类」的部分（画布外框、左下角回放面板、移动抽屉），
+ * 以及把原先散落在组件里的 Tailwind/全局工具类收进本地类。
+ * token 一律沿用上面那套（blue、paper、ink、body、muted、faint、line、line-soft），
+ * 不引入任何 Tailwind 颜色。
+ * ==========================================================================*/
+
+/* ------------------------------------------------- 中栏画布外框（撑满栏高） */
+/* 参考稿里中栏就是 .canvas-col 本体的 flex 列：工具条 + .stage(flex:1)。
+   组件根不再是浮在栏里的卡片，所以这里不带边框/阴影，由 .workspace 提供。 */
+.canvasPanel {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #fff;
+}
+/* ------------------------------------------------------- 边选中后的证据块 */
+.edgeHit {
+  cursor: pointer;
+}
+.edgePanel {
+  border-top: 1px solid var(--line-soft);
+  padding: 12px 16px;
+}
+.edgePanelHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.edgePanelTitle {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.edgeKind {
+  margin-right: 8px;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--faint);
+}
+.edgeClose {
+  border: none;
+  background: none;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--faint);
+  cursor: pointer;
+  transition: color 150ms ease;
+}
+.edgeClose:hover {
+  color: var(--blue);
+}
+.edgeList {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+}
+.edgeQuote {
+  border-radius: 6px;
+  background: var(--paper);
+  padding: 8px 12px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--body);
+}
+.edgeEmpty {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: var(--faint);
+}
+
+/* --------------------------------- 画布左下角的回放浮层（.stage 内部定位） */
+.evoWrap {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  max-width: calc(100% - 24px);
+}
+/* .evoFab 自己带 position:absolute（参考稿形态），放进浮层后要退回文档流。 */
+.evoFabInline {
+  position: static;
+}
+.evoPanel {
+  width: 360px;
+  max-width: 100%;
+  text-align: left;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px 14px;
+  box-shadow: 0 6px 20px rgba(18, 18, 18, 0.08);
+}
+.evoPanelHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.evoEyebrow {
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--faint);
+}
+.evoClose {
+  flex-shrink: 0;
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: border-color 150ms ease, color 150ms ease;
+}
+.evoClose:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+.evoMeta {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.evoMono {
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 10px;
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+}
+.evoSlider {
+  margin-top: 6px;
+  width: 100%;
+  accent-color: var(--blue);
+}
+.evoCurrent {
+  margin: 4px 0 0;
+  max-width: 100%;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.evoStat {
+  margin: 2px 0 0;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 10px;
+  color: var(--faint);
+}
+
+/* ------------------------------------------------ 右栏概念档案的局部样式 */
+.card {
+  text-align: left;
+}
+.cardHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.cardBreadcrumb {
+  min-width: 0;
+}
+.cardAliases {
+  margin: 4px 0 0;
+  font-size: 11px;
+  color: var(--faint);
+}
+.cardEmpty {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--faint);
+}
+.relText {
+  min-width: 0;
+}
+.evTitle {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tlTitleLink {
+  display: block;
+}
+.latexFull {
+  width: 100%;
+}
+/* 编辑条下面那行「本地校对态」说明与上面的操作行的间距。 */
+.editHintGap {
+  margin-top: 8px;
+}
+/* LatexText 的外层 span：等价于原来的 inline-block + max-w-full + 公式横向可滚。 */
+.latex {
+  display: inline-block;
+  max-width: 100%;
+  vertical-align: baseline;
+}
+.latex :global(mjx-container) {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* ------------------------------------------------ <lg 的移动端概念抽屉 */
+.drawer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+}
+.drawerScrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(18, 18, 18, 0.3);
+}
+.drawerPanel {
+  position: relative;
+  max-height: 72vh;
+  overflow-y: auto;
+  border: 1px solid var(--line);
+  border-bottom: none;
+  border-radius: 16px 16px 0 0;
+  background: #fff;
+  padding: 16px;
+}
+@media (min-width: 1024px) {
+  .drawer {
+    display: none;
+  }
+}

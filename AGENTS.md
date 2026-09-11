@@ -31,7 +31,7 @@ Before finishing any code task, run:
 
 Compiler-core changes must also run:
 
-- `npm run compile:demo`
+- the pipeline compile check, using the scratch-copy recipe in README → 「检查」: compile into a throwaway `DATA_DIR` (`.tmp-check-demo`) and delete it afterwards. This check exists to prove the pipeline still runs, not to regenerate the baseline — so never run `compile:demo` against the committed `data/demo`: the agent-maintained baseline artifact cannot be reproduced by the mock provider, a bare run is refused by the overwrite guard (exit 1), and `--force` is the overwrite itself. Never "fix" the refusal by adding `--force`.
 - `npm run validate:data`
 
 Integration work must run all of the above plus:

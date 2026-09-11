@@ -1,0 +1,138 @@
+[
+  {
+    "id": "a01",
+    "title": "样本空间：概率的地基",
+    "slug": "sample-space",
+    "publishedAt": "2022-03-12",
+    "sourceUrl": "https://example.com/bayes-lab/sample-space",
+    "content": "概率论的第一件事，是把随机试验所有可能的结果写成一个集合，这就是样本空间 $\\Omega$。事件不过是 $\\Omega$ 的子集，而概率 $P$ 是定义在这些子集上的测度。把样本空间写清楚，很多看似绕人的问题会立刻变得可算：条件概率要在这个集合上重新划定范围，随机变量则是把结果映射成数。可以说，后面每一个概念都长在这块地基上。"
+  },
+  {
+    "id": "a02",
+    "title": "条件概率：信息如何改变判断",
+    "slug": "conditional-probability",
+    "publishedAt": "2022-05-08",
+    "sourceUrl": "https://example.com/bayes-lab/conditional-probability",
+    "content": "条件概率 $P(A\\mid B)$ 回答的是：当已知 $B$ 发生，$A$ 的可能性该如何重估，它的定义是 $P(A\\mid B)=\\frac{P(A\\cap B)}{P(B)}$。它把样本空间从整个 $\\Omega$ 收缩到 $B$，再在收缩后的范围内重新计算比例。这个动作看起来只是除法，却是贝叶斯定理和独立性共同的定义基础。现实中的判断大多发生在获得信息之后，所以条件概率才是概率论真正开始工作的地方。"
+  },
+  {
+    "id": "a03",
+    "title": "独立性：当条件不再改变概率",
+    "slug": "independence",
+    "publishedAt": "2022-06-26",
+    "sourceUrl": "https://example.com/bayes-lab/independence",
+    "content": "如果知道 $B$ 是否发生，都不会改变 $A$ 的概率，我们就说 $A$ 与 $B$ 独立，记作 $P(A\\mid B)=P(A)$。独立性是对条件概率的一次坍缩：信息不再有价值。它让联合概率可以写成乘积 $P(A\\cap B)=P(A)P(B)$，也让大量计算变得可行。但要小心，独立与互斥是两回事，前者说的是信息无关，后者说的是不能同时发生。"
+  },
+  {
+    "id": "a04",
+    "title": "贝叶斯定理：从结果反推原因",
+    "slug": "bayes-theorem",
+    "publishedAt": "2022-08-30",
+    "sourceUrl": "https://example.com/bayes-lab/bayes-theorem",
+    "content": "贝叶斯定理把 $P(A\\mid B)$ 与 $P(B\\mid A)$ 联系起来：$P(A\\mid B)=\\frac{P(B\\mid A)P(A)}{P(B)}$。这条公式只是条件概率定义的直接推论，却给出了从结果反推原因的通用方法。先验 $P(A)$ 是看到数据前的判断，后验 $P(A\\mid B)$ 是看到数据后的判断，两者的差别正是数据带来的信息量。统计推断的两条路线之一由此展开。"
+  },
+  {
+    "id": "a05",
+    "title": "随机变量：把结果映射成数",
+    "slug": "random-variable",
+    "publishedAt": "2022-11-13",
+    "sourceUrl": "https://example.com/bayes-lab/random-variable",
+    "content": "随机变量 $X$ 是一个从样本空间到实数的函数，它把语言描述的结果翻译成可以计算的数。有了这层映射，我们才能谈论期望、方差与分布函数，而不是对着一堆文字结果无从下手。离散与连续是最常见的两种类型，区别只在于取值是否可数：一个用概率质量函数 $p(x)$，一个用密度函数 $f(x)$。把随机现象写成函数，是为了让概率问题回到可以求和的数学里。"
+  },
+  {
+    "id": "a06",
+    "title": "期望：概率加权的平均值",
+    "slug": "expectation",
+    "publishedAt": "2023-01-07",
+    "sourceUrl": "https://example.com/bayes-lab/expectation",
+    "content": "期望是随机变量取值的概率加权平均：$\\mathbb{E}[X]=\\sum_x x\\,p(x)$，连续情形则写成积分 $\\int x f(x)\\,dx$。它不是最可能出现的值，而是长期重复试验下的平均结果，因此天然与频率的稳定性相连。期望还具有线性性，$\\mathbb{E}[aX+bY]=a\\mathbb{E}[X]+b\\mathbb{E}[Y]$，这条性质不要求变量独立，是它最好用的地方。"
+  },
+  {
+    "id": "a07",
+    "title": "方差：不确定性的度量",
+    "slug": "variance",
+    "publishedAt": "2023-03-19",
+    "sourceUrl": "https://example.com/bayes-lab/variance",
+    "content": "方差刻画随机变量偏离期望的程度：$\\operatorname{Var}(X)=\\mathbb{E}[(X-\\mathbb{E}[X])^2]$，它的平方根是标准差，与原变量同量纲。期望告诉我们中心在哪里，方差告诉我们这个中心有多可信。方差不能直接相加，但独立时 $\\operatorname{Var}(X+Y)=\\operatorname{Var}(X)+\\operatorname{Var}(Y)$ 成立，这条规则是后面大数定律和中心极限定理的起点。"
+  },
+  {
+    "id": "a08",
+    "title": "常见分布：从伯努利到正态",
+    "slug": "common-distributions",
+    "publishedAt": "2023-05-28",
+    "sourceUrl": "https://example.com/bayes-lab/common-distributions",
+    "content": "常见分布是概率论留给统计推断的工具箱，它们把随机变量的取值规律压缩成少数几个参数。常见分布的期望与方差各有含义，记住参数代表什么比背公式更有用：二项分布 $\\mathrm{Binomial}(n,p)$ 的期望是 $np$，泊松分布 $\\mathrm{Poisson}(\\lambda)$ 的期望与方差同为 $\\lambda$。在这些常见分布中，正态分布的地位尤其特殊，因为中心极限定理为它兜底，所以它几乎出现在每一处近似计算中。"
+  },
+  {
+    "id": "a09",
+    "title": "联合分布：两个变量一起看",
+    "slug": "joint-distribution",
+    "publishedAt": "2023-08-06",
+    "sourceUrl": "https://example.com/bayes-lab/joint-distribution",
+    "content": "联合分布描述多个随机变量同时取值的方式：$F(x,y)=P(X\\le x,\\,Y\\le y)$。它比每个变量各自的边缘分布多出一层信息，也就是两个变量之间有没有关联。只看边缘分布而忽略联合分布，就会掉进辛普森悖论的陷阱。协方差和相关，正是从联合分布里提取出来的两个数字摘要。两个变量各自听话，并不代表合起来听话，完整描述必须回到联合分布。"
+  },
+  {
+    "id": "a10",
+    "title": "协方差与相关：变量之间的联动",
+    "slug": "covariance-and-correlation",
+    "publishedAt": "2023-10-22",
+    "sourceUrl": "https://example.com/bayes-lab/covariance-and-correlation",
+    "content": "协方差定义为 $\\operatorname{Cov}(X,Y)=\\mathbb{E}[(X-\\mathbb{E}[X])(Y-\\mathbb{E}[Y])]$，它衡量两个变量是否同向偏离各自的期望。取值大小随量纲变化，因此常用相关系数 $\\rho=\\frac{\\operatorname{Cov}(X,Y)}{\\sigma_X\\sigma_Y}$ 归一化。把其中一个变量换成它自己，协方差就退化成方差。相关只说明联动，不说明因果，两个变量也可能因为第三个共同原因而同时变化。"
+  },
+  {
+    "id": "a11",
+    "title": "大数定律：频率为什么稳定",
+    "slug": "law-of-large-numbers",
+    "publishedAt": "2023-12-30",
+    "sourceUrl": "https://example.com/bayes-lab/law-of-large-numbers",
+    "content": "大数定律说明，当样本量 $n$ 增大时，样本均值 $\\bar{X}_n=\\frac{1}{n}\\sum_{i=1}^n X_i$ 会依概率收敛到总体期望 $\\mu$。这正是频率稳定于概率的严格表述，也是用样本估计总体的合法性来源。它只保证收敛，不说明收敛速度，也不保证小样本下误差可控，因此还需要中心极限定理来补充误差的分布形态。"
+  },
+  {
+    "id": "a12",
+    "title": "中心极限定理：正态性的来源",
+    "slug": "central-limit-theorem",
+    "publishedAt": "2024-03-16",
+    "sourceUrl": "https://example.com/bayes-lab/central-limit-theorem",
+    "content": "中心极限定理指出，大量独立同分布随机变量之和经过标准化后趋近标准正态分布：$\\frac{\\bar{X}_n-\\mu}{\\sigma/\\sqrt{n}}\\Rightarrow N(0,1)$。大数定律告诉我们均值会稳定到期望，中心极限定理进一步说明波动有多大，它也是置信区间与假设检验采用正态近似的依据。样本量越大这个近似越可靠，经验上 $n\\ge 30$ 就常被当作分界线。"
+  },
+  {
+    "id": "a13",
+    "title": "似然函数：数据反过来评价参数",
+    "slug": "likelihood-function",
+    "publishedAt": "2024-05-25",
+    "sourceUrl": "https://example.com/bayes-lab/likelihood-function",
+    "content": "似然函数把观测数据的联合概率看成参数的函数：$L(\\theta;x)=P(x\\mid\\theta)$，数据已经固定，变化的是 $\\theta$。它不是参数的概率分布，因此对 $\\theta$ 求和并不等于一。似然函数也是贝叶斯推断的起点，后验正比于似然乘以先验。理解这一反转视角，是区分频率学派与贝叶斯学派的关键一步。"
+  },
+  {
+    "id": "a14",
+    "title": "最大似然估计：让数据最可能的参数",
+    "slug": "maximum-likelihood-estimation",
+    "publishedAt": "2024-08-04",
+    "sourceUrl": "https://example.com/bayes-lab/maximum-likelihood-estimation",
+    "content": "最大似然估计选择让观测数据出现概率最大的参数：$\\hat{\\theta}=\\arg\\max_\\theta L(\\theta)$。只要写得出常见分布的似然函数，最大似然估计就退化成一次求导。因为连乘容易下溢，实际计算通常取对数，把乘积变成求和 $\\ell(\\theta)=\\sum_i \\log p(x_i\\mid\\theta)$。最大似然估计在小样本下可能略有偏差，但样本量增大时会趋于无偏且渐近正态，置信区间和假设检验都建立在这条性质上。"
+  },
+  {
+    "id": "a15",
+    "title": "置信区间：估计的不确定性范围",
+    "slug": "confidence-interval",
+    "publishedAt": "2024-10-19",
+    "sourceUrl": "https://example.com/bayes-lab/confidence-interval",
+    "content": "置信区间把点估计扩展成一个范围：$\\hat{\\theta}\\pm z_{1-\\alpha/2}\\cdot\\operatorname{SE}(\\hat{\\theta})$。它的频率学派含义是，重复抽样构造出的区间有 $1-\\alpha$ 的比例会覆盖真值，而不是说参数落在本次区间内的概率是 $1-\\alpha$。区间宽度同时受样本量、置信水平和数据波动影响，因此窄区间才是信息量的体现。"
+  },
+  {
+    "id": "a16",
+    "title": "假设检验：判断差异是否真实",
+    "slug": "hypothesis-testing",
+    "publishedAt": "2024-12-08",
+    "sourceUrl": "https://example.com/bayes-lab/hypothesis-testing",
+    "content": "假设检验先设定原假设 $H_0$，再计算在 $H_0$ 成立时观测到当前数据（或更极端数据）的概率，也就是 p 值。p 值小并不等于效应大，它同时受效应量和样本量影响。假设检验与置信区间其实是一枚硬币的两面：区间不覆盖原假设给出的取值，检验就会在同样的显著性水平下拒绝它。把显著性水平定在 $\\alpha=0.05$ 只是约定俗成的门槛，而不是自然规律。"
+  },
+  {
+    "id": "a17",
+    "title": "贝叶斯推断：先验与后验的更新",
+    "slug": "bayesian-inference",
+    "publishedAt": "2025-01-18",
+    "sourceUrl": "https://example.com/bayes-lab/bayesian-inference",
+    "content": "贝叶斯推断把参数也看作随机变量，用先验 $p(\\theta)$ 表达初始判断，再用数据通过贝叶斯定理得到后验 $p(\\theta\\mid x)\\propto p(x\\mid\\theta)p(\\theta)$。贝叶斯推断并不否定最大似然估计，只是把参数的不确定性也写进模型。由此得到的可信区间可以直接解释为参数的概率范围，这是它与置信区间最直观的差别；代价是先验的选择需要交代。"
+  }
+]

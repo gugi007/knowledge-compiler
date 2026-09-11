@@ -1,0 +1,852 @@
+/**
+ * 编译台局部调色板与组件样式（知乎风参考稿 compiler.html 的 1:1 移植）。
+ *
+ * OWNER: compiler-ui-agent
+ *
+ * 设计决策：
+ * - 参考稿 :root 的 token 全部收进 .root 模块作用域，不进 globals.css，
+ *   避免污染其它幕（先例见 app/login/login.module.css）。
+ * - 顶栏 / 面板 / stepper / chips / 关系卡 / 路径行 / 底栏 / tooltip 的
+ *   外观全部来自参考稿样式表；Tailwind 只用于零散布局。
+ * - 参考稿没有的错误横幅是本模块的自增样式（同一视觉语言内设计）。
+ */
+
+.root {
+  --bg: #F7F8FA;
+  --paper: #FFFFFF;
+  --panel-hover: #F8FAFD;
+  --chip-hover: #F6F9FE;
+  --line: #EBEBEB;
+  --line-soft: #F0F2F5;
+  --border-btn: #D3D3D3;
+  --text: #121212;
+  --body: #444444;
+  --muted: #646464;
+  --weak: #8590A6;
+  --faint: #BFBFBF;
+  --blue: #1772F6;
+  --blue-hover: #0F65D8;
+  --blue-line: rgba(23, 114, 246, .25);
+  --mono: ui-monospace, "SF Mono", "Cascadia Code", Consolas, monospace;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+
+  background: var(--bg);
+  color: var(--body);
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.container {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.main {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.mainInner {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* ============ 顶栏：白底 + 底发丝线 ============ */
+.topbar {
+  flex: none;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+}
+
+.topbarInner {
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.topbarLeft {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--faint);
+  text-decoration: none;
+  font-size: 13px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: color .18s;
+}
+
+.backLink:hover {
+  color: var(--muted);
+}
+
+.backLink svg {
+  width: 14px;
+  height: 14px;
+}
+
+.brandLockup {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.brandIcon {
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  flex: none;
+  background: #0084ff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brandIcon svg {
+  width: 17px;
+  height: 17px;
+  display: block;
+}
+
+.brand {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.005em;
+}
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .1em;
+  color: var(--faint);
+}
+
+/* ============ 通用按钮：知乎式克制 ============ */
+.btn {
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--body);
+  padding: 8px 16px;
+  border-radius: 7px;
+  cursor: pointer;
+  border: 1px solid var(--border-btn);
+  background: var(--paper);
+  transition: background .18s, border-color .18s, color .18s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn:hover {
+  background: #F6F6F6;
+}
+
+/* 主按钮：与 .btn 在 className 里叠加使用 */
+.btnPrimary {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: #fff;
+  gap: 7px;
+  padding: 9px 18px;
+}
+
+.btnPrimary:hover {
+  background: var(--blue-hover);
+  border-color: var(--blue-hover);
+}
+
+.btnPrimary svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* ============ 完成页 hero ============ */
+.hero {
+  padding: 30px 0 18px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.heroLeft {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.doneBadge {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  flex: none;
+  margin-top: 3px;
+  background: var(--blue);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.doneBadge svg {
+  width: 13px;
+  height: 13px;
+}
+
+.heroTitle {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.heroSub {
+  color: var(--muted);
+  margin-top: 5px;
+  font-size: 14px;
+}
+
+.heroActions {
+  display: flex;
+  gap: 10px;
+  flex: none;
+  flex-wrap: wrap;
+}
+
+/* 统计：发丝线一排 */
+.stats {
+  display: flex;
+  align-items: baseline;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding: 0 0 16px;
+}
+
+.stat {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+}
+
+.stat + .stat {
+  padding-left: 24px;
+  border-left: 1px solid var(--line);
+}
+
+.statNum {
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.statLbl {
+  font-size: 11px;
+  color: var(--faint);
+}
+
+/* ============ 白面板 ============ */
+.panel {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* 完成页：三栏工作区（与 .panel 叠加使用） */
+.workspace {
+  display: grid;
+  grid-template-columns: 230px 1fr 250px;
+}
+
+.workspace > * {
+  padding: 20px 22px;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.colMid {
+  border-left: 1px solid var(--line-soft);
+  border-right: 1px solid var(--line-soft);
+}
+
+.colLabel {
+  font-size: 12px;
+  color: var(--weak);
+  margin-bottom: 14px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.colLabelCnt {
+  color: var(--faint);
+}
+
+/* 概念 chips：知乎标签风 */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  color: var(--body);
+  padding: 5px 11px;
+  border-radius: 6px;
+  background: var(--paper);
+  border: 1px solid var(--border-btn);
+  transition: background .18s, border-color .18s;
+}
+
+.chip:hover {
+  background: var(--chip-hover);
+  border-color: rgba(23, 114, 246, .35);
+}
+
+.chipDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--blue);
+  flex: none;
+}
+
+.chipN {
+  font-size: 11px;
+  color: var(--faint);
+}
+
+.conceptNote {
+  margin-top: 16px;
+  font-size: 12.5px;
+  color: var(--weak);
+  line-height: 1.7;
+}
+
+/* 待确认概念行（低置信度） */
+.flagList {
+  margin-top: 8px;
+  display: grid;
+  gap: 6px;
+}
+
+.flagRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 6px 10px;
+}
+
+.flagName {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.flagMeta {
+  flex: none;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .06em;
+  color: var(--faint);
+  text-transform: uppercase;
+}
+
+.flagConf {
+  flex: none;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: #b45309;
+}
+
+/* 关系：轻卡片 */
+.relCard {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 11px 14px;
+  margin-bottom: 8px;
+  transition: background .18s;
+}
+
+.relCard:hover {
+  background: #F6F6F6;
+}
+
+.relTitle {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.relMeta {
+  font-size: 11.5px;
+  color: var(--weak);
+  margin-top: 3px;
+}
+
+.relQuote {
+  margin-top: 8px;
+  padding-left: 10px;
+  border-left: 2px solid var(--blue-line);
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.65;
+}
+
+.expandBtn {
+  display: block;
+  margin: 6px auto 0;
+  background: none;
+  border: none;
+  color: var(--weak);
+  font: inherit;
+  font-size: 12.5px;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: color .18s, background .18s;
+}
+
+.expandBtn:hover {
+  color: var(--text);
+  background: #F6F6F6;
+}
+
+/* 阅读路径：无框行 */
+.pathRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 8px;
+  margin: 0 -8px;
+  border: none;
+  background: none;
+  font: inherit;
+  text-align: left;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background .18s;
+}
+
+.pathRow:hover {
+  background: #F6F6F6;
+}
+
+/* 参考稿的 .t / .m 是块级 div（标题、元信息各占一行）；
+   产物里是 <button> 内的 span，必须显式 block 才能还原两行结构。 */
+.pathTitle {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.pathMeta {
+  display: block;
+  font-size: 11.5px;
+  color: var(--weak);
+  margin-top: 2px;
+}
+
+.pathChev {
+  width: 14px;
+  height: 14px;
+  color: var(--weak);
+  flex: none;
+  transition: transform .18s;
+}
+
+.pathChevOpen {
+  transform: rotate(90deg);
+}
+
+.pathSummary {
+  margin: -4px -8px 0;
+  padding: 0 8px 10px;
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.7;
+}
+
+/* ============ 底栏 ============ */
+.bottombar {
+  flex: none;
+  margin-top: auto;
+  padding: 16px 0 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* 只有右侧元信息时的底栏（与 .bottombar 叠加使用） */
+.bottombarEnd {
+  justify-content: flex-end;
+}
+
+.footMeta {
+  font-size: 12px;
+  color: var(--weak);
+}
+
+/* ============ 编译中：两栏面板 ============ */
+.compileHead {
+  padding: 30px 0 20px;
+}
+
+.compileTitle {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.01em;
+  margin-top: 6px;
+}
+
+.compileSub {
+  color: var(--muted);
+  margin-top: 6px;
+  font-size: 14px;
+}
+
+.compileGrid {
+  display: grid;
+  grid-template-columns: 58% 1fr;
+}
+
+.compileLeft {
+  padding: 28px 32px;
+  border-right: 1px solid var(--line-soft);
+}
+
+.compileRight {
+  padding: 28px 32px;
+}
+
+/* 状态行 */
+.statusLine {
+  margin-top: 20px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  position: relative;
+}
+
+.statusPct {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.statusWhat {
+  color: var(--muted);
+  font-size: 13.5px;
+}
+
+.statusTooltip {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 8px);
+  background: #1f1f1f;
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.5;
+  padding: 8px 12px;
+  border-radius: 6px;
+  width: 260px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .18s;
+  z-index: 10;
+}
+
+.statusLine:hover .statusTooltip {
+  opacity: 1;
+}
+
+/* 进度条：3px */
+.progress {
+  width: 560px;
+  max-width: 100%;
+  height: 3px;
+  background: var(--line);
+  border-radius: 2px;
+  margin-top: 14px;
+  overflow: hidden;
+}
+
+.progressFill {
+  display: block;
+  height: 100%;
+  background: var(--blue);
+}
+
+/* Stepper：统一知乎蓝 */
+.stepper {
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+}
+
+.step {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  column-gap: 14px;
+}
+
+.stepNode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stepDot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--faint);
+  border: 1.5px solid var(--line);
+  background: var(--paper);
+  transition: all .18s ease;
+}
+
+.stepLine {
+  flex: 1;
+  width: 1.5px;
+  background: var(--line);
+  margin: 4px 0;
+  min-height: 16px;
+  transition: background .18s ease;
+}
+
+.step:last-child .stepLine {
+  display: none;
+}
+
+.stepText {
+  padding: 2px 0 20px;
+  color: var(--faint);
+  transition: color .18s ease;
+}
+
+.step:last-child .stepText {
+  padding-bottom: 0;
+}
+
+.stepName {
+  font-size: 14px;
+}
+
+.stepDot svg {
+  width: 11px;
+  height: 11px;
+}
+
+.stepDone .stepDot {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: #fff;
+}
+
+.stepDone .stepLine {
+  background: var(--blue);
+}
+
+.stepActive .stepDot {
+  border-color: var(--blue);
+  color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(23, 114, 246, .08);
+}
+
+.stepActive .stepText {
+  color: var(--text);
+}
+
+.stepActive .stepName {
+  font-weight: 600;
+}
+
+/* 右栏实时状态：行式，无卡片 */
+.statRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.statRow:last-of-type {
+  border-bottom: none;
+}
+
+.statRowK {
+  color: var(--muted);
+  font-size: 13.5px;
+}
+
+.statRowV {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.statRowOf {
+  color: var(--faint);
+  font-weight: 400;
+}
+
+/* 「最近活动」标签（与 .colLabel 叠加使用） */
+.logLabel {
+  margin-top: 24px;
+}
+
+.log {
+  margin-top: 6px;
+}
+
+.logLine {
+  font-size: 13px;
+  color: var(--weak);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 5px 0;
+}
+
+.logTime {
+  font-family: var(--mono);
+  font-size: 12px;
+  flex: none;
+  width: 42px;
+  color: var(--faint);
+}
+
+.logMark {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex: none;
+  background: transparent;
+}
+
+.logLineNow {
+  color: var(--body);
+}
+
+.logLineNow .logMark {
+  background: var(--blue);
+}
+
+/* 演示模式一行 */
+.demoLine {
+  flex: none;
+  padding: 10px 0 22px;
+  font-size: 12px;
+  color: var(--faint);
+}
+
+/* idle 说明段（参考稿无 idle 态，同一视觉语言内自增） */
+.idleNote {
+  margin-top: 18px;
+  font-size: 13px;
+  color: var(--weak);
+  line-height: 1.7;
+  max-width: 460px;
+}
+
+.startRow {
+  margin-top: 16px;
+}
+
+/* 错误横幅（参考稿无 error 态，同一视觉语言内自增） */
+.errorBox {
+  margin-top: 18px;
+  border: 1px solid #f3c2c2;
+  background: #fef5f5;
+  border-radius: 7px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.errorText {
+  font-size: 13px;
+  color: #b42318;
+  line-height: 1.6;
+}
+
+.errorActions {
+  display: flex;
+  gap: 8px;
+  flex: none;
+}
+
+/* ============ 响应式 < 900px ============ */
+@media (max-width: 900px) {
+  .container {
+    padding: 0 16px;
+  }
+
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .colMid {
+    border-left: none;
+    border-right: none;
+    border-top: 1px solid var(--line-soft);
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  .compileGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .compileLeft {
+    border-right: none;
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  .stat + .stat {
+    padding-left: 18px;
+  }
+}

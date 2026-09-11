@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import s from "./space.module.css";
 
 type MathJaxApi = {
   typesetClear?: (nodes?: HTMLElement[]) => void;
@@ -72,7 +73,7 @@ export function LatexText({
   }, [children]);
 
   return (
-    <span className={`inline-block max-w-full align-baseline [&_mjx-container]:max-w-full [&_mjx-container]:overflow-x-auto ${className ?? ""}`} ref={ref}>
+    <span className={className ? `${s.latex} ${className}` : s.latex} ref={ref}>
       {children}
     </span>
   );

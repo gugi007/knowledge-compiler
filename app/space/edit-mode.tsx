@@ -2,9 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { Concept } from "@/data/models";
+import s from "./space.module.css";
 
 /**
- * 编辑模式：本地校对动作条。
+ * 编辑模式：本地校对动作条。（批次 5/5 仅视觉重绘）
  *
  * OWNER: knowledge-space-agent
  *
@@ -18,6 +19,11 @@ import type { Concept } from "@/data/models";
  * - 修正：改写摘要（本地覆盖）
  * - 删除：从视图隐藏（本地）
  * - 合并：把另一个概念并进当前概念（本地，画布与列表即时反映）
+ *
+ * 批次 5/5 的改动只在样式层：改用 space.module.css 的
+ * editBar / editCard / editField / editInput / editTextarea / editSelect
+ * 等既有类名重排结构；状态管理（EditMap / ConceptEdit / absorbedInto /
+ * onApply / onMerged）与对外导出一律未变，仍然不接后端、不落盘。
  */
 
 export interface ConceptEdit {
@@ -55,6 +61,8 @@ export function EditBar({ concept, allConcepts, edit, onApply, onMerged }: Props
   const [renaming, setRenaming] = useState(false);
   const [correcting, setCorrecting] = useState(false);
   const [merging, setMerging] = useState(false);
+  /** 合并下拉框的当前选择（纯 UI 态，不参与 EditMap）。 */
+  const [mergeTarget, setMergeTarget] = useState("");
   const nameRef = useRef<HTMLInputElement>(null);
   const summaryRef = useRef<HTMLTextAreaElement>(null);
 
@@ -69,66 +77,73 @@ export function EditBar({ concept, allConcepts, edit, onApply, onMerged }: Props
     (candidate) => candidate.id !== concept.id && !(edit?.absorbedIds ?? []).includes(candidate.id),
   );
 
+  const touched = Boolean(
+    edit && (edit.renamedTo || edit.summaryOverride || edit.deleted || edit.absorbedIds?.length),
+  );
+
+  /** 三个互斥面板的开关，保持原有「开一个关其余」的行为。 */
+  const togglePanel = (panel: "rename" | "correct" | "merge") => {
+    setRenaming(panel === "rename" ? (value) => !value : false);
+    setCorrecting(panel === "correct" ? (value) => !value : false);
+    setMerging(panel === "merge" ? (value) => !value : false);
+    if (panel === "merge") setMergeTarget("");
+  };
+
+  const commitMerge = () => {
+    if (!mergeTarget) return;
+    onApply(concept.id, {
+      ...edit,
+      absorbedIds: [...(edit?.absorbedIds ?? []), mergeTarget],
+    });
+    setMerging(false);
+    setMergeTarget("");
+    onMerged(mergeTarget, concept.id);
+  };
+
   return (
-    <div className="rounded-xl border border-dashed border-coral/40 bg-lime/50 p-3">
-      <div className="flex flex-wrap items-center gap-1.5">
-        <span className="mr-1 text-[10px] font-black tracking-widest text-coral/70 uppercase">
-          编辑
-        </span>
-        <button
-          className="concept-pill !px-2.5 !py-1 text-[11px]"
-          onClick={() => {
-            setRenaming((v) => !v);
-            setCorrecting(false);
-            setMerging(false);
-          }}
-          type="button"
-        >
-          重命名
-        </button>
-        <button
-          className="concept-pill !px-2.5 !py-1 text-[11px]"
-          onClick={() => {
-            setCorrecting((v) => !v);
-            setRenaming(false);
-            setMerging(false);
-          }}
-          type="button"
-        >
-          修正摘要
-        </button>
-        <button
-          className="concept-pill !px-2.5 !py-1 text-[11px]"
-          onClick={() => {
-            setMerging((v) => !v);
-            setRenaming(false);
-            setCorrecting(false);
-          }}
-          type="button"
-        >
-          合并…
-        </button>
-        <button
-          className={`concept-pill !px-2.5 !py-1 text-[11px] ${
-            edit?.confirmed ? "border-[#12a182] text-[#12a182]" : ""
-          }`}
-          onClick={() => onApply(concept.id, { ...edit, confirmed: !edit?.confirmed })}
-          type="button"
-        >
-          {edit?.confirmed ? "✓ 已确认" : "确认"}
-        </button>
-        <button
-          className="concept-pill !px-2.5 !py-1 text-[11px] hover:!border-[#d6457f] hover:!text-[#d6457f]"
-          onClick={() => onApply(concept.id, { ...edit, deleted: true })}
-          type="button"
-        >
-          删除
-        </button>
+    <div>
+      {/* ------------------------------------------------------ 动作条 */}
+      <div className={s.editBar}>
+        <span className={s.editBarLabel}>编辑</span>
+        {edit?.confirmed ? (
+          <span className={s.editSaved}>✓ 已确认</span>
+        ) : touched ? (
+          <span className={s.editDirty}>未持久化改动</span>
+        ) : (
+          <span className={s.editBarHint}>本地校对态 · 未持久化</span>
+        )}
+        <div className={s.editActions}>
+          <button className={s.editGhost} onClick={() => togglePanel("rename")} type="button">
+            重命名
+          </button>
+          <button className={s.editGhost} onClick={() => togglePanel("correct")} type="button">
+            修正摘要
+          </button>
+          <button className={s.editGhost} onClick={() => togglePanel("merge")} type="button">
+            合并…
+          </button>
+          <button
+            className={s.editGhost}
+            onClick={() => onApply(concept.id, { ...edit, confirmed: !edit?.confirmed })}
+            type="button"
+          >
+            {edit?.confirmed ? "撤销确认" : "确认"}
+          </button>
+          <button
+            className={s.editGhost}
+            onClick={() => onApply(concept.id, { ...edit, deleted: true })}
+            style={{ color: "#d6457f", borderColor: "rgba(214, 69, 127, 0.45)" }}
+            type="button"
+          >
+            删除
+          </button>
+        </div>
       </div>
 
+      {/* ------------------------------------------------------ 重命名 */}
       {renaming && (
         <form
-          className="mt-2.5 flex gap-1.5"
+          className={s.editCard}
           onSubmit={(event) => {
             event.preventDefault();
             const value = nameRef.current?.value.trim();
@@ -137,72 +152,130 @@ export function EditBar({ concept, allConcepts, edit, onApply, onMerged }: Props
             }
             setRenaming(false);
           }}
+          style={{ marginTop: 10 }}
         >
-          <input
-            className="min-w-0 flex-1 rounded-lg border border-ink/15 bg-white px-2.5 py-1.5 text-xs"
-            defaultValue={edit?.renamedTo ?? concept.name}
-            ref={nameRef}
-          />
-          <button
-            className="rounded-lg bg-coral px-3 py-1.5 text-xs font-bold text-white"
-            type="submit"
+          <div className={s.editField}>
+            <label className={s.editFieldLabel} htmlFor={`rename-${concept.id}`}>
+              概念名称
+            </label>
+            <input
+              className={s.editInput}
+              defaultValue={edit?.renamedTo ?? concept.name}
+              id={`rename-${concept.id}`}
+              ref={nameRef}
+            />
+          </div>
+          <div
+            className={s.editActions}
+            style={{ justifyContent: "flex-end", marginTop: 14 }}
           >
-            保存
-          </button>
+            <button
+              className={s.editGhost}
+              onClick={() => setRenaming(false)}
+              type="button"
+            >
+              取消
+            </button>
+            <button className={s.editPrimary} type="submit">
+              保存
+            </button>
+          </div>
         </form>
       )}
 
+      {/* ---------------------------------------------------- 修正摘要 */}
       {correcting && (
         <form
-          className="mt-2.5 grid gap-1.5"
+          className={s.editCard}
           onSubmit={(event) => {
             event.preventDefault();
             const value = summaryRef.current?.value.trim();
             if (value) onApply(concept.id, { ...edit, summaryOverride: value });
             setCorrecting(false);
           }}
+          style={{ marginTop: 10 }}
         >
-          <textarea
-            className="min-h-20 rounded-lg border border-ink/15 bg-white px-2.5 py-1.5 text-xs leading-5"
-            defaultValue={edit?.summaryOverride ?? concept.summary}
-            ref={summaryRef}
-          />
-          <button
-            className="justify-self-end rounded-lg bg-coral px-3 py-1.5 text-xs font-bold text-white"
-            type="submit"
+          <div className={s.editField}>
+            <label className={s.editFieldLabel} htmlFor={`summary-${concept.id}`}>
+              概念摘要
+            </label>
+            <textarea
+              className={s.editTextarea}
+              defaultValue={edit?.summaryOverride ?? concept.summary}
+              id={`summary-${concept.id}`}
+              ref={summaryRef}
+            />
+          </div>
+          <div
+            className={s.editActions}
+            style={{ justifyContent: "flex-end", marginTop: 14 }}
           >
-            保存修正
-          </button>
+            <button
+              className={s.editGhost}
+              onClick={() => setCorrecting(false)}
+              type="button"
+            >
+              取消
+            </button>
+            <button className={s.editPrimary} type="submit">
+              保存修正
+            </button>
+          </div>
         </form>
       )}
 
+      {/* -------------------------------------------------------- 合并 */}
       {merging && (
-        <div className="mt-2.5">
-          <p className="text-[11px] text-ink/55">选择要并入「{concept.name}」的概念：</p>
-          <div className="scrollbar mt-1.5 grid max-h-36 gap-1 overflow-y-auto">
-            {mergeCandidates.map((candidate) => (
-              <button
-                className="relation-row !p-2 text-xs"
-                key={candidate.id}
-                onClick={() => {
-                  onApply(concept.id, {
-                    ...edit,
-                    absorbedIds: [...(edit?.absorbedIds ?? []), candidate.id],
-                  });
-                  setMerging(false);
-                  onMerged(candidate.id, concept.id);
-                }}
-                type="button"
-              >
-                <span className="truncate">{candidate.name}</span>
-                <span className="font-mono text-[9px] text-ink/35">{candidate.domain}</span>
-              </button>
-            ))}
+        <form
+          className={s.editCard}
+          onSubmit={(event) => {
+            event.preventDefault();
+            commitMerge();
+          }}
+          style={{ marginTop: 10 }}
+        >
+          <div className={s.editField}>
+            <label className={s.editFieldLabel} htmlFor={`merge-${concept.id}`}>
+              并入「{concept.name}」
+            </label>
+            <select
+              className={s.editSelect}
+              id={`merge-${concept.id}`}
+              onChange={(event) => setMergeTarget(event.target.value)}
+              value={mergeTarget}
+            >
+              <option value="">
+                {mergeCandidates.length ? "选择要合并的概念…" : "没有可合并的概念"}
+              </option>
+              {mergeCandidates.map((candidate) => (
+                <option key={candidate.id} value={candidate.id}>
+                  {candidate.name} · {candidate.domain}
+                </option>
+              ))}
+            </select>
           </div>
-        </div>
+          <div
+            className={s.editActions}
+            style={{ justifyContent: "flex-end", marginTop: 14 }}
+          >
+            <button
+              className={s.editGhost}
+              onClick={() => {
+                setMerging(false);
+                setMergeTarget("");
+              }}
+              type="button"
+            >
+              取消
+            </button>
+            <button className={s.editPrimary} disabled={!mergeTarget} type="submit">
+              合并
+            </button>
+          </div>
+        </form>
       )}
 
-      <p className="mt-2 font-mono text-[9px] leading-4 text-ink/35">
+      <p className={`${s.editBarHint} ${s.editHintGap}`}>
         本地校对态 · 未持久化（等待 overlay 契约，见架构文档 C4）
       </p>
     </div>

@@ -1,8 +1,25 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { CompiledKnowledgeDataset } from "@/data/models";
 import { articlesByDate, conceptIndex } from "@/lib/frontend/dataset";
+import s from "./space.module.css";
+
+/**
+ * 知识演变回放（批次 5/5 重绘）。
+ *
+ * 形态改动：从「工作区之外的整条 panel」改成画布左下角的悬浮胶囊（evoFab）。
+ * 默认只显示 `◷ 知识演变 {YYYY.MM → YYYY.MM}`，点击后在胶囊上方展开
+ * 一块可拖的时间滑块面板；关闭即退出回放。
+ *
+ * 语义保持与批次 3 完全一致：
+ * - `cursor < 0` 表示未进入回放（父组件据此渲染完整图谱）；
+ * - `cursor >= 0` 表示回放中，父组件用 revealedIds 过滤节点与边；
+ * - 每次 cursor 变化都通过 onChange 抛出一份 TimelineState。
+ *
+ * 对外 Props 与批次 3 完全相同（未增未减），调用方无需改动。
+ * 日期区间由本组件自行从 dataset 的文章日期算出，父组件不传。
+ */
 
 export interface TimelineState {
   cursor: number;
@@ -26,9 +43,25 @@ function formatDate(date: string): string {
   );
 }
 
+/** 胶囊上的区间文案：2023.05 → 2024.04（按语料首尾文章日期算）。 */
+function formatMonth(date: string): string {
+  const parsed = new Date(date);
+  if (Number.isNaN(parsed.getTime())) return date;
+  return `${parsed.getFullYear()}.${String(parsed.getMonth() + 1).padStart(2, "0")}`;
+}
+
 export function TimelinePlayer({ dataset, onChange, cursor, setCursor }: Props) {
+  const [open, setOpen] = useState(false);
   const articles = useMemo(() => articlesByDate(dataset), [dataset]);
   const concepts = useMemo(() => conceptIndex(dataset), [dataset]);
+
+  /** 语料日期区间（父组件不传，自己算）。 */
+  const range = useMemo(() => {
+    if (!articles.length) return "";
+    const first = articles[0]!.publishedAt;
+    const last = articles[articles.length - 1]!.publishedAt;
+    return `${formatMonth(first)} → ${formatMonth(last)}`;
+  }, [articles]);
 
   const conceptsByArticle = useMemo(() => {
     const map = new Map<string, Set<string>>();
@@ -74,52 +107,82 @@ export function TimelinePlayer({ dataset, onChange, cursor, setCursor }: Props) 
     onChange(state);
   }, [onChange, state]);
 
-  const playing = cursor >= 0;
+  const hasArticles = articles.length > 0;
+  /** 展开且语料非空时才算「回放中」。 */
+  const expanded = open && hasArticles;
+  const playing = expanded && cursor >= 0;
+
+  /** 点胶囊：收起 = 退出回放（cursor 归 -1），展开 = 从第一篇文章开始。 */
+  const toggle = () => {
+    if (!hasArticles) return;
+    if (open) {
+      setOpen(false);
+      setCursor(-1);
+      return;
+    }
+    setOpen(true);
+    if (cursor < 0) setCursor(0);
+  };
 
   return (
-    <section className="panel mt-3 px-3 py-2.5">
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="flex shrink-0 items-center gap-2">
-          <span className="eyebrow hidden sm:inline">知识演变</span>
-          <button
-            className={`rounded-full px-3.5 py-1.5 text-xs font-bold transition-colors ${
-              playing
-                ? "border border-ink/15 text-ink/60 hover:border-coral hover:text-coral"
-                : "bg-coral text-white hover:bg-[#004bbb]"
-            }`}
-            onClick={() => setCursor(playing ? -1 : 0)}
-            type="button"
-          >
-            {playing ? "退出演变" : "▶ 知识演变"}
-          </button>
-        </div>
+    /* 由 space-view 挂进 GraphCanvas 的 overlay，渲染在 .stage 内部：
+       绝对定位相对「画布」而不是浏览器视口，所以不会浮到左栏列表上面。
+       定位规则与参考稿 .evo-fab 完全一致：left:12px / bottom:12px / z-index:5。 */
+    <div className={s.evoWrap}>
+      {expanded && (
+        <div className={s.evoPanel}>
+          <div className={s.evoPanelHead}>
+            <span className={s.evoEyebrow}>知识演变 · 回放中</span>
+            <button
+              aria-label="收起知识演变"
+              className={s.evoClose}
+              onClick={toggle}
+              type="button"
+            >
+              ✕
+            </button>
+          </div>
 
-        {playing ? (
-          <>
-            <input
-              aria-label="知识演变时间轴"
-              className="min-w-[180px] flex-1 accent-coral"
-              max={articles.length - 1}
-              min={0}
-              onChange={(event) => setCursor(Number(event.target.value))}
-              type="range"
-              value={cursor}
-            />
-            <p className="min-w-0 max-w-md truncate text-xs text-ink/55">
-              <span className="font-mono text-[10px] text-ink/40">
-                {state.currentArticleDate} · {cursor + 1}/{state.total}
-              </span>
-              <span className="mx-2 text-ink/20">|</span>
-              <span className="font-bold">{state.currentArticleTitle}</span>
-            </p>
-            <p className="hidden font-mono text-[10px] text-ink/40 xl:block">
-              已出现 {state.revealedIds.length} · 本篇新增 {state.freshIds.length}
-            </p>
-          </>
-        ) : (
-          <p className="text-[11px] text-ink/40">从第一篇文章开始查看知识网络如何逐步形成。</p>
-        )}
-      </div>
-    </section>
+          <div className={s.evoMeta}>
+            <span className={s.evoMono}>{range}</span>
+            <span className={s.evoMono}>
+              {cursor + 1}/{state.total}
+            </span>
+          </div>
+
+          <input
+            aria-label="知识演变时间轴"
+            className={s.evoSlider}
+            max={Math.max(articles.length - 1, 0)}
+            min={0}
+            onChange={(event) => setCursor(Number(event.target.value))}
+            type="range"
+            value={cursor < 0 ? 0 : cursor}
+          />
+
+          <p className={s.evoCurrent}>
+            {state.currentArticleDate} · {state.currentArticleTitle}
+          </p>
+          <p className={s.evoStat}>
+            已出现 {state.revealedIds.length} · 本篇新增 {state.freshIds.length}
+          </p>
+        </div>
+      )}
+
+      <button
+        aria-expanded={expanded}
+        aria-label="知识演变回放"
+        aria-pressed={playing}
+        className={`${s.evoFab} ${s.evoFabInline}`}
+        onClick={toggle}
+        type="button"
+      >
+        <span aria-hidden className={s.evoIco}>
+          ◷
+        </span>
+        <span className={s.evoLabel}>知识演变</span>
+        <span className={s.evoRange}>{range || "暂无文章"}</span>
+      </button>
+    </div>
   );
 }
