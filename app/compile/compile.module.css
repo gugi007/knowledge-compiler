@@ -77,34 +77,14 @@
 .topbarLeft {
   display: flex;
   align-items: center;
-  gap: 14px;
 }
 
-.backLink {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  color: var(--faint);
-  text-decoration: none;
-  font-size: 13px;
-  padding: 4px 6px;
-  border-radius: 6px;
-  transition: color .18s;
-}
-
-.backLink:hover {
-  color: var(--muted);
-}
-
-.backLink svg {
-  width: 14px;
-  height: 14px;
-}
-
+/* 品牌锁扣本身即返回链接：显式去掉 a 的默认下划线。 */
 .brandLockup {
   display: flex;
   align-items: center;
   gap: 9px;
+  text-decoration: none;
 }
 
 .brandIcon {

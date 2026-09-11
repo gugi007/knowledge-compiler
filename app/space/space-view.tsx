@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useSyncExternalStore } from "react";
 import type { CompiledKnowledgeDataset, Concept } from "@/data/models";
 import { useActiveDataset } from "@/app/_shared/hooks/use-active-dataset";
 import {
@@ -13,11 +13,18 @@ import {
 import { ROUTES } from "@/lib/frontend/routes";
 import s from "./space.module.css";
 import { ConceptCard } from "./concept-card";
+import { LatexText } from "./latex-text";
 import { absorbedInto, EditBar, type ConceptEdit, type EditMap } from "./edit-mode";
 import { domainColorMap, domainOrderOf, DOMAIN_FALLBACK } from "./graph/_lib/domain-colors";
 import { GraphCanvas } from "./graph/graph-canvas";
 import { RecompileBar } from "./recompile-bar";
-import { useRecompileDemo } from "./recompile-demo-data";
+import {
+  baselineRawSnapshot,
+  baselineServerSnapshot,
+  buildRecompileSelection,
+  parseBaseline,
+  useRecompileDemo,
+} from "./recompile-demo-data";
 import { TimelinePlayer, type TimelineState } from "./timeline-player";
 
 /**
@@ -51,8 +58,17 @@ function resolveDomain(
 /** 只有「成熟的作者空间」这份语料走二次编译演示，其它来源一律不渲染状态条。 */
 const RECOMPILE_DEMO_SOURCE_ID = "bayes";
 
+/**
+ * 基线 store 的订阅：这个 store 在组件生命周期内不会变（语料切换走整页导航），
+ * 所以订阅是空实现——同 app/_shared/hooks/use-active-dataset.ts 的 noopSubscribe。
+ */
+const noopSubscribe = () => () => {};
+
+/** 未在浏览任何路径时的「已走过」集合。稳定引用，免得每次退出都换一个新 Set。 */
+const EMPTY_CONCEPT_IDS: ReadonlySet<string> = new Set();
+
 export function SpaceView() {
-  const { dataset, corpus, sourceId } = useActiveDataset();
+  const { dataset, sourceId } = useActiveDataset();
   /**
    * 领域筛选。三态，与下面 selectedConceptId 保持同一套写法：
    * - `undefined`：用户还没动过筛选 → 跟随「当前选中概念」的领域（落地默认选中时
@@ -69,14 +85,35 @@ export function SpaceView() {
    */
   const [selectedConceptId, setSelectedConceptId] = useState<string | null | undefined>();
   const [selectedPathId, setSelectedPathId] = useState<string>();
+  const [selectedEdgeId, setSelectedEdgeId] = useState<string>();
   const [editing, setEditing] = useState(false);
   const [edits, setEdits] = useState<EditMap>(new Map());
   const [cursor, setCursor] = useState(-1);
   const [timeline, setTimeline] = useState<TimelineState>();
-  /** 本会话在右栏打开过的概念 id（仅内存，不做持久化），用于阅读路径进度。 */
-  const [openedConceptIds, setOpenedConceptIds] = useState<ReadonlySet<string>>(() => new Set());
+  /**
+   * **本次路径浏览**中打开过的概念 id（仅内存，不做持久化）。
+   *
+   * 语义是「本次浏览」而不是「本会话」：进入路径时重置、退出时清空，否则进度条
+   * 只会增不会减，退出后仍停在旧读数。跨路径累计的信息是有意不要的。
+   */
+  const [pathVisitedIds, setPathVisitedIds] = useState<ReadonlySet<string>>(() => new Set());
   /** done 态点「查看新增」后的聚焦态（纯前端演示，不落盘）。 */
   const [peekNew, setPeekNew] = useState(false);
+  /**
+   * 状态条的会话内**锁存**：一旦用户点过「二次编译」，这条就一直渲染到本次
+   * 会话结束（刷新归零）。
+   *
+   * 为什么需要：编译完成的那一刻会把基线写回，检测门随之算出「没有新文章」。
+   * 没有锁存的话，状态条会在完成态渲染的同一帧被卸载，用户看不到完成态，
+   * 也点不到「查看新增」。只增不减，只在事件回调里设（不在 effect 里同步 setState）。
+   */
+  const [barLatched, setBarLatched] = useState(false);
+  /**
+   * done 态点「收起」后的整条 dismiss。必须提在这里（而不是收在 RecompileBar
+   * 内部）：收起要连带清掉画布上的新增高亮，所以 revealNew / focusNew / compiling
+   * 都得看得见它。只清视觉，不动任何统计数字、不动 dataset。
+   */
+  const [barDismissed, setBarDismissed] = useState(false);
 
   const absorbed = useMemo(() => absorbedInto(edits), [edits]);
   /**
@@ -165,8 +202,39 @@ export function SpaceView() {
   const recompileRunning = recompile.phase === "running";
   const recompileIdle = recompile.phase === "idle";
   /** 新节点/新边只有到「图谱生成」这一步才交给画布，让淡入与光环能被看见。 */
-  const revealNew = !recompileIdle && (recompile.phase === "done" || recompile.stepIndex >= 2);
-  const focusNew = revealNew && (recompileRunning || peekNew);
+  const revealNew =
+    !barDismissed && !recompileIdle && (recompile.phase === "done" || recompile.stepIndex >= 2);
+  /**
+   * 聚焦新增只留给「跑完之后用户主动点查看新增」。
+   *
+   * 运行期不再叠 focusNew：`.stage.compiling`（非新增压到 .5）与 `.stage.focusNew`
+   * （压到 .18）在 CSS 里同优先级、后写的 focusNew 胜出，两者同时命中时实际生效的是
+   * .18 —— 编译到第 3 步就变成了「查看新增」的观感。
+   *
+   * 新节点的浮现不依赖这里：画布用 newNodeIds 判定 isNew（graph-canvas 里
+   * `newNodes.has(node.id) || highlighted.has(node.id)`），再挂 `.newNode .on`；
+   * CSS 的两条氛围态规则都带 `:not(.newNode)`，压根压不到新节点。
+   *
+   * revealNew 里已经折进了 !barDismissed，所以「收起」会一并清掉聚焦。
+   */
+  const focusNew = revealNew && peekNew;
+  /**
+   * 检测门：读基线用 useSyncExternalStore + 原始字符串快照（同 use-active-dataset）。
+   * 有基线且文章差集为空 → 这份知识已经合入过，本次没有新增 → 状态条静默。
+   */
+  const baselineRaw = useSyncExternalStore(
+    noopSubscribe,
+    baselineRawSnapshot,
+    baselineServerSnapshot,
+  );
+  // 数据集很小（bayes 17 篇 / 17 概念），直接算，不做额外缓存。
+  const hasNews = useMemo(
+    () => buildRecompileSelection(dataset, parseBaseline(baselineRaw)).newArticleIds.length > 0,
+    [dataset, baselineRaw],
+  );
+  /** 状态条是否渲染：仅 bayes / 未收起 / （真的有新文章 或 本会话锁存过）。 */
+  const showBar =
+    sourceId === RECOMPILE_DEMO_SOURCE_ID && !barDismissed && (barLatched || hasNews);
   const newConceptNames = useMemo(() => {
     if (!recompile.newNodeIds.length) return [];
     const index = new Map(dataset.concepts.map((concept) => [concept.id, concept.name]));
@@ -174,18 +242,6 @@ export function SpaceView() {
       .map((id) => index.get(id))
       .filter((name): name is string => Boolean(name));
   }, [dataset.concepts, recompile.newNodeIds]);
-
-  /**
-   * 阅读路径进度：本会话打开过的概念 ∩ 路径概念（初始 0，不落盘）。
-   * 只用于左栏阅读路径条下方进度条的宽度百分比，不再参与任何文案渲染。
-   */
-  const pathProgress = useMemo(() => {
-    const done = new Map<string, number>();
-    for (const path of dataset.readingPaths) {
-      done.set(path.id, path.conceptIds.filter((id) => openedConceptIds.has(id)).length);
-    }
-    return done;
-  }, [dataset.readingPaths, openedConceptIds]);
 
   const playbackGraph = useMemo(() => {
     if (!playing || !timeline) return graph;
@@ -209,13 +265,34 @@ export function SpaceView() {
   }, []);
 
   /**
-   * 打开右栏概念档案：顺带记进本会话的「已浏览」集合。
-   * 只有「用户主动点开」才会走到这里；落地默认选中不经过这个函数，
-   * 所以阅读路径进度不会被默认选中虚高。
+   * 正在浏览的阅读路径：左栏的「退出 ✕」与画布航线共用这一个来源，
+   * 两处各算一遍迟早会分叉。`conceptIds` 的数组顺序就是路径本身，画布照序连线。
+   */
+  const selectedPath = useMemo(() => {
+    if (!selectedPathId) return undefined;
+    return dataset.readingPaths.find((path) => path.id === selectedPathId);
+  }, [dataset.readingPaths, selectedPathId]);
+
+  /**
+   * 本次浏览沿路径走过的概念数。未在浏览时恒为 0——这正是「退出归零」的落点。
+   * 定义必须排在 selectedPath 之后（依赖它），消费点在左栏进度条。
+   */
+  const browsingDone = useMemo(() => {
+    if (!selectedPath) return 0;
+    return selectedPath.conceptIds.filter((id) => pathVisitedIds.has(id)).length;
+  }, [selectedPath, pathVisitedIds]);
+
+  /**
+   * 打开右栏概念档案：无条件记进「本次浏览」集合，记的是**原始 id**。
+   *
+   * 与路径概念的求交不在这里做，而在 browsingDone 里——只有「正在浏览的那条路径」
+   * 会被读取，所以非浏览期间累积的 id 无害（它读不到），进入路径时会整体重置。
+   * 只有「用户主动点开」才走这里；落地默认选中不经过它，进度不会被默认选中虚高。
    */
   const openConcept = useCallback((id: string) => {
     setSelectedConceptId(id);
-    setOpenedConceptIds((previous) => {
+    setSelectedEdgeId(undefined);
+    setPathVisitedIds((previous) => {
       if (previous.has(id)) return previous;
       const next = new Set(previous);
       next.add(id);
@@ -226,8 +303,24 @@ export function SpaceView() {
   /** 关闭右栏（仅小屏抽屉）：置 null，避免又回落到默认选中。 */
   const closeConcept = useCallback(() => setSelectedConceptId(null), []);
 
+  /**
+   * 进入阅读路径时把右栏切到路径的第一个概念；返回它是否真的被打开，
+   * 调用方据此决定进度从 1/N 还是 0/N 起。
+   *
+   * 存在性保护是必须的：`path.conceptIds` 来自原始 dataset，不跟着编辑走，而右栏
+   * 读的是 displayConcepts——首概念可能已被删除或被并入它物。openConcept 的调用方
+   * 契约要求 id 可查，否则右栏会选中一个不存在的概念（空白档案、点不出关系）。
+   */
+  const openPathStart = useCallback(
+    (conceptId: string | undefined): boolean => {
+      if (!conceptId || !displayConcepts.some((concept) => concept.id === conceptId)) return false;
+      openConcept(conceptId);
+      return true;
+    },
+    [displayConcepts, openConcept],
+  );
+
   const editCount = edits.size;
-  const corpusLabel = corpus?.label ?? "本次编译产物";
 
   const editHeader = (concept: Concept) =>
     editing ? (
@@ -269,7 +362,6 @@ export function SpaceView() {
           <h1 className={s.topbarTitle}>Knowledge Compiler</h1>
         </Link>
         <div className={s.topbarRight}>
-          <span className={s.actTag}>Act 3 · 知识空间 · {corpusLabel}</span>
           <button
             aria-pressed={editing}
             className={s.editBtn}
@@ -307,13 +399,20 @@ export function SpaceView() {
       </section>
 
       {/* 二次编译状态条：仅 bayes 语料出现，其余来源（compiled / demo /
-          imported / 未知）不渲染，画布也拿不到任何「新增」态。 */}
-      {sourceId === RECOMPILE_DEMO_SOURCE_ID && (
+          imported / 未知）不渲染，画布也拿不到任何「新增」态。
+          出现条件 = 未收起 &&（「真的有新文章」——有基线且差集为空时静默——
+          或「本会话锁存」——编译完成会把基线写回，门随即变假，靠锁存留住完成态）。 */}
+      {showBar && (
         <RecompileBar
           counts={recompile.counts}
           newConceptNames={newConceptNames}
+          onDismiss={() => {
+            setPeekNew(false);
+            setBarDismissed(true);
+          }}
           onStart={() => {
             setPeekNew(false);
+            setBarLatched(true);
             recompile.start();
           }}
           onViewNew={() => setPeekNew((value) => !value)}
@@ -382,18 +481,37 @@ export function SpaceView() {
           {dataset.readingPaths.length ? (
             dataset.readingPaths.map((path) => {
               const total = path.conceptIds.length;
-              const done = pathProgress.get(path.id) ?? 0;
+              const browsing = selectedPath?.id === path.id;
+              // 进和出必须都动「已走过」集合，否则同一条进度在进/出两个方向上
+              // 影响相反，退出后停在旧读数。
+              const done = browsing ? browsingDone : 0;
               const percent = total ? Math.round((done / total) * 100) : 0;
-              const browsing = selectedPathId === path.id;
+              /** 进入/退出浏览。进入时右栏落到首概念，退出不清右栏。 */
+              const toggle = () => {
+                if (browsing) {
+                  setSelectedPathId(undefined);
+                  setPathVisitedIds(EMPTY_CONCEPT_IDS);
+                  return;
+                }
+                const first = path.conceptIds[0];
+                setSelectedPathId(path.id);
+                // 首概念确实被打开时进度从 1/N 起（与「打开概念就计数」同一条规则），
+                // 而不是 0/N 显示着 0 却已经在看第一个概念。
+                // openPathStart 内部也会写这个集合，所以必须排在它之后调用：
+                // 批处理里后一次覆盖前一次，seed 生效（seed 本就含 first，等价）。
+                setPathVisitedIds(
+                  openPathStart(first) && first ? new Set([first]) : EMPTY_CONCEPT_IDS,
+                );
+              };
               return (
                 <div
                   className={s.pathItem}
                   key={path.id}
-                  onClick={() => setSelectedPathId(browsing ? undefined : path.id)}
+                  onClick={toggle}
                   onKeyDown={(event) => {
                     if (event.key === "Enter" || event.key === " ") {
                       event.preventDefault();
-                      setSelectedPathId(browsing ? undefined : path.id);
+                      toggle();
                     }
                   }}
                   role="button"
@@ -403,7 +521,9 @@ export function SpaceView() {
                     <span className={s.pathTitle}>{path.title}</span>
                     <span className={s.pathLevel}>{PATH_LEVEL_LABELS[path.level]}</span>
                   </div>
-                  <p className={s.pathSummary}>{path.summary}</p>
+                  <p className={s.pathSummary}>
+                    <LatexText>{path.summary}</LatexText>
+                  </p>
                   <div className={s.pathMeta}>
                     <span style={{ fontVariantNumeric: "tabular-nums" }}>
                       {total} 个概念
@@ -413,6 +533,37 @@ export function SpaceView() {
                   <div className={s.pathProgress}>
                     <i className={s.pathProgressBar} style={{ width: `${percent}%` }} />
                   </div>
+                  {browsing && (
+                    <ol className={s.pathSteps}>
+                      {path.conceptIds.map((cid, idx) => {
+                        const concept = displayConcepts.find((item) => item.id === cid);
+                        const isCurrent = cid === effectiveSelectedId;
+                        return (
+                          <li key={cid}>
+                            <button
+                              className={`${s.pathStepBtn} ${isCurrent ? s.pathStepBtnOn : ""}`}
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                // cid 来自原始 dataset，可能已被编辑删除/合并；
+                                // 这种步骤按钮不动作，避免右栏切到一个不存在的概念。
+                                if (concept) openConcept(cid);
+                              }}
+                              type="button"
+                            >
+                              <span
+                                className={`${s.pathStepNo} ${isCurrent ? s.pathStepNoOn : ""}`}
+                              >
+                                {idx + 1}
+                              </span>
+                              <span className={s.pathStepName}>
+                                {concept?.name ?? cid}
+                              </span>
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ol>
+                  )}
                 </div>
               );
             })
@@ -424,14 +575,16 @@ export function SpaceView() {
         {/* 中栏：图谱画布 */}
         <div className={`${s.wsCol} ${s.canvasCol}`}>
           <GraphCanvas
-            compiling={recompileRunning}
+            compiling={recompileRunning && !barDismissed}
             data={playbackGraph}
             dimmedDomains={dimmedDomains}
             focusNew={focusNew}
             highlightedNodeIds={highlightedIds}
             newEdgeIds={revealNew ? recompile.newEdgeIds : undefined}
             newNodeIds={revealNew ? recompile.newNodeIds : undefined}
+            onEdgeSelect={setSelectedEdgeId}
             onNodeSelect={openConcept}
+            pathNodeIds={selectedPath?.conceptIds}
             // 知识演变回放落在画布左下角（参考稿 .evo-fab 就在 .stage 内部），
             // 因此走 overlay 挂进 stage，而不是固定到浏览器视口。
             overlay={
@@ -442,6 +595,7 @@ export function SpaceView() {
                 setCursor={setCursor}
               />
             }
+            selectedEdgeId={selectedEdgeId}
             selectedNodeId={effectiveSelectedId}
             updatedNodeIds={revealNew ? recompile.updatedNodeIds : undefined}
           />
@@ -456,6 +610,8 @@ export function SpaceView() {
               dataset={graphDataset}
               headerSlot={editHeader(selected)}
               onSelectConcept={openConcept}
+              onSelectEdge={setSelectedEdgeId}
+              selectedEdgeId={selectedEdgeId}
             />
           ) : (
             <p style={{ margin: 0, fontSize: 12, lineHeight: 1.7, color: "var(--muted)" }}>
@@ -479,6 +635,8 @@ export function SpaceView() {
               dataset={graphDataset}
               headerSlot={editHeader(selected)}
               onSelectConcept={openConcept}
+              onSelectEdge={setSelectedEdgeId}
+              selectedEdgeId={selectedEdgeId}
             />
           </div>
         </div>

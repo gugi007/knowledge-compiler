@@ -130,9 +130,8 @@ export function EditBar({ concept, allConcepts, edit, onApply, onMerged }: Props
             {edit?.confirmed ? "撤销确认" : "确认"}
           </button>
           <button
-            className={s.editGhost}
+            className={`${s.editGhost} ${s.editDanger}`}
             onClick={() => onApply(concept.id, { ...edit, deleted: true })}
-            style={{ color: "#d6457f", borderColor: "rgba(214, 69, 127, 0.45)" }}
             type="button"
           >
             删除
@@ -274,10 +273,6 @@ export function EditBar({ concept, allConcepts, edit, onApply, onMerged }: Props
           </div>
         </form>
       )}
-
-      <p className={`${s.editBarHint} ${s.editHintGap}`}>
-        本地校对态 · 未持久化（等待 overlay 契约，见架构文档 C4）
-      </p>
     </div>
   );
 }

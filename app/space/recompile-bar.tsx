@@ -27,6 +27,12 @@ interface Props {
   viewing: boolean;
   onStart: () => void;
   onViewNew: () => void;
+  /**
+   * done 态的「收起」：整条 dismiss 掉，并连带清掉画布上的新增高亮。
+   * 清高亮要动 space-view 的 revealNew / focusNew，所以标志必须提上去，
+   * 这里只负责在 done 态露出按钮、把事件交出去。
+   */
+  onDismiss: () => void;
 }
 
 export function RecompileBar({
@@ -39,6 +45,7 @@ export function RecompileBar({
   viewing,
   onStart,
   onViewNew,
+  onDismiss,
 }: Props) {
   return (
     <section
@@ -107,14 +114,21 @@ export function RecompileBar({
             新增 <b>{counts.articles}</b> 篇文章 · 新增 <b>{counts.concepts}</b> 个概念 ·{" "}
             <b>{counts.relations}</b> 条新关系
           </span>
-          <button
-            aria-pressed={viewing}
-            className={[s.rcGhost, viewing ? s.primary : ""].filter(Boolean).join(" ")}
-            onClick={onViewNew}
-            type="button"
-          >
-            查看新增
-          </button>
+          {/* 操作组：auto 边距挂在这一层，两个按钮才不会各带一个 auto 边距平分空白。 */}
+          <div className={s.rcDoneActions}>
+            <button
+              aria-pressed={viewing}
+              className={[s.rcGhost, viewing ? s.primary : ""].filter(Boolean).join(" ")}
+              onClick={onViewNew}
+              type="button"
+            >
+              查看新增
+            </button>
+            {/* 收起只出现在 done 态：running 中途没有可收的成果。 */}
+            <button className={s.rcGhost} onClick={onDismiss} type="button">
+              收起
+            </button>
+          </div>
           <p className={s.rcDoneTitles}>
             {newConceptNames.length ? (
               <>

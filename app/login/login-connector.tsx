@@ -34,7 +34,11 @@ interface ZhihuStatus {
 
 type LoginState = "loading" | "connected" | "ready" | "offline" | "error";
 
-/** OAuth 回跳冻结契约：成功 /?auth=connected，失败 /?authError=<reason>。 */
+/**
+ * OAuth 回跳冻结契约：成功 /compile?corpus=imported，失败 /?authError=<reason>。
+ * 成功不再回本页——callback 直接把人送去编译台。失败回跳仍落在登录页，
+ * 由下面的 authErrorReason 读取并展示，所以两个参数常量都还在这里用。
+ */
 const AUTH_CONNECTED_PARAM = "auth";
 const AUTH_ERROR_PARAM = "authError";
 
@@ -309,11 +313,14 @@ export function LoginConnector() {
               >
                 查看我的知识空间 →
               </Link>
-            ) : status.importedCount > 0 ? (
+            ) : status.importedCount > 0 || status.contentsCount > 0 ? (
               /*
-                corpus=imported 是给第二幕的信号：/api/compile 认这个语料
-                （编的是会话里刚导入的文章）。但共享的 useCompile 目前 POST 不带
-                body，第二幕收到这个 query 也会照编 demo。缺口见交接报告 CCR-1。
+                corpus=imported 是给第二幕的信号：第二幕读地址栏的 ?corpus= 后
+                交给共享的 useCompile，由它写进 POST body，/api/compile 认这个语料，
+                编的是会话里刚导入的文章。
+                早先「useCompile 不带 body、这里会照编 demo」的缺口已闭合
+                （见 use-compile 的 fetch body 与 compile-workspace 的 useCorpusParam），
+                不要再按那个旧前提判断这条链接的效力。
               */
               <Link
                 className={styles.primarySmall}
@@ -333,8 +340,16 @@ export function LoginConnector() {
           </div>
 
           {/*
-            一篇都没导入时不给「去编译我的知识」——第二幕现在只会编 demo，
-            给它挂这个名字是假承诺。想看编译台就走这条明确标了示例语料的退路。
+            演示语料退路的理由：只有当会话里既没有已导入文章、也没有预取的创作时，
+            才不给「去编译我的知识」这条链接。此时下发 corpus=imported 确实没有语料
+            可编（/api/compile 对 imported 语料是按需补齐：有已导入用已导入，没有就用
+            预取的创作投影，两者都空才只剩「未连接 / 会话过期」的 400），所以退路是这条
+            明确标了示例语料的 demo 编译（不带 query）。
+
+            注意 importedCount 为零 ≠ 没东西可编：登录后的预取只写 session.contents，
+            importedCount 要等用户在导入面板里手动点「导入这 N 篇」才非零，预取的那批创作
+            在 contentsCount 里。判断「有没有东西可编」必须用两个字段的或。
+            提示文案是「也可以…」，与主链接并存时不冲突，故此处仍单看 importedCount。
           */}
           {status.importedCount === 0 && (
             <p className={styles.hint}>

@@ -210,20 +210,8 @@ function CompileTopbar() {
     <header className={styles.topbar}>
       <div className={`${styles.container} ${styles.topbarInner}`}>
         <div className={styles.topbarLeft}>
-          <Link className={styles.backLink} href={ROUTES.login}>
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M19 12H5M12 19l-7-7 7-7" />
-            </svg>
-            返回
-          </Link>
-          <div className={styles.brandLockup}>
+          {/* 品牌锁扣即返回入口（原「← 返回」链接已删，不留其占位）。 */}
+          <Link className={styles.brandLockup} href={ROUTES.login}>
             <div className={styles.brandIcon}>
               <svg aria-hidden viewBox="0 0 24 24">
                 <line stroke="white" strokeWidth="1.5" x1="6" x2="12" y1="12" y2="7" />
@@ -236,7 +224,7 @@ function CompileTopbar() {
               </svg>
             </div>
             <div className={styles.brand}>Knowledge Compiler</div>
-          </div>
+          </Link>
         </div>
       </div>
     </header>
@@ -330,9 +318,12 @@ function CompilingView({
           {compile.status === "done" && "编译完成 · 结果已保存"}
         </span>
       </div>
-      {corpus !== "imported" && (
-        <div className={styles.demoLine}>演示模式 · 当前使用内置示例语料</div>
-      )}
+      {/* 语料口径说明：imported 语料来自知乎创作摘要（约 200–320 字），并非正文全文 */}
+      <div className={styles.demoLine}>
+        {corpus === "imported"
+          ? "当前语料为你的知乎创作摘要，非正文全文"
+          : "演示模式 · 当前使用内置示例语料"}
+      </div>
     </>
   );
 }

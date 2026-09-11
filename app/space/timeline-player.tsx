@@ -126,30 +126,16 @@ export function TimelinePlayer({ dataset, onChange, cursor, setCursor }: Props) 
 
   return (
     /* 由 space-view 挂进 GraphCanvas 的 overlay，渲染在 .stage 内部：
-       绝对定位相对「画布」而不是浏览器视口，所以不会浮到左栏列表上面。
-       定位规则与参考稿 .evo-fab 完全一致：left:12px / bottom:12px / z-index:5。 */
+       收起态：左下角小胶囊；展开态：胶囊本身变成一条横跨画布底部的横条，
+       不再「上面大面板 + 下面小胶囊」两层，把中央节点让出来。 */
     <div className={s.evoWrap}>
-      {expanded && (
-        <div className={s.evoPanel}>
-          <div className={s.evoPanelHead}>
-            <span className={s.evoEyebrow}>知识演变 · 回放中</span>
-            <button
-              aria-label="收起知识演变"
-              className={s.evoClose}
-              onClick={toggle}
-              type="button"
-            >
-              ✕
-            </button>
-          </div>
-
-          <div className={s.evoMeta}>
-            <span className={s.evoMono}>{range}</span>
-            <span className={s.evoMono}>
-              {cursor + 1}/{state.total}
-            </span>
-          </div>
-
+      {expanded ? (
+        <div className={s.evoBar}>
+          <span aria-hidden className={s.evoIco}>
+            ◷
+          </span>
+          <span className={s.evoLabel}>知识演变</span>
+          <span className={s.evoMono}>{range}</span>
           <input
             aria-label="知识演变时间轴"
             className={s.evoSlider}
@@ -159,30 +145,37 @@ export function TimelinePlayer({ dataset, onChange, cursor, setCursor }: Props) 
             type="range"
             value={cursor < 0 ? 0 : cursor}
           />
-
-          <p className={s.evoCurrent}>
+          <span className={s.evoMono}>
+            {cursor + 1}/{state.total}
+          </span>
+          <span className={s.evoCurrent}>
             {state.currentArticleDate} · {state.currentArticleTitle}
-          </p>
-          <p className={s.evoStat}>
-            已出现 {state.revealedIds.length} · 本篇新增 {state.freshIds.length}
-          </p>
+          </span>
+          <button
+            aria-label="收起知识演变"
+            className={s.evoClose}
+            onClick={toggle}
+            type="button"
+          >
+            ✕
+          </button>
         </div>
+      ) : (
+        <button
+          aria-expanded={expanded}
+          aria-label="知识演变回放"
+          aria-pressed={playing}
+          className={`${s.evoFab} ${s.evoFabInline}`}
+          onClick={toggle}
+          type="button"
+        >
+          <span aria-hidden className={s.evoIco}>
+            ◷
+          </span>
+          <span className={s.evoLabel}>知识演变</span>
+          <span className={s.evoRange}>{range || "暂无文章"}</span>
+        </button>
       )}
-
-      <button
-        aria-expanded={expanded}
-        aria-label="知识演变回放"
-        aria-pressed={playing}
-        className={`${s.evoFab} ${s.evoFabInline}`}
-        onClick={toggle}
-        type="button"
-      >
-        <span aria-hidden className={s.evoIco}>
-          ◷
-        </span>
-        <span className={s.evoLabel}>知识演变</span>
-        <span className={s.evoRange}>{range || "暂无文章"}</span>
-      </button>
     </div>
   );
 }

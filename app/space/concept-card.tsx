@@ -80,11 +80,15 @@ export function ConceptCard({
   dataset,
   concept,
   onSelectConcept,
+  onSelectEdge,
+  selectedEdgeId,
   headerSlot,
 }: {
   dataset: CompiledKnowledgeDataset;
   concept: Concept;
   onSelectConcept: (id: string) => void;
+  onSelectEdge?: (edgeId: string | undefined) => void;
+  selectedEdgeId?: string;
   headerSlot?: React.ReactNode;
 }) {
   const concepts = useMemo(() => conceptIndex(dataset), [dataset]);
@@ -166,15 +170,18 @@ export function ConceptCard({
           neighbors.map(({ relation, direction, otherConceptId }) => {
             const other = concepts.get(otherConceptId);
             if (!other) return null;
+            const edgeOn = selectedEdgeId === relation.id;
             return (
               <div
-                className={s.relRow}
+                className={`${s.relRow} ${edgeOn ? s.relRowOn : ""}`}
                 key={relation.id}
-                onClick={() => onSelectConcept(otherConceptId)}
+                onClick={() =>
+                  onSelectEdge?.(edgeOn ? undefined : relation.id)
+                }
                 onKeyDown={(event) => {
                   if (event.key === "Enter" || event.key === " ") {
                     event.preventDefault();
-                    onSelectConcept(otherConceptId);
+                    onSelectEdge?.(edgeOn ? undefined : relation.id);
                   }
                 }}
                 role="button"
@@ -188,6 +195,17 @@ export function ConceptCard({
                   />
                 </span>
                 <span className={s.relKind}>{RELATION_LABELS[relation.kind]}</span>
+                <button
+                  aria-label={`查看 ${other.name}`}
+                  className={s.relJump}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onSelectConcept(otherConceptId);
+                  }}
+                  type="button"
+                >
+                  ↗
+                </button>
               </div>
             );
           })

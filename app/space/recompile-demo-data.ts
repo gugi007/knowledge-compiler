@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { CompiledKnowledgeDataset } from "@/data/models";
 import { articlesByDate } from "@/lib/frontend/dataset";
 
@@ -100,11 +100,55 @@ function stringArray(value: unknown): string[] {
   return value.filter((item): item is string => typeof item === "string");
 }
 
-/** 读基线。无 localStorage / 脏数据一律当「没有基线」。 */
-export function readBaseline(): Baseline | undefined {
+/** 评审逃生口的查询参数：`?reset=1` 把基线当「没有」。 */
+const RESET_PARAM = "reset";
+
+/**
+ * 地址栏是否带 `?reset=1`。SSR / 无 window / 取不到一律 false。
+ *
+ * 读 window.location 而不是 useSearchParams：后者在静态渲染时要套 Suspense
+ * （同 app/compile/compile-workspace.tsx 与 app/knowledge-garden.tsx 的既有做法）。
+ */
+function resetRequested(): boolean {
   try {
-    const raw = window.localStorage.getItem(BASELINE_KEY);
-    if (!raw) return undefined;
+    if (typeof window === "undefined") return false;
+    return new URLSearchParams(window.location.search).get(RESET_PARAM) === "1";
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * 基线的**原始字符串**快照。
+ *
+ * useSyncExternalStore 要求快照引用稳定：直接返回解析后的对象的话，每次渲染
+ * 都是新引用，React 会认为快照一直在变而反复重渲。同内容字符串 Object.is 相等，
+ * 因此这里只把字符串交出去，解析放在调用方的 useMemo 里（同 lib/frontend/handoff.ts
+ * 的 readHandoffRaw / parseHandoffDataset 分工）。
+ *
+ * `?reset=1` 也在这里认：快照函数本身就是「无基线」，所以首帧渲染与随后清 key
+ * 之后的快照完全一致，不会出现「先静默 → 清 key → 状态条又冒出来」的闪烁。
+ */
+export function baselineRawSnapshot(): string | null {
+  if (resetRequested()) return null;
+  try {
+    if (typeof window === "undefined") return null;
+    return window.localStorage.getItem(BASELINE_KEY);
+  } catch {
+    // 隐私模式 / 存储被禁用 → 当作没有基线，不抛。
+    return null;
+  }
+}
+
+/** 服务端与 hydration 阶段一律返回 null（同 use-active-dataset 的 serverSnapshot）。 */
+export function baselineServerSnapshot(): null {
+  return null;
+}
+
+/** 原始字符串 → Baseline；解析失败 / 脏数据一律当「没有基线」。 */
+export function parseBaseline(raw: string | null): Baseline | undefined {
+  if (!raw) return undefined;
+  try {
     const parsed = JSON.parse(raw) as Record<string, unknown>;
     return {
       articles: stringArray(parsed.articles),
@@ -115,6 +159,11 @@ export function readBaseline(): Baseline | undefined {
     // 隐私模式 / 存储被禁用 / JSON 损坏 → 降级为「无基线」，不抛。
     return undefined;
   }
+}
+
+/** 读基线。无 localStorage / 脏数据一律当「没有基线」。 */
+export function readBaseline(): Baseline | undefined {
+  return parseBaseline(baselineRawSnapshot());
 }
 
 /** 落基线。写不进去（无 localStorage）就静默降级为不持久化。 */
@@ -166,6 +215,9 @@ function uniqueIds(ids: readonly string[]): string[] {
  *
  * 优先级都是「相对基线的真实差集 → 由新文章推导 → 规模兜底」，任何一步
  * 拿到的都是 dataset 里真实存在的 id，绝不编造。
+ *
+ * 唯一的「全空」出口：有基线但文章差集为空（说明这份知识已经合入过了）。
+ * 此时四个字段一起为空，父组件的检测门据此判定「没有新文章」。
  */
 export function buildRecompileSelection(
   dataset: CompiledKnowledgeDataset,
@@ -175,20 +227,41 @@ export function buildRecompileSelection(
   const knownConcepts = new Set(baseline?.concepts ?? []);
   const knownRelations = new Set(baseline?.relations ?? []);
 
-  // ---- 新文章：基线快照之后出现的；没有差集时取最新 N 篇 ----
+  const conceptIds = new Set(dataset.concepts.map(({ id }) => id));
+  // 概念间关系（article-concept 不进图谱，画不出来）。提前到这里算：新边的差集
+  // 要用它，而差集要和文章/概念差集一起在「有没有基线」这一个条件上求值。
+  const conceptEdges = dataset.relations.filter(
+    (relation) =>
+      relation.kind !== "article-concept" &&
+      conceptIds.has(relation.sourceId) &&
+      conceptIds.has(relation.targetId),
+  );
+
+  // ---- 新文章：基线快照之后出现的 ----
+  // 无基线 = 首次访问：没有可比对的快照，三个 delta 一律按空处理，一切都由兜底的
+  // 那几篇文章推导。若此时仍信任 delta，已知集合是空集 → delta 退化成「数据集里的
+  // 全部」，newNodeIds 会取到数据集顺序的前几个，而不是被新文章讨论过的那些。
   const newestFirst = [...articlesByDate(dataset)].reverse();
-  const deltaArticles = newestFirst.filter((article) => !knownArticles.has(article.id));
-  const freshArticles = deltaArticles.length
-    ? deltaArticles
-    : newestFirst.slice(0, FALLBACK_NEW_ARTICLES);
+  const deltaArticles = baseline
+    ? newestFirst.filter((article) => !knownArticles.has(article.id))
+    : [];
+  // 无基线 → 用最新 N 篇演一遍；
+  // 有基线但差集为空 = 已经编译过、知识已合入 → 真的没有新增。
+  // 兜底条件必须挂在「有没有基线」上，不能挂在「差集是否为空」上，否则门永远为真。
+  const freshArticles = baseline ? deltaArticles : newestFirst.slice(0, FALLBACK_NEW_ARTICLES);
+  // 没有新文章就没有任何「新增/改写/新边」可言：四个字段一起归零。
+  // 必须在这里整体短路：下面的 updatedNodeIds 里 byEvidence 那条兜底
+  // 会把「证据最多的老概念」无条件填满，导致它有基线无差集时仍非空。
+  if (!freshArticles.length) return EMPTY_SELECTION;
   const newArticleIds = freshArticles.map(({ id }) => id);
   const freshArticleSet = new Set(newArticleIds);
 
   // ---- 新概念：基线差集优先，其次「被新文章讨论过」的概念 ----
-  const conceptIds = new Set(dataset.concepts.map(({ id }) => id));
-  const deltaConcepts = dataset.concepts
-    .filter((concept) => !knownConcepts.has(concept.id))
-    .map(({ id }) => id);
+  const deltaConcepts = baseline
+    ? dataset.concepts
+        .filter((concept) => !knownConcepts.has(concept.id))
+        .map(({ id }) => id)
+    : [];
   const discussedByFresh = dataset.concepts
     .filter((concept) => concept.evidenceArticleIds.some((id) => freshArticleSet.has(id)))
     .map(({ id }) => id);
@@ -223,16 +296,11 @@ export function buildRecompileSelection(
   ]).slice(0, MAX_UPDATED_NODES);
 
   // ---- 新边：只取概念间关系（article-concept 不进图谱，画不出来）----
+  // 同 deltaConcepts：无基线时差集按空处理，交给 touchedEdges 那条兜底。
   const touched = new Set([...newNodeIds, ...updatedNodeIds]);
-  const conceptEdges = dataset.relations.filter(
-    (relation) =>
-      relation.kind !== "article-concept" &&
-      conceptIds.has(relation.sourceId) &&
-      conceptIds.has(relation.targetId),
-  );
-  const deltaEdges = conceptEdges
-    .filter((relation) => !knownRelations.has(relation.id))
-    .map(({ id }) => id);
+  const deltaEdges = baseline
+    ? conceptEdges.filter((relation) => !knownRelations.has(relation.id)).map(({ id }) => id)
+    : [];
   const touchedEdges = conceptEdges
     .filter((relation) => touched.has(relation.sourceId) || touched.has(relation.targetId))
     .map(({ id }) => id);
@@ -310,12 +378,40 @@ export function useRecompileDemo({
 
   const rangeLabel = useMemo(() => rangeLabelOf(dataset), [dataset]);
 
-  // 首次访问落基线：只写不 setState，所以不触发 react-hooks/set-state-in-effect。
+  /**
+   * `?reset=1` 逃生口：真正把 kc:baseline 删掉，让演示可以重复跑。
+   *
+   * 快照函数已经先把 reset 当成「无基线」，所以这里删 key 不改变任何一帧的渲染
+   * 结果（不闪），只是把状态落地。removeItem 是纯副作用、不 setState。
+   *
+   * 刻意**不**用 history.replaceState 把参数抹掉：保留它，评审时刷新即可重看演示。
+   */
   useEffect(() => {
-    if (!enabled) return;
-    if (readBaseline()) return;
+    if (!resetRequested()) return;
+    try {
+      window.localStorage.removeItem(BASELINE_KEY);
+    } catch {
+      // 无 localStorage：本来就没有基线可清。
+    }
+  }, []);
+
+  /**
+   * 编译完成 → 基线写回。
+   *
+   * 基线只在「跑完一次增量编译」之后写，不在挂载时写：挂载就写的话，用户点
+   * 「二次编译」时 `readBaseline()` 已经有值，差集为空 → buildRecompileSelection
+   * 返回全空 → 首次演示跑出 0 篇 0 概念 0 关系。基线一旦写回，「检测门」在
+   * 刷新后就会静默（知识已合入），所以整个演示是一次性的。
+   *
+   * 写 localStorage 是副作用不是 setState，不触发 react-hooks/set-state-in-effect；
+   * ref 只是把「只写一次」写死（dataset 引用变化时也不重复写）。
+   */
+  const baselineWritten = useRef(false);
+  useEffect(() => {
+    if (!enabled || phase !== "done" || baselineWritten.current) return;
+    baselineWritten.current = true;
     writeBaseline(dataset);
-  }, [enabled, dataset]);
+  }, [enabled, phase, dataset]);
 
   const start = useCallback(() => {
     if (!enabled) return;

@@ -12,3 +12,4 @@ data/sujianlin-zhihu-sample18/
 # Overlay 运行时修改落盘不进仓库；*.seed.json（演示种子）仍然提交
 data/overlays/*.json
 !data/overlays/*.seed.json
+.vercel

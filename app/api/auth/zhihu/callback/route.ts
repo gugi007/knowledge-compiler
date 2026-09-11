@@ -6,6 +6,7 @@ import {
   SESSION_COOKIE,
   sessionCookieOptions,
   STATE_COOKIE,
+  warmSession,
 } from "@/lib/zhihu/session";
 
 export const runtime = "nodejs";
@@ -43,8 +44,15 @@ export async function GET(request: NextRequest) {
   }
 
   const sessionId = createSession(token);
-  // frontend-v2 冻结的成功回跳：回第一幕 /，用 auth=connected 告知登录页。
-  const response = NextResponse.redirect(new URL("/?auth=connected", request.url));
+
+  // 预热（用户资料 + 全部创作）只为让 /api/compile 走「零上游调用」的快路径，
+  // 所以 fire-and-forget：不 await、不阻塞回跳。warmSession 自己吞掉所有失败，
+  // 这里再挂一个 catch 只是为了任何情况下都不可能冒出一个未处理的 rejection。
+  void warmSession(sessionId).catch(() => {});
+
+  // frontend-v2 冻结的成功回跳：直达第二幕。语料由服务端按需补齐，
+  // 所以这里不需要用户先手动导入文章。
+  const response = NextResponse.redirect(new URL("/compile?corpus=imported", request.url));
   response.cookies.set({ name: SESSION_COOKIE, value: sessionId, ...sessionCookieOptions() });
   response.cookies.delete(STATE_COOKIE);
   return response;
