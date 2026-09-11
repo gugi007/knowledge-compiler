@@ -19,8 +19,16 @@ import { COMPILE_STEP_LABELS } from "./stage-presenters";
  *   杜绝「阶段已标记完成但百分比没跟上」。
  * - **阶段内**用帧率无关的指数追踪逼近本段上限（惯用法同
  *   app/login/knowledge-graph-background.tsx 的 `1 - Math.exp(-dt / tau)`），
- *   只逼近不过冲；**产品阶段一变立即硬吸附到新段 from**——这是
- *   「进入关系阶段必须同步到 75%」的实现手段。
+ *   只逼近不过冲。**换段时不再瞬间吸附**：显示值若落后于新段起点
+ *   （差距 > `SWEEP_EPSILON`），用 `SWEEP_SECONDS` 的 easeOutCubic 扫补滑过去，
+ *   差距本来就很小的常规路径仍直接进追踪。两种写法都是为了「进入关系阶段
+ *   必须同步到 75%」，但扫补是渐进的，视觉上不再闪现。
+ *   同步性由**同源派生**保证：Stepper 的 active 项与状态行文案都从 pct 走
+ *   `stageAtPct`，扫补期间两者一起走、一起跨过 75，不会出现「阶段已激活、
+ *   条还停在 53%」的分叉。**因此不得改成直接读服务端 productStage。**
+ * - **reading 段有最短停留保底**（`MIN_BAND_SECONDS`）：解析阶段真实耗时可能
+ *   不到 1s，若立刻换段，0→25 会在个位数上被扫补推走，看着像「0 直接变 26」。
+ *   待够保底时长才允许换段，让开头那一下爬升有肉眼可反应的时长。
  * - **收尾三段**（补间 → 100% 停留 → 切结果页）与阶段追踪共用**一条 rAF、
  *   一个 cleanup 出口**，不用 setTimeout：两套时钟两处清理，StrictMode 双跑更易漏。
  *   时钟是**虚拟时间**（累加 dt），页签隐藏时 rAF 本就不跑，回到前台补间/停留
@@ -32,9 +40,9 @@ import { COMPILE_STEP_LABELS } from "./stage-presenters";
  *   仓库无测试框架，拆出来便于将来直接接测试。
  *
  * 配套约束：`compile.module.css` 的 `.progressFill` **不得**再加
- * `transition: width`。宽度是这里每帧直接写的，CSS 过渡会在其上叠一层延迟，
- * 把「进入新阶段硬吸附到 75%」变成一段扫动——数字先到、条落后，
- * 正是要杜绝的不同步。
+ * `transition: width`。宽度是这里每帧直接写的；换段的扫补已经是 JS 里显式
+ * 实现的缓动，CSS 的 `transition: width` 会在其上**再叠一层自己的缓动**，
+ * 两段缓动串联会让条明显滞后于数字，正是要杜绝的不同步。
  */
 
 /* =========================
@@ -46,9 +54,9 @@ import { COMPILE_STEP_LABELS } from "./stage-presenters";
  *
  * | 阶段 | 语义 |
  * |---|---|
- * | reading | 0% → 25% |
- * | concepts | 进入即 25%，阶段内推进到 75% |
- * | relations | **进入即 75%**，阶段内推进到约 90% |
+ * | reading | 0% → 25%（有 MIN_BAND_SECONDS 保底停留） |
+ * | concepts | 进了就扫到 25%，阶段内推进到 75% |
+ * | relations | **进了就扫到 75%**（约 SWEEP_SECONDS），阶段内推进到约 90% |
  * | graph | 90% → 98% |
  */
 export const PRODUCT_STAGE_BANDS: Record<ProductStage, { from: number; to: number }> = {
@@ -70,6 +78,20 @@ const BAND_TAU: Record<ProductStage, number> = {
   relations: 4,
   graph: 2,
 };
+
+/** 换段扫补时长（秒）：显示值落后于新段起点时，用 easeOutCubic 滑过去，而不是瞬间跳。 */
+const SWEEP_SECONDS = 0.45;
+/** 扫补触发阈值（百分点）：差距小于它就没必要走扫补，直接进追踪。 */
+const SWEEP_EPSILON = 0.5;
+/** 各段最短停留（秒）：服务端已推进但本段还没待够时，按住不换段。 */
+const MIN_BAND_SECONDS: Record<ProductStage, number> = {
+  reading: 1.5, // 解析阶段真实耗时可能不到 1s，保底让 0→25 走得看得见
+  concepts: 0,
+  relations: 0,
+  graph: 0,
+};
+/** 「无扫补」哨兵：sweepFrom 语义上只可能是 ≥ 0 的百分点，负数不会撞上。 */
+const NO_SWEEP = -1;
 
 /** 完成补间时长（秒）：从当前显示值 easeOutCubic 到 100。 */
 const FINISH_TWEEN_SECONDS = 1;
@@ -102,6 +124,12 @@ export interface RhythmFrame {
   vt: number;
   /** 停留结束 → 可以切结果页。 */
   finished: boolean;
+  /** 在当前段已停留的虚拟时间（秒）：MIN_BAND_SECONDS 闸门的计时器。 */
+  bandVt: number;
+  /** 扫补起点（百分点）；无扫补时无意义（NO_SWEEP）。 */
+  sweepFrom: number;
+  /** 扫补已走虚拟时间（秒）。 */
+  sweepVt: number;
 }
 
 export interface RhythmInput {
@@ -120,6 +148,9 @@ export const IDLE_FRAME: RhythmFrame = {
   tweenFrom: 0,
   vt: 0,
   finished: false,
+  bandVt: 0,
+  sweepFrom: NO_SWEEP,
+  sweepVt: 0,
 };
 
 /** easeOutCubic：末段减速，收尾补间用。k 越界时按 0/1 夹取。 */
@@ -143,7 +174,8 @@ export function stageAtPct(pct: number): ProductStage {
 /**
  * 单帧推进（纯函数，唯一的阶段/收尾状态机）。
  *
- * - running：指数追踪本段上限；产品阶段一变硬吸附到新段 from（单调不回退）。
+ * - running：指数追踪本段上限；换段时若显示值落后于新段起点就扫补过去
+ *   （单调不回退），差距小则直接接着追踪；reading 段有最短停留保底。
  * - error：原样冻结（显示值与 Stepper 一起停在中断处）。
  * - done：track 帧升级成 tween 帧（从**当前值**起，不先吸附到 98/100）→
  *   补间到 100 → 停留 FINISH_HOLD_SECONDS → finished 置真。
@@ -175,20 +207,74 @@ export function advanceRhythm(frame: RhythmFrame, input: RhythmInput): RhythmFra
   }
 
   // running
-  const stage = productStage ?? frame.stage;
+  // 1) 最短停留闸：服务端已推进但本段还没待够（只有 reading 非零）就按住不换段。
+  //    bandVt 是被闸住也继续累加的，所以到点自然放行。
+  const incoming = productStage ?? frame.stage;
+  const bandVt = frame.bandVt + dt; // 含本帧
+  const blocked =
+    incoming !== frame.stage && bandVt < MIN_BAND_SECONDS[frame.stage];
+  const stage = blocked ? frame.stage : incoming; // 被闸住时本帧仍留在原段
+  const stageChanged = stage !== frame.stage;
+  const nextBandVt = stageChanged ? 0 : bandVt; // 真换了段才归零
+
+  // 2) 换段且显示值明显落后 → 走扫补。四段首尾相接（前段 to = 后段 from），
+  //    指数追踪是渐近的所以总会差一点点，SWEEP_EPSILON 把这种常规收尾挡在外面；
+  //    显示值已经高于新段起点（乱序事件）时也不触发，只继续从当前值追踪。
   const band = PRODUCT_STAGE_BANDS[stage];
   // 同一段内从当前值继续追踪；上一轮的收尾帧（phase !== track）不算数，从 0 起算。
   const tracked = frame.phase === "track" ? frame.pct : 0;
-  // 换段 = 硬吸附到新段 from。四段首尾相接（前段 to = 后段 from），
-  // 吸附只可能向前或原地；Math.max 再挡一层乱序事件导致的回退。
-  const base =
-    stage === frame.stage && frame.phase === "track"
-      ? tracked
-      : Math.max(tracked, band.from);
-  const pct = reducedMotion
-    ? base
-    : base + (band.to - base) * (1 - Math.exp(-dt / BAND_TAU[stage]));
-  return { ...frame, pct, stage, phase: "track" };
+  const needsSweep =
+    stageChanged && !reducedMotion && band.from - tracked > SWEEP_EPSILON;
+
+  // 3) 算显示值。扫补与指数追踪互斥，不叠加。
+  let pct: number;
+  let sweepFrom = frame.sweepFrom;
+  let sweepVt = frame.sweepVt;
+
+  if (reducedMotion) {
+    // 降级：不做插值，数字只在 band 边界跳；扫补一并跳过。
+    pct = Math.max(tracked, band.from);
+    sweepFrom = NO_SWEEP;
+    sweepVt = 0;
+  } else if (needsSweep) {
+    // 本帧刚触发：起点取当前显示值，本帧就算进扫补时间。
+    sweepFrom = tracked;
+    sweepVt = dt;
+    const k = Math.min(1, sweepVt / SWEEP_SECONDS);
+    if (k >= 1) {
+      // 极端情况下（单帧 dt 就超过扫补时长）直接落到新段起点。
+      pct = band.from;
+      sweepFrom = NO_SWEEP;
+      sweepVt = 0;
+    } else {
+      pct = sweepFrom + (band.from - sweepFrom) * easeOutCubic(k);
+    }
+  } else if (sweepFrom !== NO_SWEEP) {
+    // 扫补进行中：只走扫补曲线。
+    sweepVt += dt;
+    const k = Math.min(1, sweepVt / SWEEP_SECONDS);
+    if (k >= 1) {
+      pct = band.from;
+      sweepFrom = NO_SWEEP;
+      sweepVt = 0;
+    } else {
+      pct = sweepFrom + (band.from - sweepFrom) * easeOutCubic(k);
+    }
+  } else {
+    // 正常追踪：只逼近不过冲（不回退由末尾的单调性总闸保证）。
+    pct = tracked + (band.to - tracked) * (1 - Math.exp(-dt / BAND_TAU[stage]));
+  }
+
+  // 4) 单调性总闸：任何分支都不得把显示值往回拽（乱序事件防御）。
+  //    正常路径恒为 no-op（reducedMotion / 刚触发扫补 / 正常追踪三个分支的下界
+  //    本来就是 tracked）；只覆盖「扫补途中被乱序事件换掉了 band.from，于是落到
+  //    「扫补进行中」分支、却按新段的 band.from 往回扫」这条病态路径。
+  //    被钉住时扫补走完 k >= 1 会清掉 sweepFrom，下一帧从高水位继续追踪，不会卡死。
+  if (pct < tracked) pct = tracked;
+
+  // 5) 写回。扫补结束后从 band.from 自然接上追踪（下一帧 tracked = band.from，
+  //    目标 band.to），不会有停顿或回退。
+  return { ...frame, pct, stage, phase: "track", bandVt: nextBandVt, sweepFrom, sweepVt };
 }
 
 /* =========================

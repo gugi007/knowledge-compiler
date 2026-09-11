@@ -93,7 +93,7 @@ export function CompileProgress({ rhythm }: { rhythm: CompileRhythm }) {
         <span className={styles.statusPct}>{rounded}%</span>
         <span className={styles.statusWhat}>{rhythm.statusText}</span>
         <span className={styles.statusTooltip} role="tooltip">
-          进度按四个产品阶段的节奏推进，不是服务端逐篇计数；进入新阶段时会同步跳到该段起点。
+          进度按四个产品阶段的节奏推进，不是服务端逐篇计数；切换阶段时会平滑滑到该段起点。
         </span>
       </div>
       <div
