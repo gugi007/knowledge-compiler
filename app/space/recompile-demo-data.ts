@@ -93,11 +93,29 @@ export interface Baseline {
   articles: string[];
   concepts: string[];
   relations: string[];
+  /** 本次合入的规模；二次编译跑完时随基线一起落盘，刷新后据此继续显示。 */
+  delta?: RecompileCounts;
 }
 
 function stringArray(value: unknown): string[] {
   if (!Array.isArray(value)) return [];
   return value.filter((item): item is string => typeof item === "string");
+}
+
+/**
+ * `delta` 的校验：三个字段都必须是有限数字，否则整体当 `undefined`。
+ *
+ * 与整个基线的关系是「局部降级」——`delta` 坏了只丢 `delta`，`articles` /
+ * `concepts` / `relations` 三个 id 数组照旧生效；旧基线的浏览器读到 `undefined`
+ * 时也只是回到「如实显示 dataset 的真实值」，不抛错。
+ */
+function recompileCounts(value: unknown): RecompileCounts | undefined {
+  if (!value || typeof value !== "object") return undefined;
+  const record = value as Record<string, unknown>;
+  const { articles, concepts, relations } = record;
+  const finite = (item: unknown): item is number => typeof item === "number" && Number.isFinite(item);
+  if (!finite(articles) || !finite(concepts) || !finite(relations)) return undefined;
+  return { articles, concepts, relations };
 }
 
 /** 评审逃生口的查询参数：`?reset=1` 把基线当「没有」。 */
@@ -145,15 +163,22 @@ export function baselineServerSnapshot(): null {
   return null;
 }
 
-/** 原始字符串 → Baseline；解析失败 / 脏数据一律当「没有基线」。 */
+/**
+ * 原始字符串 → Baseline；解析失败 / 脏数据一律当「没有基线」。
+ *
+ * `delta` 是后加的字段，校验口径更宽松（见 recompileCounts）：脏了只丢它自己，
+ * 不让整条基线失效——旧基线的 id 数组仍要能用于差集计算。
+ */
 export function parseBaseline(raw: string | null): Baseline | undefined {
   if (!raw) return undefined;
   try {
     const parsed = JSON.parse(raw) as Record<string, unknown>;
+    const delta = recompileCounts(parsed.delta);
     return {
       articles: stringArray(parsed.articles),
       concepts: stringArray(parsed.concepts),
       relations: stringArray(parsed.relations),
+      ...(delta ? { delta } : {}),
     };
   } catch {
     // 隐私模式 / 存储被禁用 / JSON 损坏 → 降级为「无基线」，不抛。
@@ -166,13 +191,23 @@ export function readBaseline(): Baseline | undefined {
   return parseBaseline(baselineRawSnapshot());
 }
 
-/** 落基线。写不进去（无 localStorage）就静默降级为不持久化。 */
-export function writeBaseline(dataset: CompiledKnowledgeDataset): void {
+/**
+ * 落基线。写不进去（无 localStorage）就静默降级为不持久化。
+ *
+ * `delta` 是本次合入的规模，随基线一起落盘：刷新后 `phase` 回 idle，作者的
+ * 篇数/概念数/关系数就靠它继续显示合入后的读数。不传则只落 id 数组（旧口径）。
+ * 它**不参与** buildRecompileSelection 的差集计算，只影响展示。
+ */
+export function writeBaseline(
+  dataset: CompiledKnowledgeDataset,
+  delta?: RecompileCounts,
+): void {
   try {
     const snapshot: Baseline = {
       articles: dataset.articles.map(({ id }) => id),
       concepts: dataset.concepts.map(({ id }) => id),
       relations: dataset.relations.map(({ id }) => id),
+      ...(delta ? { delta } : {}),
     };
     window.localStorage.setItem(BASELINE_KEY, JSON.stringify(snapshot));
   } catch {
@@ -405,13 +440,17 @@ export function useRecompileDemo({
    *
    * 写 localStorage 是副作用不是 setState，不触发 react-hooks/set-state-in-effect；
    * ref 只是把「只写一次」写死（dataset 引用变化时也不重复写）。
+   *
+   * 落盘的除了 id 数组还有本次的 `counts`：那是 done 态下 elapsed 已经跑到
+   * TOTAL_DURATION 的终值，也就是作者条要长期显示的合入规模。
    */
+  const counts = useMemo(() => countsAt(elapsed, selection), [elapsed, selection]);
   const baselineWritten = useRef(false);
   useEffect(() => {
     if (!enabled || phase !== "done" || baselineWritten.current) return;
     baselineWritten.current = true;
-    writeBaseline(dataset);
-  }, [enabled, phase, dataset]);
+    writeBaseline(dataset, counts);
+  }, [enabled, phase, dataset, counts]);
 
   const start = useCallback(() => {
     if (!enabled) return;
@@ -437,7 +476,6 @@ export function useRecompileDemo({
   }, [enabled, phase]);
 
   const progress = useMemo(() => progressAt(elapsed), [elapsed]);
-  const counts = useMemo(() => countsAt(elapsed, selection), [elapsed, selection]);
 
   if (!enabled) {
     // 惰性：对外始终 idle，start 是空操作，图面拿到的也是「没有新增」。

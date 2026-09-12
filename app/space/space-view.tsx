@@ -205,6 +205,40 @@ export function SpaceView() {
   const revealNew =
     !barDismissed && !recompileIdle && (recompile.phase === "done" || recompile.stepIndex >= 2);
   /**
+   * 基线快照：读 localStorage 用 useSyncExternalStore + 原始字符串快照（同
+   * use-active-dataset 的做法）。两处消费——下面的 mergedDelta 取合入规模，
+   * 以及 hasNews 检测门判「这份知识有没有合入过」。
+   *
+   * 声明必须排在 mergedDelta 之前：useMemo 的工厂函数在渲染期就求值，
+   * 晚声明会踩到 `const` 的暂时性死区。
+   */
+  const baselineRaw = useSyncExternalStore(
+    noopSubscribe,
+    baselineRawSnapshot,
+    baselineServerSnapshot,
+  );
+  /**
+   * 作者条要叠加的合入量，两级取值：
+   *
+   * 1. 本会话刚跑完（phase === "done" 且这次真的有新增文章）→ 用本次的 counts；
+   * 2. 否则若基线里存着上次跑完落盘的 delta → 用它。刷新后 phase 回到 idle，
+   *    合入量的唯一来源就是这里，作者条的读数因此不会掉回真实值；
+   * 3. 都没有（首次访问 / `?reset=1` 把基线快照压成 null）→ 全 0，显示真实值。
+   *
+   * 与画布高亮的 revealNew **无关**：收起状态条照旧清掉新增高亮，统计数字照样保留。
+   */
+  const mergedDelta = useMemo(() => {
+    const live =
+      recompile.phase === "done" && recompile.counts.articles > 0 ? recompile.counts : undefined;
+    const merged = live ?? parseBaseline(baselineRaw)?.delta;
+    if (!merged) return { articles: 0, concepts: 0, relations: 0 };
+    return {
+      articles: merged.articles,
+      concepts: merged.concepts,
+      relations: merged.relations,
+    };
+  }, [recompile.phase, recompile.counts, baselineRaw]);
+  /**
    * 聚焦新增只留给「跑完之后用户主动点查看新增」。
    *
    * 运行期不再叠 focusNew：`.stage.compiling`（非新增压到 .5）与 `.stage.focusNew`
@@ -219,14 +253,9 @@ export function SpaceView() {
    */
   const focusNew = revealNew && peekNew;
   /**
-   * 检测门：读基线用 useSyncExternalStore + 原始字符串快照（同 use-active-dataset）。
-   * 有基线且文章差集为空 → 这份知识已经合入过，本次没有新增 → 状态条静默。
+   * 检测门：有基线且文章差集为空 → 这份知识已经合入过，本次没有新增 → 状态条静默。
+   * 基线快照（baselineRaw）已在上面声明，这里只做差集判定。
    */
-  const baselineRaw = useSyncExternalStore(
-    noopSubscribe,
-    baselineRawSnapshot,
-    baselineServerSnapshot,
-  );
   // 数据集很小（bayes 17 篇 / 17 概念），直接算，不做额外缓存。
   const hasNews = useMemo(
     () => buildRecompileSelection(dataset, parseBaseline(baselineRaw)).newArticleIds.length > 0,
@@ -380,10 +409,10 @@ export function SpaceView() {
           <span className={s.authorHandle}>{dataset.creator.handle}</span>
           <span className={s.authorMeta}>
             <span>
-              <b>{summary.articles + (revealNew ? recompile.counts.articles : 0)}</b> 篇文章
+              <b>{summary.articles + mergedDelta.articles}</b> 篇文章
             </span>
             <span>
-              <b>{summary.concepts + (revealNew ? recompile.counts.concepts : 0)}</b> 个概念
+              <b>{summary.concepts + mergedDelta.concepts}</b> 个概念
             </span>
             <span>
               <b>{summary.domains}</b> 个领域
@@ -393,7 +422,7 @@ export function SpaceView() {
         </div>
         <div className={s.authorRight}>
           <span className={s.actTag} style={{ fontVariantNumeric: "tabular-nums" }}>
-            {summary.conceptRelations + (revealNew ? recompile.counts.relations : 0)} 条关系 · {summary.readingPaths} 条路径
+            {summary.conceptRelations + mergedDelta.relations} 条关系 · {summary.readingPaths} 条路径
           </span>
         </div>
       </section>
