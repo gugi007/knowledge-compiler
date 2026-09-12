@@ -75,7 +75,7 @@ export const BASELINE_KEY = "kc:baseline";
 /** 计时器步长：50ms 足够让 CSS 的 500ms width transition 跟上。 */
 const TICK_MS = 50;
 /** 没有基线差集时（首次访问）的演示兜底：把最新的 N 篇当成「本次新文章」。 */
-const FALLBACK_NEW_ARTICLES = 3;
+const FALLBACK_NEW_ARTICLES = 1;
 const MAX_NEW_NODES = 4;
 const MAX_UPDATED_NODES = 3;
 const MAX_NEW_EDGES = 3;

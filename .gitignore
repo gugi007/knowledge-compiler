@@ -13,3 +13,5 @@ data/sujianlin-zhihu-sample18/
 data/overlays/*.json
 !data/overlays/*.seed.json
 .vercel
+# 黑客松提交平台用的封面图，不进仓库（全仓无引用）
+image_project_square.png

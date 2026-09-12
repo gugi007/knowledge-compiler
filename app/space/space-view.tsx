@@ -380,10 +380,10 @@ export function SpaceView() {
           <span className={s.authorHandle}>{dataset.creator.handle}</span>
           <span className={s.authorMeta}>
             <span>
-              <b>{summary.articles}</b> 篇文章
+              <b>{summary.articles + (revealNew ? recompile.counts.articles : 0)}</b> 篇文章
             </span>
             <span>
-              <b>{summary.concepts}</b> 个概念
+              <b>{summary.concepts + (revealNew ? recompile.counts.concepts : 0)}</b> 个概念
             </span>
             <span>
               <b>{summary.domains}</b> 个领域
@@ -393,7 +393,7 @@ export function SpaceView() {
         </div>
         <div className={s.authorRight}>
           <span className={s.actTag} style={{ fontVariantNumeric: "tabular-nums" }}>
-            {summary.conceptRelations} 条关系 · {summary.readingPaths} 条路径
+            {summary.conceptRelations + (revealNew ? recompile.counts.relations : 0)} 条关系 · {summary.readingPaths} 条路径
           </span>
         </div>
       </section>
